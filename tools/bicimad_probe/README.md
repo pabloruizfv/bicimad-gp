@@ -1,49 +1,36 @@
 # BiciMAD Probe
 
-Herramientas locales y separadas de Flutter para estudiar capturas propias y hacer una prueba de lectura de viajes con credenciales introducidas manualmente.
+Herramientas locales y separadas de Flutter para estudiar capturas propias y hacer pruebas de lectura de viajes.
 
-No implementan login, no modifican la app oficial, no desactivan certificate pinning y no intentan eludir controles de integridad. No guardes credenciales, tokens, HAR reales ni respuestas crudas en el repositorio.
+No modifican la app oficial, no desactivan certificate pinning y no intentan eludir controles de integridad. No guardes credenciales, tokens, HAR reales ni respuestas crudas en el repositorio.
 
-## Descarga local de viajes
+## Instalacion de Dependencias
 
-`fetch_trips.py` hace una unica peticion de solo lectura:
-
-```text
-GET https://apiemtpay.emtmadrid.es/v2/bicimad/trips/
-```
-
-El script pide localmente:
-
-- `accessToken`, oculto con `getpass`
-- `email`
-- `userId`
-- `nif`
-- `deviceId`
-- `deviceModel`
-
-Usa `userId` tambien como `session`. No guarda esos valores, no los imprime y no vuelca cabeceras completas.
-
-Ejecutar desde la raiz del repositorio:
+Desde la raiz del repositorio:
 
 ```powershell
-py .\tools\bicimad_probe\fetch_trips.py
+python -m pip install -r .\tools\bicimad_probe\requirements.txt
 ```
 
-Si la peticion funciona, solo se escribe:
+## Configuracion Tecnica Inicial
 
-```text
-tools/bicimad_probe/private/trips_normalized.json
+Antes del primer uso con login, guarda una sola vez `passKey` y `X-ClientId` en el almacen seguro de credenciales de Windows:
+
+```powershell
+python .\tools\bicimad_probe\configure_local_probe.py
 ```
 
-No se guarda la respuesta sin procesar.
+El programa pedira ambos valores con `getpass`, no los mostrara y no los guardara en archivos del repositorio.
 
-## Descarga con login MPass
+`passKey` y `X-ClientId` deben obtenerse de una captura propia y legitima. No deben compartirse, publicarse, registrarse ni incluirse en Git.
 
-`fetch_trips_with_login.py` realiza, en una sola ejecucion, estas tres llamadas de solo lectura:
+Para eliminar la configuracion tecnica local:
 
-1. Login MPass.
-2. Consulta de `userdata` para obtener exclusivamente `data.DS_DN`.
-3. Consulta de viajes.
+```powershell
+python .\tools\bicimad_probe\configure_local_probe.py --clear
+```
+
+## Uso Normal Con Login
 
 Ejecutar desde la raiz del repositorio:
 
@@ -51,14 +38,12 @@ Ejecutar desde la raiz del repositorio:
 python .\tools\bicimad_probe\fetch_trips_with_login.py
 ```
 
-Para probar un `deviceId` estable generado por esta herramienta, sin pedirlo
-interactivamente:
+El programa pedira unicamente:
 
-```powershell
-python .\tools\bicimad_probe\fetch_trips_with_login.py --auto-device-id
-```
+- Email.
+- Contrasena, oculta con `getpass`.
 
-En ese modo se crea o reutiliza:
+El `deviceId` se crea o reutiliza automaticamente en:
 
 ```text
 tools/bicimad_probe/private/generated_device_id.txt
@@ -66,19 +51,13 @@ tools/bicimad_probe/private/generated_device_id.txt
 
 El valor no se muestra en consola y queda dentro de `private/`.
 
-El programa pedira interactivamente:
+Este flujo realiza, en una sola ejecucion, tres llamadas de solo lectura:
 
-- Email.
-- Contraseña, oculta con `getpass`.
-- `passKey`, oculta con `getpass`.
-- `X-ClientId`, oculto con `getpass`.
-- Device ID, oculto con `getpass`, salvo si se usa `--auto-device-id`.
-- Device model visible, con valor predeterminado `Samsung SM-A127F`.
-- Version de Android, con valor predeterminado `13`.
+1. Login MPass.
+2. Consulta de `userdata` para obtener exclusivamente `data.DS_DN`.
+3. Consulta de viajes.
 
-`passKey` y `X-ClientId` deben obtenerse de una captura propia y legitima. No deben compartirse, publicarse, registrarse ni incluirse en Git. Usa una contraseña actual y nunca una contraseña que haya sido expuesta.
-
-Este flujo es experimental y puede cambiar si MPass o BiciMAD modifican su API. Solo debe utilizarse para consultar los viajes de la cuenta propia. No implementa reservas, desbloqueos, pagos ni operaciones de escritura.
+Usa una contrasena actual y nunca una contrasena que haya sido expuesta. Este flujo es experimental y puede cambiar si MPass o BiciMAD modifican su API. Solo debe utilizarse para consultar los viajes de la cuenta propia. No implementa reservas, desbloqueos, pagos ni operaciones de escritura.
 
 Si funciona, solo se escribe:
 
@@ -86,7 +65,21 @@ Si funciona, solo se escribe:
 tools/bicimad_probe/private/trips_normalized.json
 ```
 
-La respuesta cruda, el access token, el id de usuario, el NIF, el device ID, `passKey`, `X-ClientId` y la contraseña no se guardan ni se imprimen.
+La respuesta cruda, el access token, el id de usuario, el NIF, el email, el device ID, `passKey`, `X-ClientId` y la contrasena no se imprimen. Solo `passKey` y `X-ClientId` se guardan en keyring, y solo el device ID generado se guarda en `private/`.
+
+## Descarga Manual Con Access Token
+
+`fetch_trips.py` hace una unica peticion de solo lectura:
+
+```text
+GET https://apiemtpay.emtmadrid.es/v2/bicimad/trips/
+```
+
+Este modo pide localmente `accessToken`, `email`, `userId`, `nif`, `deviceId` y `deviceModel`. No guarda esos valores, no los imprime y no vuelca cabeceras completas.
+
+```powershell
+python .\tools\bicimad_probe\fetch_trips.py
+```
 
 ## Normalizacion
 
@@ -104,14 +97,14 @@ Por cada viaje se conservan solo estos campos:
 
 Se descartan datos personales, financieros, dispositivo, bicicleta, coordenadas y penalizaciones.
 
-## Flujo HAR previo
+## Flujo HAR Previo
 
 Guarda el HAR original solo en `tools/bicimad_probe/private/`. Esa carpeta esta ignorada por Git salvo `.gitkeep`.
 
 Sanitiza la captura:
 
 ```powershell
-py .\tools\bicimad_probe\sanitize_har.py `
+python .\tools\bicimad_probe\sanitize_har.py `
   .\tools\bicimad_probe\private\capture.har `
   .\tools\bicimad_probe\private\capture.sanitized.har
 ```
@@ -119,12 +112,12 @@ py .\tools\bicimad_probe\sanitize_har.py `
 Analiza solo el HAR sanitizado:
 
 ```powershell
-py .\tools\bicimad_probe\analyze_har.py `
+python .\tools\bicimad_probe\analyze_har.py `
   .\tools\bicimad_probe\private\capture.sanitized.har
 ```
 
 ## Pruebas
 
 ```powershell
-py -m unittest discover .\tools\bicimad_probe\tests
+python -m unittest discover .\tools\bicimad_probe\tests
 ```

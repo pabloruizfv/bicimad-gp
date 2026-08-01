@@ -53,6 +53,7 @@ tools/bicimad_probe/private/*
 *.sanitized.har
 *credentials*
 *secrets*
+!tools/bicimad_probe/local_secrets.py
 bicimad_probe_report.json
 bicimad_probe_report.txt
 trips_raw.json

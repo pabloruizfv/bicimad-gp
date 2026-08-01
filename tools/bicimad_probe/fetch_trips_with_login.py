@@ -10,6 +10,7 @@ import secrets
 import sys
 from pathlib import Path
 
+from local_secrets import MissingLocalTechnicalConfigError, load_technical_config
 from mpass_client import ProbeRequestError, run_login_trip_flow
 
 DEFAULT_DEVICE_MODEL = "Samsung SM-A127F"
@@ -27,10 +28,15 @@ class InvalidLocalDeviceIdError(ValueError):
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(sys.argv[1:] if argv is None else argv)
     try:
-        values = _prompt_values(auto_device_id=args.auto_device_id)
+        values = _prompt_values()
         result = run_login_trip_flow(**values)
     except InvalidLocalDeviceIdError:
         print("El deviceId local tiene un formato inválido")
+        return 1
+    except MissingLocalTechnicalConfigError:
+        print("Falta la configuración técnica local.")
+        print("Ejecuta:")
+        print("python tools/bicimad_probe/configure_local_probe.py")
         return 1
     except ProbeRequestError as error:
         _print_safe_error(error)
@@ -64,32 +70,24 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument(
         "--auto-device-id",
         action="store_true",
-        help="Generate and reuse a local stable deviceId stored under private/.",
+        help="Deprecated no-op. A generated local deviceId is now always used.",
     )
     return parser.parse_args(argv)
 
 
-def _prompt_values(*, auto_device_id: bool = False) -> dict[str, str]:
+def _prompt_values() -> dict[str, str]:
     email = input("Email: ").strip()
     password = getpass.getpass("Contraseña: ")
-    pass_key = getpass.getpass("passKey: ")
-    x_client_id = getpass.getpass("X-ClientId: ")
-    device_id = (
-        get_or_create_generated_device_id()
-        if auto_device_id
-        else getpass.getpass("Device ID: ")
-    )
-    device_model_visible = _input_default(
-        "Device model visible",
-        DEFAULT_DEVICE_MODEL,
-    )
-    android_version = _input_default("Versión de Android", DEFAULT_ANDROID_VERSION)
+    technical_config = load_technical_config()
+    device_id = get_or_create_generated_device_id()
+    device_model_visible = DEFAULT_DEVICE_MODEL
+    android_version = DEFAULT_ANDROID_VERSION
 
     values = {
         "email": email,
         "password": password,
-        "pass_key": pass_key,
-        "x_client_id": x_client_id,
+        "pass_key": technical_config.pass_key,
+        "x_client_id": technical_config.x_client_id,
         "device_id": device_id,
         "device_model_visible": device_model_visible,
         "android_version": android_version,

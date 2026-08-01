@@ -15,7 +15,18 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+import configure_local_probe  # noqa: E402
 import fetch_trips_with_login  # noqa: E402
+from local_secrets import (  # noqa: E402
+    PASS_KEY_ENTRY,
+    SERVICE_NAME,
+    X_CLIENT_ID_ENTRY,
+    MissingLocalTechnicalConfigError,
+    TechnicalConfig,
+    clear_technical_config,
+    load_technical_config,
+    save_technical_config,
+)
 from mpass_client import (  # noqa: E402
     FlowResult,
     ProbeRequestError,
@@ -357,22 +368,30 @@ class MPassClientTests(unittest.TestCase):
         ]
 
         stdout = io.StringIO()
-        with mock.patch("builtins.input", side_effect=["person@example.test", "", ""]):
+        with mock.patch("builtins.input", side_effect=["person@example.test"]):
             with mock.patch(
                 "getpass.getpass",
                 side_effect=[
                     "fake-password",
-                    "fake-pass-key",
-                    "fake-client-id",
-                    "fake-device-id",
                 ],
             ):
                 with mock.patch(
-                    "fetch_trips_with_login.run_login_trip_flow",
-                    return_value=result,
+                    "fetch_trips_with_login.load_technical_config",
+                    return_value=TechnicalConfig(
+                        pass_key="fake-pass-key",
+                        x_client_id="fake-client-id",
+                    ),
                 ):
-                    with contextlib.redirect_stdout(stdout):
-                        exit_code = fetch_trips_with_login.main([])
+                    with mock.patch(
+                        "fetch_trips_with_login.get_or_create_generated_device_id",
+                        return_value="fake-device-id",
+                    ):
+                        with mock.patch(
+                            "fetch_trips_with_login.run_login_trip_flow",
+                            return_value=result,
+                        ):
+                            with contextlib.redirect_stdout(stdout):
+                                exit_code = fetch_trips_with_login.main([])
 
         output = stdout.getvalue()
         self.assertEqual(exit_code, 0)
@@ -453,27 +472,32 @@ class MPassClientTests(unittest.TestCase):
         )
         stdout = io.StringIO()
 
-        with mock.patch("builtins.input", side_effect=["person@example.test", "", ""]):
+        with mock.patch("builtins.input", side_effect=["person@example.test"]):
             with mock.patch(
                 "getpass.getpass",
                 side_effect=[
                     "fake-password",
-                    "fake-pass-key",
-                    "fake-client-id",
                 ],
             ) as getpass_mock:
                 with mock.patch(
-                    "fetch_trips_with_login.get_or_create_generated_device_id",
-                    return_value="0123456789abcdef",
+                    "fetch_trips_with_login.load_technical_config",
+                    return_value=TechnicalConfig(
+                        pass_key="fake-pass-key",
+                        x_client_id="fake-client-id",
+                    ),
                 ):
                     with mock.patch(
-                        "fetch_trips_with_login.run_login_trip_flow",
-                        return_value=result,
-                    ) as flow_mock:
-                        with contextlib.redirect_stdout(stdout):
-                            exit_code = fetch_trips_with_login.main(
-                                ["--auto-device-id"]
-                            )
+                        "fetch_trips_with_login.get_or_create_generated_device_id",
+                        return_value="0123456789abcdef",
+                    ):
+                        with mock.patch(
+                            "fetch_trips_with_login.run_login_trip_flow",
+                            return_value=result,
+                        ) as flow_mock:
+                            with contextlib.redirect_stdout(stdout):
+                                exit_code = fetch_trips_with_login.main(
+                                    ["--auto-device-id"]
+                                )
 
         self.assertEqual(exit_code, 0)
         prompts = [call.args[0] for call in getpass_mock.call_args_list]
@@ -511,7 +535,7 @@ class MPassClientTests(unittest.TestCase):
         for request in opener.requests:
             self.assertEqual(request.headers.get("Deviceid"), "0123456789abcdef")
 
-    def test_default_flow_still_prompts_for_device_id(self) -> None:
+    def test_normal_script_only_prompts_for_email_and_password(self) -> None:
         result = FlowResult(
             token_sec_expiration=2592000,
             trips_status=200,
@@ -522,50 +546,53 @@ class MPassClientTests(unittest.TestCase):
         )
 
         stdout = io.StringIO()
-        with mock.patch("builtins.input", side_effect=["person@example.test", "", ""]):
-            with mock.patch(
-                "getpass.getpass",
-                side_effect=[
-                    "fake-password",
-                    "fake-pass-key",
-                    "fake-client-id",
-                    "manual-device-id",
-                ],
-            ) as getpass_mock:
+        with mock.patch("builtins.input", side_effect=["person@example.test"]) as input_mock:
+            with mock.patch("getpass.getpass", side_effect=["fake-password"]) as getpass_mock:
                 with mock.patch(
-                    "fetch_trips_with_login.run_login_trip_flow",
-                    return_value=result,
-                ) as flow_mock:
-                    with contextlib.redirect_stdout(stdout):
-                        exit_code = fetch_trips_with_login.main([])
+                    "fetch_trips_with_login.load_technical_config",
+                    return_value=TechnicalConfig(
+                        pass_key="fake-pass-key",
+                        x_client_id="fake-client-id",
+                    ),
+                ):
+                    with mock.patch(
+                        "fetch_trips_with_login.get_or_create_generated_device_id",
+                        return_value="0123456789abcdef",
+                    ):
+                        with mock.patch(
+                            "fetch_trips_with_login.run_login_trip_flow",
+                            return_value=result,
+                        ) as flow_mock:
+                            with contextlib.redirect_stdout(stdout):
+                                exit_code = fetch_trips_with_login.main([])
 
         self.assertEqual(exit_code, 0)
-        prompts = [call.args[0] for call in getpass_mock.call_args_list]
-        self.assertIn("Device ID: ", prompts)
-        self.assertEqual(flow_mock.call_args.kwargs["device_id"], "manual-device-id")
+        self.assertEqual(input_mock.call_args_list, [mock.call("Email: ")])
+        self.assertEqual(getpass_mock.call_args_list, [mock.call("Contraseña: ")])
+        self.assertEqual(flow_mock.call_args.kwargs["pass_key"], "fake-pass-key")
+        self.assertEqual(flow_mock.call_args.kwargs["x_client_id"], "fake-client-id")
+        self.assertEqual(flow_mock.call_args.kwargs["device_id"], "0123456789abcdef")
 
     def test_invalid_auto_device_id_performs_no_calls(self) -> None:
         stdout = io.StringIO()
         with mock.patch("builtins.input", side_effect=["person@example.test"]):
-            with mock.patch(
-                "getpass.getpass",
-                side_effect=[
-                    "fake-password",
-                    "fake-pass-key",
-                    "fake-client-id",
-                ],
-            ):
+            with mock.patch("getpass.getpass", side_effect=["fake-password"]):
                 with mock.patch(
-                    "fetch_trips_with_login.get_or_create_generated_device_id",
-                    side_effect=fetch_trips_with_login.InvalidLocalDeviceIdError(),
+                    "fetch_trips_with_login.load_technical_config",
+                    return_value=TechnicalConfig(
+                        pass_key="fake-pass-key",
+                        x_client_id="fake-client-id",
+                    ),
                 ):
                     with mock.patch(
-                        "fetch_trips_with_login.run_login_trip_flow",
-                    ) as flow_mock:
-                        with contextlib.redirect_stdout(stdout):
-                            exit_code = fetch_trips_with_login.main(
-                                ["--auto-device-id"]
-                            )
+                        "fetch_trips_with_login.get_or_create_generated_device_id",
+                        side_effect=fetch_trips_with_login.InvalidLocalDeviceIdError(),
+                    ):
+                        with mock.patch(
+                            "fetch_trips_with_login.run_login_trip_flow",
+                        ) as flow_mock:
+                            with contextlib.redirect_stdout(stdout):
+                                exit_code = fetch_trips_with_login.main([])
 
         self.assertEqual(exit_code, 1)
         self.assertEqual(
@@ -573,6 +600,176 @@ class MPassClientTests(unittest.TestCase):
             "El deviceId local tiene un formato inválido",
         )
         flow_mock.assert_not_called()
+
+    def test_local_secrets_saves_pass_key_and_x_client_id(self) -> None:
+        backend = FakeKeyring()
+
+        save_technical_config(
+            pass_key="fake-pass-key",
+            x_client_id="fake-client-id",
+            keyring_backend=backend,
+        )
+
+        self.assertEqual(
+            backend.values[(SERVICE_NAME, PASS_KEY_ENTRY)],
+            "fake-pass-key",
+        )
+        self.assertEqual(
+            backend.values[(SERVICE_NAME, X_CLIENT_ID_ENTRY)],
+            "fake-client-id",
+        )
+        self.assertEqual(
+            {name for _service, name in backend.values},
+            {PASS_KEY_ENTRY, X_CLIENT_ID_ENTRY},
+        )
+
+    def test_local_secrets_recovers_both_values(self) -> None:
+        backend = FakeKeyring()
+        backend.values[(SERVICE_NAME, PASS_KEY_ENTRY)] = "fake-pass-key"
+        backend.values[(SERVICE_NAME, X_CLIENT_ID_ENTRY)] = "fake-client-id"
+
+        config = load_technical_config(keyring_backend=backend)
+
+        self.assertEqual(config.pass_key, "fake-pass-key")
+        self.assertEqual(config.x_client_id, "fake-client-id")
+
+    def test_local_secrets_detects_incomplete_configuration(self) -> None:
+        backend = FakeKeyring()
+        backend.values[(SERVICE_NAME, PASS_KEY_ENTRY)] = "fake-pass-key"
+
+        with self.assertRaises(MissingLocalTechnicalConfigError):
+            load_technical_config(keyring_backend=backend)
+
+    def test_local_secrets_deletes_both_entries(self) -> None:
+        backend = FakeKeyring()
+        backend.values[(SERVICE_NAME, PASS_KEY_ENTRY)] = "fake-pass-key"
+        backend.values[(SERVICE_NAME, X_CLIENT_ID_ENTRY)] = "fake-client-id"
+
+        clear_technical_config(keyring_backend=backend)
+
+        self.assertEqual(backend.values, {})
+        self.assertEqual(
+            backend.deleted,
+            [(SERVICE_NAME, PASS_KEY_ENTRY), (SERVICE_NAME, X_CLIENT_ID_ENTRY)],
+        )
+
+    def test_configure_local_probe_stores_without_showing_values(self) -> None:
+        backend = FakeKeyring()
+        stdout = io.StringIO()
+
+        with mock.patch(
+            "configure_local_probe.getpass.getpass",
+            side_effect=["fake-pass-key", "fake-client-id"],
+        ):
+            with mock.patch(
+                "configure_local_probe.save_technical_config",
+                side_effect=lambda *, pass_key, x_client_id: save_technical_config(
+                    pass_key=pass_key,
+                    x_client_id=x_client_id,
+                    keyring_backend=backend,
+                ),
+            ):
+                with contextlib.redirect_stdout(stdout):
+                    exit_code = configure_local_probe.main([])
+
+        output = stdout.getvalue()
+        self.assertEqual(exit_code, 0)
+        self.assertIn("Configuración técnica almacenada correctamente.", output)
+        self.assertNotIn("fake-pass-key", output)
+        self.assertNotIn("fake-client-id", output)
+
+    def test_configure_local_probe_clears_without_showing_values(self) -> None:
+        backend = FakeKeyring()
+        backend.values[(SERVICE_NAME, PASS_KEY_ENTRY)] = "fake-pass-key"
+        backend.values[(SERVICE_NAME, X_CLIENT_ID_ENTRY)] = "fake-client-id"
+        stdout = io.StringIO()
+
+        with mock.patch(
+            "configure_local_probe.clear_technical_config",
+            side_effect=lambda: clear_technical_config(keyring_backend=backend),
+        ):
+            with contextlib.redirect_stdout(stdout):
+                exit_code = configure_local_probe.main(["--clear"])
+
+        output = stdout.getvalue()
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output.strip(), "Configuración técnica eliminada.")
+        self.assertNotIn("fake-pass-key", output)
+        self.assertNotIn("fake-client-id", output)
+
+    def test_local_config_does_not_store_user_session_or_trip_secrets(self) -> None:
+        backend = FakeKeyring()
+
+        save_technical_config(
+            pass_key="fake-pass-key",
+            x_client_id="fake-client-id",
+            keyring_backend=backend,
+        )
+
+        stored_names = {name for _service, name in backend.values}
+        self.assertNotIn("email", stored_names)
+        self.assertNotIn("password", stored_names)
+        self.assertNotIn("accessToken", stored_names)
+        self.assertNotIn("idUser", stored_names)
+        self.assertNotIn("nif", stored_names)
+
+    def test_missing_local_config_performs_no_requests(self) -> None:
+        stdout = io.StringIO()
+
+        with mock.patch("builtins.input", side_effect=["person@example.test"]):
+            with mock.patch("getpass.getpass", side_effect=["fake-password"]):
+                with mock.patch(
+                    "fetch_trips_with_login.load_technical_config",
+                    side_effect=MissingLocalTechnicalConfigError(),
+                ):
+                    with mock.patch(
+                        "fetch_trips_with_login.get_or_create_generated_device_id",
+                    ) as device_mock:
+                        with mock.patch(
+                            "fetch_trips_with_login.run_login_trip_flow",
+                        ) as flow_mock:
+                            with contextlib.redirect_stdout(stdout):
+                                exit_code = fetch_trips_with_login.main([])
+
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(
+            stdout.getvalue().splitlines(),
+            [
+                "Falta la configuración técnica local.",
+                "Ejecuta:",
+                "python tools/bicimad_probe/configure_local_probe.py",
+            ],
+        )
+        device_mock.assert_not_called()
+        flow_mock.assert_not_called()
+
+    def test_prompt_values_reuses_generated_device_id(self) -> None:
+        with mock.patch("builtins.input", side_effect=["person@example.test"]):
+            with mock.patch("getpass.getpass", side_effect=["fake-password"]):
+                with mock.patch(
+                    "fetch_trips_with_login.load_technical_config",
+                    return_value=TechnicalConfig(
+                        pass_key="fake-pass-key",
+                        x_client_id="fake-client-id",
+                    ),
+                ):
+                    with mock.patch(
+                        "fetch_trips_with_login.get_or_create_generated_device_id",
+                        return_value="0123456789abcdef",
+                    ):
+                        values = fetch_trips_with_login._prompt_values()
+
+        self.assertEqual(values["device_id"], "0123456789abcdef")
+
+    def test_keyring_change_does_not_change_normalized_json(self) -> None:
+        trips_payload = _trips_payload()
+        original = copy.deepcopy(trips_payload)
+
+        normalized_before = _run_flow_and_read_normalized(trips_payload)
+        normalized_after = _run_flow_and_read_normalized(trips_payload)
+
+        self.assertEqual(normalized_before, normalized_after)
+        self.assertEqual(trips_payload, original)
 
 
 class FakeResponse:
@@ -603,6 +800,22 @@ class FakeOpener:
         return response
 
 
+class FakeKeyring:
+    def __init__(self) -> None:
+        self.values = {}
+        self.deleted = []
+
+    def set_password(self, service: str, username: str, password: str) -> None:
+        self.values[(service, username)] = password
+
+    def get_password(self, service: str, username: str) -> str | None:
+        return self.values.get((service, username))
+
+    def delete_password(self, service: str, username: str) -> None:
+        self.deleted.append((service, username))
+        self.values.pop((service, username), None)
+
+
 def _call_login(opener: FakeOpener) -> None:
     login(
         email="person@example.test",
@@ -613,6 +826,30 @@ def _call_login(opener: FakeOpener) -> None:
         login_device_model=build_login_device_model("Model X", "13"),
         opener=opener,
     )
+
+
+def _run_flow_and_read_normalized(trips_payload: dict) -> list[dict]:
+    opener = FakeOpener(
+        [
+            FakeResponse(_login_payload()),
+            FakeResponse(_userdata_payload()),
+            FakeResponse(trips_payload),
+        ]
+    )
+    with tempfile.TemporaryDirectory() as directory:
+        output_path = Path(directory) / "trips_normalized.json"
+        run_login_trip_flow(
+            email="person@example.test",
+            password="fake-password",
+            pass_key="fake-pass-key",
+            x_client_id="fake-client-id",
+            device_id="0123456789abcdef",
+            device_model_visible="Model X",
+            android_version="13",
+            output_path=output_path,
+            opener=opener,
+        )
+        return json.loads(output_path.read_text(encoding="utf-8"))
 
 
 def _http_error(status: int) -> urllib.error.HTTPError:
