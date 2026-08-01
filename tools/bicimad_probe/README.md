@@ -51,13 +51,28 @@ Ejecutar desde la raiz del repositorio:
 python .\tools\bicimad_probe\fetch_trips_with_login.py
 ```
 
+Para probar un `deviceId` estable generado por esta herramienta, sin pedirlo
+interactivamente:
+
+```powershell
+python .\tools\bicimad_probe\fetch_trips_with_login.py --auto-device-id
+```
+
+En ese modo se crea o reutiliza:
+
+```text
+tools/bicimad_probe/private/generated_device_id.txt
+```
+
+El valor no se muestra en consola y queda dentro de `private/`.
+
 El programa pedira interactivamente:
 
 - Email.
 - Contraseña, oculta con `getpass`.
 - `passKey`, oculta con `getpass`.
 - `X-ClientId`, oculto con `getpass`.
-- Device ID, oculto con `getpass`.
+- Device ID, oculto con `getpass`, salvo si se usa `--auto-device-id`.
 - Device model visible, con valor predeterminado `Samsung SM-A127F`.
 - Version de Android, con valor predeterminado `13`.
 

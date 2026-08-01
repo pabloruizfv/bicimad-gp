@@ -4,6 +4,7 @@ import copy
 import contextlib
 import io
 import json
+import re
 import tempfile
 import unittest
 import urllib.error
@@ -371,7 +372,7 @@ class MPassClientTests(unittest.TestCase):
                     return_value=result,
                 ):
                     with contextlib.redirect_stdout(stdout):
-                        exit_code = fetch_trips_with_login.main()
+                        exit_code = fetch_trips_with_login.main([])
 
         output = stdout.getvalue()
         self.assertEqual(exit_code, 0)
@@ -401,6 +402,177 @@ class MPassClientTests(unittest.TestCase):
         self.assertNotIn("DS_NIF", output)
         self.assertNotIn("{", output)
         self.assertNotIn("}", output)
+
+    def test_generated_device_id_has_16_lowercase_hex_characters(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "generated_device_id.txt"
+            value = fetch_trips_with_login.get_or_create_generated_device_id(path)
+
+            self.assertRegex(value, r"^[0-9a-f]{16}$")
+            self.assertEqual(path.read_text(encoding="utf-8"), value)
+
+    def test_auto_device_id_creates_file_first_time(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "private" / "generated_device_id.txt"
+
+            value = fetch_trips_with_login.get_or_create_generated_device_id(path)
+
+            self.assertTrue(path.exists())
+            self.assertEqual(len(value), 16)
+            self.assertTrue(re.fullmatch(r"[0-9a-f]{16}", value))
+
+    def test_auto_device_id_reuses_existing_value(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "generated_device_id.txt"
+            path.write_text("0123456789abcdef", encoding="utf-8")
+
+            first = fetch_trips_with_login.get_or_create_generated_device_id(path)
+            second = fetch_trips_with_login.get_or_create_generated_device_id(path)
+
+            self.assertEqual(first, "0123456789abcdef")
+            self.assertEqual(second, "0123456789abcdef")
+
+    def test_auto_device_id_rejects_invalid_value_without_overwriting(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "generated_device_id.txt"
+            path.write_text("invalid-device-id", encoding="utf-8")
+
+            with self.assertRaises(fetch_trips_with_login.InvalidLocalDeviceIdError):
+                fetch_trips_with_login.get_or_create_generated_device_id(path)
+
+            self.assertEqual(path.read_text(encoding="utf-8"), "invalid-device-id")
+
+    def test_auto_device_id_does_not_prompt_for_device_id_or_print_it(self) -> None:
+        result = FlowResult(
+            token_sec_expiration=2592000,
+            trips_status=200,
+            trips_api_code="00",
+            received_count=2,
+            normalized_count=2,
+            output_path=Path("tools/bicimad_probe/private/trips_normalized.json"),
+        )
+        stdout = io.StringIO()
+
+        with mock.patch("builtins.input", side_effect=["person@example.test", "", ""]):
+            with mock.patch(
+                "getpass.getpass",
+                side_effect=[
+                    "fake-password",
+                    "fake-pass-key",
+                    "fake-client-id",
+                ],
+            ) as getpass_mock:
+                with mock.patch(
+                    "fetch_trips_with_login.get_or_create_generated_device_id",
+                    return_value="0123456789abcdef",
+                ):
+                    with mock.patch(
+                        "fetch_trips_with_login.run_login_trip_flow",
+                        return_value=result,
+                    ) as flow_mock:
+                        with contextlib.redirect_stdout(stdout):
+                            exit_code = fetch_trips_with_login.main(
+                                ["--auto-device-id"]
+                            )
+
+        self.assertEqual(exit_code, 0)
+        prompts = [call.args[0] for call in getpass_mock.call_args_list]
+        self.assertNotIn("Device ID: ", prompts)
+        self.assertNotIn("0123456789abcdef", stdout.getvalue())
+        self.assertEqual(
+            flow_mock.call_args.kwargs["device_id"],
+            "0123456789abcdef",
+        )
+
+    def test_generated_device_id_is_used_in_login_userdata_and_trips(self) -> None:
+        opener = FakeOpener(
+            [
+                FakeResponse(_login_payload()),
+                FakeResponse(_userdata_payload()),
+                FakeResponse(_trips_payload()),
+            ]
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            output_path = Path(directory) / "trips_normalized.json"
+            run_login_trip_flow(
+                email="person@example.test",
+                password="fake-password",
+                pass_key="fake-pass-key",
+                x_client_id="fake-client-id",
+                device_id="0123456789abcdef",
+                device_model_visible="Model X",
+                android_version="13",
+                output_path=output_path,
+                opener=opener,
+            )
+
+        self.assertEqual(len(opener.requests), 3)
+        for request in opener.requests:
+            self.assertEqual(request.headers.get("Deviceid"), "0123456789abcdef")
+
+    def test_default_flow_still_prompts_for_device_id(self) -> None:
+        result = FlowResult(
+            token_sec_expiration=2592000,
+            trips_status=200,
+            trips_api_code="00",
+            received_count=2,
+            normalized_count=2,
+            output_path=Path("tools/bicimad_probe/private/trips_normalized.json"),
+        )
+
+        stdout = io.StringIO()
+        with mock.patch("builtins.input", side_effect=["person@example.test", "", ""]):
+            with mock.patch(
+                "getpass.getpass",
+                side_effect=[
+                    "fake-password",
+                    "fake-pass-key",
+                    "fake-client-id",
+                    "manual-device-id",
+                ],
+            ) as getpass_mock:
+                with mock.patch(
+                    "fetch_trips_with_login.run_login_trip_flow",
+                    return_value=result,
+                ) as flow_mock:
+                    with contextlib.redirect_stdout(stdout):
+                        exit_code = fetch_trips_with_login.main([])
+
+        self.assertEqual(exit_code, 0)
+        prompts = [call.args[0] for call in getpass_mock.call_args_list]
+        self.assertIn("Device ID: ", prompts)
+        self.assertEqual(flow_mock.call_args.kwargs["device_id"], "manual-device-id")
+
+    def test_invalid_auto_device_id_performs_no_calls(self) -> None:
+        stdout = io.StringIO()
+        with mock.patch("builtins.input", side_effect=["person@example.test"]):
+            with mock.patch(
+                "getpass.getpass",
+                side_effect=[
+                    "fake-password",
+                    "fake-pass-key",
+                    "fake-client-id",
+                ],
+            ):
+                with mock.patch(
+                    "fetch_trips_with_login.get_or_create_generated_device_id",
+                    side_effect=fetch_trips_with_login.InvalidLocalDeviceIdError(),
+                ):
+                    with mock.patch(
+                        "fetch_trips_with_login.run_login_trip_flow",
+                    ) as flow_mock:
+                        with contextlib.redirect_stdout(stdout):
+                            exit_code = fetch_trips_with_login.main(
+                                ["--auto-device-id"]
+                            )
+
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(
+            stdout.getvalue().strip(),
+            "El deviceId local tiene un formato inválido",
+        )
+        flow_mock.assert_not_called()
 
 
 class FakeResponse:

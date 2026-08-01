@@ -3,18 +3,35 @@
 
 from __future__ import annotations
 
+import argparse
 import getpass
+import re
+import secrets
+import sys
+from pathlib import Path
 
 from mpass_client import ProbeRequestError, run_login_trip_flow
 
 DEFAULT_DEVICE_MODEL = "Samsung SM-A127F"
 DEFAULT_ANDROID_VERSION = "13"
+GENERATED_DEVICE_ID_PATH = Path(
+    "tools/bicimad_probe/private/generated_device_id.txt"
+)
+DEVICE_ID_PATTERN = re.compile(r"^[0-9a-f]{16}$")
 
 
-def main() -> int:
+class InvalidLocalDeviceIdError(ValueError):
+    pass
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _parse_args(sys.argv[1:] if argv is None else argv)
     try:
-        values = _prompt_values()
+        values = _prompt_values(auto_device_id=args.auto_device_id)
         result = run_login_trip_flow(**values)
+    except InvalidLocalDeviceIdError:
+        print("El deviceId local tiene un formato inválido")
+        return 1
     except ProbeRequestError as error:
         _print_safe_error(error)
         return 1
@@ -40,12 +57,28 @@ def main() -> int:
     return 0
 
 
-def _prompt_values() -> dict[str, str]:
+def _parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Run the local read-only BiciMAD experiment with MPass login.",
+    )
+    parser.add_argument(
+        "--auto-device-id",
+        action="store_true",
+        help="Generate and reuse a local stable deviceId stored under private/.",
+    )
+    return parser.parse_args(argv)
+
+
+def _prompt_values(*, auto_device_id: bool = False) -> dict[str, str]:
     email = input("Email: ").strip()
     password = getpass.getpass("Contraseña: ")
     pass_key = getpass.getpass("passKey: ")
     x_client_id = getpass.getpass("X-ClientId: ")
-    device_id = getpass.getpass("Device ID: ")
+    device_id = (
+        get_or_create_generated_device_id()
+        if auto_device_id
+        else getpass.getpass("Device ID: ")
+    )
     device_model_visible = _input_default(
         "Device model visible",
         DEFAULT_DEVICE_MODEL,
@@ -64,6 +97,21 @@ def _prompt_values() -> dict[str, str]:
     if any(not value for value in values.values()):
         raise ValueError("Missing required local input")
     return values
+
+
+def get_or_create_generated_device_id(
+    path: Path = GENERATED_DEVICE_ID_PATH,
+) -> str:
+    if path.exists():
+        value = path.read_text(encoding="utf-8").strip()
+        if not DEVICE_ID_PATTERN.fullmatch(value):
+            raise InvalidLocalDeviceIdError()
+        return value
+
+    value = secrets.token_hex(8)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(value, encoding="utf-8")
+    return value
 
 
 def _input_default(label: str, default: str) -> str:
