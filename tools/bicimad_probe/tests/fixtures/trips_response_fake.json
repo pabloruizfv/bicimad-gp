@@ -1,0 +1,58 @@
+{
+  "code": "00",
+  "description": "Respuesta ficticia para pruebas",
+  "data": [
+    {
+      "trip_id": "fake-trip-001",
+      "userId": "fake-user-should-not-leak",
+      "id_bike": "fake-bike-001",
+      "locator": "fake-locator-001",
+      "payment": {
+        "amount": 1.25,
+        "card": "4111111111111111"
+      },
+      "contractCode": "fake-contract",
+      "serialNumber": "fake-device-serial",
+      "penalty": {
+        "reason": "fake"
+      },
+      "undock": {
+        "undock_station_number": "90",
+        "undock_station_name": "Manuel Becerra",
+        "undock_ts": "2026-07-31T08:16:00+02:00",
+        "latitude": 40.428,
+        "longitude": -3.669
+      },
+      "dock": {
+        "dock_station_number": "101",
+        "dock_station_name": "Felipe II",
+        "dock_ts": "2026-07-31T08:22:48+02:00",
+        "latitude": 40.424,
+        "longitude": -3.675
+      },
+      "trip_minutes": 6.8,
+      "trip_interval": "00:06:48"
+    },
+    {
+      "trip_id": "fake-trip-002",
+      "userId": "fake-user-should-not-leak",
+      "id_bike": "fake-bike-002",
+      "locator": "fake-locator-002",
+      "payment": {
+        "amount": 0.0
+      },
+      "undock": {
+        "undock_station_number": "49",
+        "undock_station_name": "",
+        "undock_ts": "2026-07-30T19:03:00+02:00"
+      },
+      "dock": {
+        "dock_station_number": "52",
+        "dock_station_name": "Puerta del Sol",
+        "dock_ts": "2026-07-30T19:15:34+02:00"
+      },
+      "trip_minutes": 12.566,
+      "trip_interval": "00:12:34"
+    }
+  ]
+}

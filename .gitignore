@@ -43,3 +43,17 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local BiciMAD probing captures and generated reports
+tools/bicimad_probe/private/*
+!tools/bicimad_probe/private/.gitkeep
+.env
+.env.*
+*.har
+*.sanitized.har
+*credentials*
+*secrets*
+bicimad_probe_report.json
+bicimad_probe_report.txt
+trips_raw.json
+trips_normalized.json
