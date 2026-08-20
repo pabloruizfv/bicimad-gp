@@ -2,12 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/authentication/presentation/auth_gate.dart';
 import '../features/authentication/presentation/display_name_screen.dart';
+import '../features/authentication/presentation/experimental_config_screen.dart';
 import '../features/authentication/presentation/login_screen.dart';
+import '../features/general/presentation/general_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/rankings/domain/route_key.dart';
 import '../features/rankings/presentation/ranking_detail_screen.dart';
 import '../features/rankings/presentation/rankings_screen.dart';
+import '../features/social/application/social_auth_controller.dart';
+import '../features/social/presentation/community_screen.dart';
+import '../features/social/presentation/social_onboarding_screen.dart';
+import '../features/social/presentation/social_otp_screen.dart';
+import '../features/social/presentation/social_profile_screen.dart';
+import '../features/trips/presentation/route_history_screen.dart';
 import '../features/trips/presentation/trip_detail_screen.dart';
 import '../features/trips/presentation/trips_screen.dart';
 import 'providers.dart';
@@ -15,41 +24,52 @@ import 'providers.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authControllerProvider);
+  final (authGateStatus, needsDisplayName) = ref.watch(
+    authControllerProvider.select(
+      (state) => (state.gateStatus, state.needsDisplayName),
+    ),
+  );
+  final socialStatus = ref.watch(
+    socialAuthControllerProvider.select((state) => state.status),
+  );
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: '/trips',
-    redirect: (context, state) {
-      final location = state.uri.path;
-      final isLogin = location == '/login';
-      final isDisplayName = location == '/display-name';
-
-      if (!authState.isAuthenticated) {
-        return isLogin ? null : '/login';
-      }
-
-      if (authState.needsDisplayName) {
-        return isDisplayName ? null : '/display-name';
-      }
-
-      if (isLogin || isDisplayName || location == '/') {
-        return '/trips';
-      }
-
-      return null;
-    },
+    initialLocation: '/',
+    redirect: (context, state) => resolveAppRedirect(
+      location: state.uri.path,
+      authGateStatus: authGateStatus,
+      needsDisplayName: needsDisplayName,
+      socialStatus: socialStatus,
+    ),
     routes: [
+      GoRoute(path: '/', builder: (context, state) => const AuthGate()),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/display-name',
         builder: (context, state) => const DisplayNameScreen(),
+      ),
+      GoRoute(
+        path: '/experimental-config',
+        builder: (context, state) => const ExperimentalConfigScreen(),
+      ),
+      GoRoute(
+        path: '/social-otp',
+        builder: (context, state) => const SocialOtpScreen(),
+      ),
+      GoRoute(
+        path: '/social-onboarding',
+        builder: (context, state) => const SocialOnboardingScreen(),
       ),
       ShellRoute(
         builder: (context, state, child) {
           return MainScaffold(location: state.uri.path, child: child);
         },
         routes: [
+          GoRoute(
+            path: '/general',
+            builder: (context, state) => const GeneralScreen(),
+          ),
           GoRoute(
             path: '/trips',
             builder: (context, state) => const TripsScreen(),
@@ -59,6 +79,21 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const RankingsScreen(),
           ),
           GoRoute(
+            path: '/community',
+            builder: (context, state) {
+              final initialTab = switch (state.uri.queryParameters['tab']) {
+                'followers' => CommunityTab.followers,
+                'following' => CommunityTab.following,
+                'requests' => CommunityTab.requests,
+                _ => CommunityTab.search,
+              };
+              return CommunityScreen(
+                key: ValueKey('community-${initialTab.name}'),
+                initialTab: initialTab,
+              );
+            },
+          ),
+          GoRoute(
             path: '/profile',
             builder: (context, state) => const ProfileScreen(),
           ),
@@ -66,9 +101,34 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
+        path: '/social-profile/:userId',
+        builder: (context, state) {
+          return SocialProfileScreen(userId: state.pathParameters['userId']!);
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
         path: '/trip/:tripId',
         builder: (context, state) {
           return TripDetailScreen(tripId: state.pathParameters['tripId']!);
+        },
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/route-history/:originStationId/:destinationStationId',
+        builder: (context, state) {
+          final isRankingsView =
+              state.uri.queryParameters['view'] == 'rankings';
+          return RouteHistoryScreen(
+            routeKey: RouteKey(
+              originStationId: state.pathParameters['originStationId']!,
+              destinationStationId:
+                  state.pathParameters['destinationStationId']!,
+            ),
+            selectedTripId: state.uri.queryParameters['selectedTripId'],
+            showOverview: !isRankingsView,
+            allowTripNavigation: isRankingsView,
+          );
         },
       ),
       GoRoute(
@@ -88,6 +148,61 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
+String? resolveAppRedirect({
+  required String location,
+  required AuthGateStatus authGateStatus,
+  required bool needsDisplayName,
+  required SocialAuthStatus socialStatus,
+}) {
+  final isRoot = location == '/';
+  final isLogin = location == '/login';
+  final isDisplayName = location == '/display-name';
+  final isExperimentalConfig = location == '/experimental-config';
+  final isSocialOtp = location == '/social-otp';
+  final isSocialOnboarding = location == '/social-onboarding';
+  final hasPendingOtp =
+      socialStatus == SocialAuthStatus.otpPending ||
+      socialStatus == SocialAuthStatus.verifyingOtp;
+
+  if (hasPendingOtp && authGateStatus != AuthGateStatus.unauthenticated) {
+    return isSocialOtp ? null : '/social-otp';
+  }
+
+  if (authGateStatus == AuthGateStatus.initializing ||
+      authGateStatus == AuthGateStatus.sessionRecoveryError) {
+    if (isRoot || isExperimentalConfig) {
+      return null;
+    }
+    return '/';
+  }
+
+  if (authGateStatus == AuthGateStatus.unauthenticated) {
+    if (isExperimentalConfig) {
+      return null;
+    }
+    return isLogin ? null : '/login';
+  }
+
+  if (needsDisplayName) {
+    return isDisplayName ? null : '/display-name';
+  }
+
+  return switch (socialStatus) {
+    SocialAuthStatus.otpPending ||
+    SocialAuthStatus.verifyingOtp => isSocialOtp ? null : '/social-otp',
+    SocialAuthStatus.needsProfile =>
+      isSocialOnboarding ? null : '/social-onboarding',
+    SocialAuthStatus.ready =>
+      isLogin || isDisplayName || isRoot || isSocialOtp || isSocialOnboarding
+          ? '/general'
+          : null,
+    SocialAuthStatus.waitingForMpass ||
+    SocialAuthStatus.initializing ||
+    SocialAuthStatus.sendingOtp ||
+    SocialAuthStatus.error => isRoot ? null : '/',
+  };
+}
+
 class MainScaffold extends StatelessWidget {
   const MainScaffold({required this.location, required this.child, super.key});
 
@@ -103,17 +218,28 @@ class MainScaffold extends StatelessWidget {
         onDestinationSelected: (index) {
           switch (index) {
             case 0:
-              context.go('/trips');
+              context.go('/general');
               break;
             case 1:
-              context.go('/rankings');
+              context.go('/trips');
               break;
             case 2:
+              context.go('/rankings');
+              break;
+            case 3:
+              context.go('/community');
+              break;
+            case 4:
               context.go('/profile');
               break;
           }
         },
         destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.query_stats_outlined),
+            selectedIcon: Icon(Icons.query_stats),
+            label: 'General',
+          ),
           NavigationDestination(
             icon: Icon(Icons.directions_bike_outlined),
             selectedIcon: Icon(Icons.directions_bike),
@@ -125,9 +251,14 @@ class MainScaffold extends StatelessWidget {
             label: 'Rankings',
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Perfil',
+            icon: Icon(Icons.people_outline),
+            selectedIcon: Icon(Icons.people),
+            label: 'Comunidad',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Ajustes',
           ),
         ],
       ),
@@ -135,11 +266,17 @@ class MainScaffold extends StatelessWidget {
   }
 
   int _selectedIndex(String location) {
-    if (location.startsWith('/rankings')) {
+    if (location.startsWith('/trips')) {
       return 1;
     }
-    if (location.startsWith('/profile')) {
+    if (location.startsWith('/rankings')) {
       return 2;
+    }
+    if (location.startsWith('/profile')) {
+      return 4;
+    }
+    if (location.startsWith('/community')) {
+      return 3;
     }
     return 0;
   }

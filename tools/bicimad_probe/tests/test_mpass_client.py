@@ -262,6 +262,34 @@ class MPassClientTests(unittest.TestCase):
         self.assertEqual(response.payload["code"], "00")
         self.assertEqual(len(response.payload["data"]), 2)
 
+    def test_trips_adds_page_header_only_when_requested(self) -> None:
+        opener = FakeOpener(
+            [FakeResponse(_trips_payload()), FakeResponse(_trips_payload())]
+        )
+
+        fetch_trips(
+            access_token="fake-access-token",
+            email="person@example.test",
+            user_id="fake-user-id",
+            nif="fake-dn-format",
+            device_id="fake-device-id",
+            device_model="Model X",
+            opener=opener,
+        )
+        fetch_trips(
+            access_token="fake-access-token",
+            email="person@example.test",
+            user_id="fake-user-id",
+            nif="fake-dn-format",
+            device_id="fake-device-id",
+            device_model="Model X",
+            page=2,
+            opener=opener,
+        )
+
+        self.assertIsNone(opener.requests[0].get_header("Page"))
+        self.assertEqual(opener.requests[1].get_header("Page"), "2")
+
     def test_http_error_in_each_stage_is_safe(self) -> None:
         cases = [
             ("login", lambda opener: _call_login(opener)),

@@ -32,6 +32,11 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+/node_modules/
+/opendata/
+/android/.kotlin/
+/supabase/.temp/
+/--max-pages
 
 # Symbolication related
 app.*.symbols
@@ -53,6 +58,8 @@ tools/bicimad_probe/private/*
 *.sanitized.har
 *credentials*
 *secrets*
+/local_secrets.json
+!/local_secrets.example.json
 !tools/bicimad_probe/local_secrets.py
 bicimad_probe_report.json
 bicimad_probe_report.txt

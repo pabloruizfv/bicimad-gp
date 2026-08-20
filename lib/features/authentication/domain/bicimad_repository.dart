@@ -1,13 +1,20 @@
 import '../../trips/domain/trip.dart';
-import 'bicimad_session.dart';
+import 'mpass_session.dart';
 
 abstract interface class BicimadRepository {
-  Future<BicimadSession> login({
-    required String username,
-    required String password,
-  });
+  Future<MpassSession> login({required String email, required String password});
 
-  Future<List<Trip>> fetchTrips(BicimadSession session);
+  Future<MpassSession?> restoreSession();
+
+  Future<List<Trip>> fetchTrips(MpassSession session, {int? page});
+
+  Future<DateTime?> readLastAutomaticSyncAt();
+
+  Future<void> saveLastAutomaticSyncAt(DateTime syncedAt);
+
+  Future<String?> readRememberedEmail();
+
+  Future<void> clearSession();
 
   Future<void> disconnect();
 }

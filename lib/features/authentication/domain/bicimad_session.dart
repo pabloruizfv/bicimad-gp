@@ -1,11 +1,3 @@
-class BicimadSession {
-  const BicimadSession({
-    required this.id,
-    required this.externalUserId,
-    required this.createdAt,
-  });
+import 'mpass_session.dart';
 
-  final String id;
-  final String externalUserId;
-  final DateTime createdAt;
-}
+typedef BicimadSession = MpassSession;

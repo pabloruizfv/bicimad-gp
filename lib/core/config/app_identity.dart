@@ -1,0 +1,1 @@
+const appDisplayName = 'bicimad GP';

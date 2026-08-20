@@ -155,30 +155,51 @@ class RankingService {
   List<RouteSummary> buildUserRouteSummaries({
     required Iterable<Trip> myTrips,
     required Iterable<Trip> sharedTrips,
-    required Iterable<CommunityUser> users,
     required String currentUserId,
   }) {
-    final routes = <RouteKey, List<Trip>>{};
+    final personalRoutes = <RouteKey, List<Trip>>{};
     for (final trip in myTrips) {
       final key = RouteKey(
         originStationId: trip.originStationId,
         destinationStationId: trip.destinationStationId,
       );
-      routes.putIfAbsent(key, () => <Trip>[]).add(trip);
+      personalRoutes.putIfAbsent(key, () => <Trip>[]).add(trip);
+    }
+
+    final sharedBestByRouteAndUser = <RouteKey, Map<String, Trip>>{};
+    for (final trip in sharedTrips) {
+      if (!trip.isShared) {
+        continue;
+      }
+      final key = RouteKey(
+        originStationId: trip.originStationId,
+        destinationStationId: trip.destinationStationId,
+      );
+      final bestByUser = sharedBestByRouteAndUser.putIfAbsent(
+        key,
+        () => <String, Trip>{},
+      );
+      final currentBest = bestByUser[trip.userId];
+      if (currentBest == null ||
+          trip.durationSeconds < currentBest.durationSeconds) {
+        bestByUser[trip.userId] = trip;
+      }
     }
 
     final summaries = <RouteSummary>[];
-    for (final entry in routes.entries) {
+    for (final entry in personalRoutes.entries) {
       final personalBest = entry.value.reduce(
         (best, trip) =>
             trip.durationSeconds < best.durationSeconds ? trip : best,
       );
-      final ranking = buildRouteRanking(
-        trips: sharedTrips,
-        users: users,
-        currentUserId: currentUserId,
-        originStationId: entry.key.originStationId,
-        destinationStationId: entry.key.destinationStationId,
+      final rankedTrips =
+          sharedBestByRouteAndUser[entry.key]?.values.toList() ?? <Trip>[];
+      rankedTrips.sort(
+        (first, second) =>
+            first.durationSeconds.compareTo(second.durationSeconds),
+      );
+      final currentUserIndex = rankedTrips.indexWhere(
+        (trip) => trip.userId == currentUserId,
       );
 
       summaries.add(
@@ -188,15 +209,37 @@ class RankingService {
           destinationStationId: personalBest.destinationStationId,
           destinationStationName: personalBest.destinationStationName,
           personalBestDurationSeconds: personalBest.durationSeconds,
-          currentUserPosition: ranking.currentUserPosition,
-          totalUsers: ranking.totalUsers,
+          personalBestDistanceMeters: personalBest.directDistanceMeters,
+          personalBestSpeedKmh: personalBest.equivalentAverageSpeedKmh,
+          personalTripCount: entry.value.length,
+          personalBestStartedAt: personalBest.startedAt,
+          currentUserPosition: currentUserIndex < 0
+              ? null
+              : currentUserIndex + 1,
+          totalUsers: rankedTrips.length,
         ),
       );
     }
 
-    summaries.sort(
-      (a, b) => a.originStationName.compareTo(b.originStationName),
-    );
+    summaries.sort(_compareRouteSummaries);
     return summaries;
+  }
+
+  int _compareRouteSummaries(RouteSummary a, RouteSummary b) {
+    final positionA = a.currentUserPosition ?? 1 << 30;
+    final positionB = b.currentUserPosition ?? 1 << 30;
+    final byPosition = positionA.compareTo(positionB);
+    if (byPosition != 0) {
+      return byPosition;
+    }
+
+    final speedA = a.personalBestSpeedKmh ?? -1;
+    final speedB = b.personalBestSpeedKmh ?? -1;
+    final bySpeed = speedB.compareTo(speedA);
+    if (bySpeed != 0) {
+      return bySpeed;
+    }
+
+    return a.originStationName.compareTo(b.originStationName);
   }
 }

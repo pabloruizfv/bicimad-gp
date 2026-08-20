@@ -217,20 +217,27 @@ def fetch_trips(
     nif: str,
     device_id: str,
     device_model: str,
+    page: int | None = None,
     opener: Opener = urllib.request.urlopen,
 ) -> JsonResponse:
+    headers = build_authenticated_headers(
+        access_token=access_token,
+        email=email,
+        user_id=user_id,
+        nif=nif,
+        device_id=device_id,
+        device_model=device_model,
+    )
+    if page is not None:
+        if page < 1:
+            raise ValueError("page must be at least 1")
+        headers["page"] = str(page)
+
     response = _request_json(
         stage="trips",
         url=TRIPS_ENDPOINT,
         method="GET",
-        headers=build_authenticated_headers(
-            access_token=access_token,
-            email=email,
-            user_id=user_id,
-            nif=nif,
-            device_id=device_id,
-            device_model=device_model,
-        ),
+        headers=headers,
         body=None,
         opener=opener,
     )

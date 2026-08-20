@@ -1,0 +1,27 @@
+project_id = "bicimad_social"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 17
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "io.supabase.bicimadsocial://login-callback/"
+additional_redirect_urls = ["io.supabase.bicimadsocial://login-callback/"]
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false

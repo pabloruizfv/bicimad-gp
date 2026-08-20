@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../app/providers.dart';
 import '../../../core/utils/date_formatters.dart';
 import '../../../core/utils/duration_formatters.dart';
+import '../../../core/utils/metric_formatters.dart';
 import '../../../shared/widgets/info_row.dart';
 import '../../../shared/widgets/route_title.dart';
 import '../../rankings/domain/route_key.dart';
@@ -108,6 +109,14 @@ class _TripDetailContent extends ConsumerWidget {
                 InfoRow(
                   label: 'Duración del viaje',
                   value: formatDurationSeconds(trip.durationSeconds),
+                ),
+                InfoRow(
+                  label: 'Distancia en linea recta',
+                  value: formatDistanceMeters(trip.directDistanceMeters),
+                ),
+                InfoRow(
+                  label: 'Velocidad media equivalente',
+                  value: formatSpeedKmh(trip.equivalentAverageSpeedKmh),
                 ),
                 InfoRow(
                   label: 'Mejor tiempo personal',

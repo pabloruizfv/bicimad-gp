@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app/app.dart';
+import 'app/providers.dart';
+import 'core/config/supabase_build_config.dart';
 
-void main() {
-  runApp(const ProviderScope(child: BicimadSocialApp()));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final supabaseConfig = SupabaseBuildConfig.fromEnvironment();
+  if (supabaseConfig.isComplete) {
+    await Supabase.initialize(
+      url: supabaseConfig.url,
+      publishableKey: supabaseConfig.publishableKey,
+    );
+  }
+  runApp(
+    ProviderScope(
+      overrides: [
+        supabaseBuildConfigProvider.overrideWithValue(supabaseConfig),
+      ],
+      child: const BicimadSocialApp(),
+    ),
+  );
 }

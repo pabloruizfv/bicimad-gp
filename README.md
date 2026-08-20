@@ -1,74 +1,100 @@
-# BiciMAD Social
+# bicimad GP
 
-MVP móvil en Flutter para comparar tiempos de viajes de BiciMAD entre usuarios de una comunidad. Cada ranking corresponde a una pareja ordenada de estaciones: `origen -> destino`. La ruta inversa se trata como un ranking distinto.
+Prototipo Flutter para importar viajes propios de BiciMAD, conservar el
+historico local y participar en una comunidad identificada mediante Supabase
+Auth.
 
-## Funcionalidades del MVP
+## Funcionalidades
 
-- Acceso simulado con MPass.
-- Elección inicial del nombre visible.
-- Navegación inferior Material 3 con Viajes, Rankings y Perfil.
-- Listado de viajes del usuario actual ordenado por fecha.
-- Sincronización simulada con fecha de última sincronización.
-- Detalle de viaje con mejor marca personal, posición comunitaria y percentil.
-- Ranking completo por pareja de estaciones.
-- Compartir resultados con `share_plus`.
+- Login MPass y descarga de viajes de la cuenta propia.
+- Importacion paginada y acumulativa del historico BiciMAD, con guardado por
+  pagina, deduplicacion por `trip_id` y reanudacion tras fallos transitorios.
+- Sesion social mediante Custom SMTP y un unico OTP al mismo correo de MPass,
+  sin contrasena adicional ni enlaces de confirmacion.
+- Perfil con `@usuario` inmutable, nombre publico, avatar y privacidad.
+- Busqueda, follows, solicitudes y listas de seguidores y seguidos.
+- Copia privada del historico en Supabase y estadisticas sociales agregadas.
+- Bicicleta y precio de cada etapa, con agregacion segura en viajes con pit stops.
+- Pantallas General, Viajes, Rankings, Comunidad y Ajustes.
+- Historico Open Data agregado por ruta y catalogo local de estaciones.
 
 ## Arquitectura
 
-La app usa una estructura sencilla por capas:
+- `lib/app`: composicion de providers, router y tema.
+- `lib/core`: configuracion, red, almacenamiento y utilidades.
+- `lib/features/authentication`: cliente MPass/BiciMAD y sesion local segura.
+- `lib/features/trips`: persistencia local, normalizacion y presentacion.
+- `lib/features/social`: OTP, perfiles, follows y sincronizacion con Supabase.
+- `supabase/migrations`: esquema, RPC, restricciones y politicas RLS.
 
-- `lib/app`: configuración de app, tema, router y providers globales.
-- `lib/core`: errores y utilidades reutilizables.
-- `lib/features/authentication`: sesión MPass simulada y pantalla de acceso.
-- `lib/features/trips`: modelos, repositorios, datos simulados y pantallas de viajes.
-- `lib/features/rankings`: modelos y servicio puro de ranking.
-- `lib/features/profile`: pantalla de perfil.
-- `lib/shared/widgets`: widgets reutilizables pequeños.
+Las dependencias principales son `flutter_riverpod`, `go_router`, `http`,
+`cronet_http`, `flutter_secure_storage`, `sqlite3`, `flutter_map` y
+`supabase_flutter`. Los viajes personales se guardan en una SQLite writable
+separada de `assets/data/legacy_route_models.sqlite`, que sigue siendo la base
+de solo lectura del historico Open Data.
 
-La lógica competitiva vive en `RankingService` para poder probarla sin UI ni servicios remotos.
+Al abrir una version que todavia tenga `community.localTrips.v1` en secure
+storage, la app migra las etapas a SQLite dentro de una transaccion, verifica
+los `trip_id` esperados y solo entonces elimina el JSON legacy. La migracion es
+idempotente y se reintenta en el siguiente arranque si no puede completarse.
 
-## Dependencias principales
+## Configuracion local
 
-- Flutter y Dart.
-- `flutter_riverpod` para estado.
-- `go_router` para navegación.
-- `share_plus` para abrir el menú nativo de compartir.
+`local_secrets.json` no es un almacen seguro. Es configuracion temporal de
+desarrollo y sus valores quedan incorporados en la aplicacion compilada. El
+archivo esta ignorado por Git y no debe compartirse.
 
-## Ejecutar la app
-
-```bash
+```powershell
+Copy-Item local_secrets.example.json local_secrets.json
 flutter pub get
-flutter run
+flutter run -d <DEVICE_ID> --dart-define-from-file=local_secrets.json
 ```
 
-Para un dispositivo Android conectado:
+Los cambios en `--dart-define-from-file` requieren detener y recompilar; hot
+reload no es suficiente. La pantalla de Configuracion experimental sigue siendo
+el fallback local para `passKey` y `X-ClientId`.
 
-```bash
-flutter devices
-flutter run -d <device-id>
+Los importes de BiciMAD se conservan como valores decimales, sin convertirlos a
+centimos. En un viaje formado por varias etapas, el precio solo se suma cuando
+todas las etapas lo incluyen; las bicicletas distintas se mantienen por etapa.
+
+La primera sincronizacion recorre el historico hasta una pagina de menos de 30
+elementos. Una vez agotado, las sincronizaciones incrementales empiezan por los
+viajes recientes y se detienen tras dos paginas completas consecutivas cuyos
+`trip_id` ya eran conocidos. Cada pagina se guarda localmente antes de pedir la
+siguiente y se intenta subir a Supabase sin borrar datos anteriores.
+
+## Supabase
+
+Consulta [docs/supabase_setup.md](docs/supabase_setup.md) para instalar e iniciar
+sesion en la CLI, vincular el proyecto, aplicar migraciones, configurar la
+plantilla OTP, configurar Custom SMTP y probar dos cuentas. Los usuarios de la
+app no requieren invitaciones al equipo de Supabase.
+
+## Open Data y estaciones
+
+```powershell
+python tools/opendata_ingest/build_legacy_route_models.py --input opendata --output assets/data/legacy_route_models.sqlite
+python tools/station_catalog/build_station_catalog_asset.py --output assets/data/station_catalog_snapshot.json
 ```
 
-## Ejecutar pruebas
+El SQLite Open Data contiene solo modelos agregados, no viajes individuales. La
+app usa primero el catalogo local de estaciones y lo actualiza en segundo plano.
 
-```bash
+## Calidad
+
+```powershell
+dart format .
 flutter analyze
 flutter test
 ```
 
-## Modo simulado
+## Seguridad y limitaciones
 
-Toda la app funciona con datos locales definidos en código. El login acepta cualquier usuario no vacío y cualquier contraseña no vacía. La contraseña no se almacena, no se registra y no se usa para llamar a servidores reales.
+No incluyas credenciales, tokens ni datos personales en Git o logs. Flutter usa
+solo la clave publicable de Supabase; nunca `service_role`. Los viajes detallados
+son privados.
 
-Los viajes, usuarios y rankings son datos simulados para validar el concepto del producto.
-
-## Limitaciones actuales
-
-No hay integración real con BiciMAD, MPass, Supabase ni backend remoto. Tampoco hay GPS, mapas, amigos, ligas privadas, comentarios, logros, notificaciones, filtros avanzados, meteorología ni detección de viajes anómalos.
-
-## Siguiente paso para integrar BiciMAD
-
-Antes de sustituir `MockBicimadRepository` por `RealBicimadRepository`, hay que descubrir y documentar el flujo real de autenticación e historial de viajes. El detalle pendiente está en `docs/bicimad_integration.md`.
-
-## Seguridad
-
-No incluyas credenciales, tokens, secretos ni datos reales sensibles en el repositorio. No registres contraseñas ni respuestas de autenticación reales.
+No se incluyen feed, logros, comentarios, likes, recomendaciones,
+notificaciones push, reservas, desbloqueos ni pagos. El Open Data se mantiene
+separado de la comunidad.

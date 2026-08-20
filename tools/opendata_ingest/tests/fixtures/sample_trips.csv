@@ -1,0 +1,10 @@
+fecha;idBike;fleet;trip_minutes;geolocation_unlock;address_unlock;unlock_date;locktype;unlocktype;geolocation_lock;address_lock;lock_date;station_unlock;dock_unlock;unlock_station_name;station_lock;dock_lock;lock_station_name
+2023-01-01;1;1;10.0;{'type': 'Point', 'coordinates': [-3.70, 40.41]};'Origen';2023-01-01T10:00:00;STATION;STATION;{'type': 'Point', 'coordinates': [-3.71, 40.42]};'Destino';2023-01-01T10:10:00;34;1;34 - Jacinto Benavente;164;1;164 - Paseo de las Delicias
+2023-01-01;2;1;12.0;{'type': 'Point', 'coordinates': [-3.70, 40.41]};'Origen';2023-01-01T11:00:00;STATION;STATION;{'type': 'Point', 'coordinates': [-3.71, 40.42]};'Destino';2023-01-01T11:12:00;34;1;34 - Jacinto Benavente;164;1;164 - Paseo de las Delicias
+2023-01-01;3;1;8.0;{'type': 'Point', 'coordinates': [-3.71, 40.42]};'Destino';2023-01-01T12:00:00;STATION;STATION;{'type': 'Point', 'coordinates': [-3.70, 40.41]};'Origen';2023-01-01T12:08:00;164;1;164 - Paseo de las Delicias;34;1;34 - Jacinto Benavente
+2023-01-01;4;1;0.5;{};'Origen';2023-01-01T13:00:00;STATION;STATION;{};'Destino';2023-01-01T13:00:30;34;1;34 - Jacinto Benavente;164;1;164 - Paseo de las Delicias
+2023-01-01;5;1;500.0;{};'Origen';2023-01-01T13:00:00;STATION;STATION;{};'Destino';2023-01-01T18:00:00;34;1;34 - Jacinto Benavente;164;1;164 - Paseo de las Delicias
+2023-01-01;6;1;10.0;{};'Origen';2023-01-01T14:00:00;FREE;STATION;{};'Destino';2023-01-01T14:10:00;34;1;34 - Jacinto Benavente;164;1;164 - Paseo de las Delicias
+2023-01-01;7;1;10.0;{};'Origen';2023-01-01T15:00:00;STATION;STATION;{};'Destino';2023-01-01T15:10:00;34;1;34 - Jacinto Benavente;34;1;34 - Jacinto Benavente
+2023-01-01;8;1;10.0;{};'Origen';2023-01-01T16:00:00;STATION;STATION;{};'Destino';2023-01-01T16:10:00;api-id;1;No public code;164;1;164 - Paseo de las Delicias
+;;;;;;;;;;;;;;;;;

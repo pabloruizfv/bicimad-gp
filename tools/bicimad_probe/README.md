@@ -67,6 +67,56 @@ tools/bicimad_probe/private/trips_normalized.json
 
 La respuesta cruda, el access token, el id de usuario, el NIF, el email, el device ID, `passKey`, `X-ClientId` y la contrasena no se imprimen. Solo `passKey` y `X-ClientId` se guardan en keyring, y solo el device ID generado se guarda en `private/`.
 
+## Diagnostico Temporal de Bicicleta y Precio
+
+Para inspeccionar de forma sanitizada que campos devuelve realmente el endpoint
+de viajes, ejecuta desde la raiz:
+
+```powershell
+python .\tools\bicimad_probe\diagnose_trip_fields.py
+```
+
+El comando pide solamente el correo y la contrasena, reutiliza la configuracion
+tecnica y el `deviceId` locales, y realiza el mismo flujo de solo lectura
+`login -> userdata -> trips`. La respuesta se analiza solo en memoria: no se
+guarda el JSON original ni se imprimen valores de bicicleta, viajes, estaciones,
+fechas o identidad. La salida contiene exclusivamente nombres de campos
+candidatos, tipos, formatos sanitizados y porcentajes agregados.
+
+## Diagnostico de Paginacion del Historico
+
+La inspeccion estatica de la aplicacion oficial confirma este mecanismo para
+`GET /v2/bicimad/trips/`:
+
+1. Primera peticion sin cabecera de paginacion.
+2. Siguientes peticiones con la cabecera HTTP `page`: `1`, `2`, `3`, etc.
+3. La aplicacion oficial deja de cargar cuando recibe una pagina vacia.
+
+Para medir cuantos viajes permite recuperar realmente la cuenta propia:
+
+```powershell
+python .\tools\bicimad_probe\diagnose_trip_pagination.py
+```
+
+El diagnostico pide solo correo y contrasena, reutiliza la configuracion tecnica
+y el `deviceId` locales, y realiza exclusivamente login, userdata y lecturas de
+viajes. Deduplica en memoria por `trip_id`, espera brevemente entre paginas y se
+detiene ante una pagina vacia o corta, fin explicito, repeticion completa, error
+del backend o el limite local de seguridad de 100 peticiones.
+
+Un cierre TLS `SSLZeroReturnError` durante una pagina provoca un unico reintento
+del mismo `GET` tras una espera de 2 segundos. El informe contabiliza ese
+reintento y conserva el error si vuelve a producirse. No se reintentan el login
+ni `userdata`.
+
+No persiste respuestas ni IDs. Su salida contiene solo conteos agregados, meses
+aproximados del rango temporal y el motivo de parada. El limite puede ajustarse
+sin superar 1000 paginas:
+
+```powershell
+python .\tools\bicimad_probe\diagnose_trip_pagination.py --max-pages 200
+```
+
 ## Descarga Manual Con Access Token
 
 `fetch_trips.py` hace una unica peticion de solo lectura:
