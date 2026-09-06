@@ -42,7 +42,8 @@ idempotente y se reintenta en el siguiente arranque si no puede completarse.
 
 `local_secrets.json` no es un almacen seguro. Es configuracion temporal de
 desarrollo y sus valores quedan incorporados en la aplicacion compilada. El
-archivo esta ignorado por Git y no debe compartirse.
+archivo esta ignorado por Git y no debe compartirse. Incluye `CARTO_API_KEY`
+para autorizar las teselas raster de CARTO.
 
 ```powershell
 Copy-Item local_secrets.example.json local_secrets.json

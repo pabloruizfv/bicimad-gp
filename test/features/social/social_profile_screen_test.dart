@@ -1,7 +1,11 @@
 import 'package:bicimad_social/app/providers.dart';
+import 'package:bicimad_social/features/achievements/domain/achievement.dart';
 import 'package:bicimad_social/features/social/domain/profile_statistics.dart';
 import 'package:bicimad_social/features/social/domain/social_profile.dart';
 import 'package:bicimad_social/features/social/presentation/social_profile_screen.dart';
+import 'package:bicimad_social/features/stations/data/station_catalog_repository.dart';
+import 'package:bicimad_social/features/stations/domain/station.dart';
+import 'package:bicimad_social/features/stations/domain/station_catalog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,6 +20,7 @@ void main() {
       displayName: 'Laura',
       avatarKey: '2.png',
       isPublic: true,
+      mostUsedStationName: 'Metro Lago',
     );
     const details = SocialProfileDetails(
       profile: profile,
@@ -38,6 +43,15 @@ void main() {
           socialProfileDetailsProvider.overrideWith(
             (ref, userId) async => details,
           ),
+          profileAchievementSummariesProvider.overrideWith(
+            (ref, userId) async => [
+              AchievementSummary(
+                definition: pitStopsAchievement,
+                currentLevel: pitStopsAchievement.levels.first,
+                progress: 7,
+              ),
+            ],
+          ),
           currentSocialProfileProvider.overrideWith(
             (ref) => const SocialProfile(
               userId: 'current-user',
@@ -47,6 +61,10 @@ void main() {
               isPublic: true,
             ),
           ),
+          stationCatalogRepositoryProvider.overrideWithValue(
+            _FakeStationCatalogRepository(),
+          ),
+          stationUsageMapTilesEnabledProvider.overrideWith((ref) => false),
         ],
         child: const MaterialApp(
           home: SocialProfileScreen(userId: 'other-user'),
@@ -75,13 +93,40 @@ void main() {
     expect(find.text('14'), findsOneWidget);
     expect(find.text('Visible'), findsOneWidget);
     expect(find.text('Seguir'), findsOneWidget);
+    expect(
+      tester.getSize(find.byKey(const ValueKey('head-to-head-action'))).height,
+      tester.getSize(find.widgetWithText(FilledButton, 'Seguir')).height,
+    );
     expect(find.text('Estadísticas'), findsNothing);
+    expect(find.text('Metro Lago'), findsOneWidget);
+    expect(find.byKey(const ValueKey('achievement-showcase')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('achievement-progress-pit_stops')),
+      findsOneWidget,
+    );
+    expect(find.text('7'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('achievement-badge-pit_stops')));
+    await tester.pumpAndSettle();
+    expect(find.text('Requisito'), findsOneWidget);
+    expect(find.text('Progreso'), findsNothing);
+    expect(find.text('Viajes relacionados'), findsNothing);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
 
     final displayName = tester.widget<Text>(find.text('Laura'));
     final username = tester.widget<Text>(find.text('@laura'));
     expect(displayName.style?.fontWeight, FontWeight.w900);
     expect(username.style?.fontWeight, isNot(FontWeight.bold));
     expect(username.style?.fontWeight, isNot(FontWeight.w900));
+
+    await tester.tap(find.byKey(const ValueKey('most-used-station-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Estación más usada'), findsOneWidget);
+    expect(find.byKey(const ValueKey('station_marker_320')), findsOneWidget);
+    expect(find.text('320 - Metro Lago'), findsOneWidget);
+    expect(find.textContaining('veces'), findsNothing);
   });
 
   testWidgets('perfil privado no expone estadisticas', (tester) async {
@@ -91,6 +136,7 @@ void main() {
       displayName: 'Perfil privado',
       avatarKey: '3.png',
       isPublic: false,
+      mostUsedStationName: 'Estación privada',
     );
 
     await tester.pumpWidget(
@@ -119,6 +165,8 @@ void main() {
     expect(find.text('2'), findsOneWidget);
     expect(find.text('Oculto'), findsOneWidget);
     expect(find.text('Solicitar'), findsOneWidget);
+    expect(find.text('Estación privada'), findsNothing);
+    expect(find.byKey(const ValueKey('achievement-showcase')), findsNothing);
   });
 
   testWidgets('el perfil ajeno confirma antes de dejar de seguir', (
@@ -170,4 +218,31 @@ void main() {
     await tester.pumpAndSettle();
     expect(social.operations, contains('unfollow'));
   });
+}
+
+class _FakeStationCatalogRepository implements StationCatalogRepository {
+  final catalog = StationCatalog(
+    stations: const [
+      Station(
+        id: '2297',
+        publicCode: '320',
+        name: '320 - Metro Lago',
+        latitude: 40.4167792,
+        longitude: -3.7345247,
+      ),
+    ],
+    updatedAt: DateTime(2026, 8, 20),
+  );
+
+  @override
+  Future<StationCatalog> getCatalog() async => catalog;
+
+  @override
+  void refreshInBackground({bool force = false}) {}
+
+  @override
+  Future<void> refreshIfUnknown({
+    required String stationId,
+    required String stationName,
+  }) async {}
 }

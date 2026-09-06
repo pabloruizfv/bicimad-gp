@@ -97,6 +97,7 @@ class _SocialOnboardingScreenState
                           assetPath: asset,
                           radius: 30,
                           isSelected: asset == _avatar,
+                          emphasizeSelection: true,
                         ),
                       ),
                     ),

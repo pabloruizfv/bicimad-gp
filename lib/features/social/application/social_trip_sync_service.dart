@@ -1,5 +1,6 @@
 import '../../trips/domain/community_repository.dart';
 import '../../trips/domain/trip.dart';
+import '../../trips/domain/trip_eligibility.dart';
 import '../domain/social_repository.dart';
 
 class SocialTripSyncService {
@@ -42,8 +43,11 @@ class SocialTripSyncService {
     final cloudTrips = await socialRepository.getOwnTrips(
       localUserId: mpassUserId,
     );
-    await localRepository.replaceMyTrips(cloudTrips);
-    return cloudTrips.length;
+    final countableTrips = cloudTrips
+        .where(isCountableBicimadStage)
+        .toList(growable: false);
+    await localRepository.replaceMyTrips(countableTrips);
+    return countableTrips.length;
   }
 
   Future<int?> pushLocalHistory({required String normalizedMpassEmail}) async {
@@ -52,6 +56,7 @@ class SocialTripSyncService {
     }
     final mergedStages = await localRepository.getMyStages();
     await socialRepository.upsertOwnTrips(mergedStages);
+    await socialRepository.refreshOwnAchievements();
     return mergedStages.length;
   }
 
@@ -59,11 +64,15 @@ class SocialTripSyncService {
     required String normalizedMpassEmail,
     required List<Trip> trips,
   }) async {
-    if (trips.isEmpty || !await _validateIdentity(normalizedMpassEmail)) {
+    final countableTrips = trips
+        .where(isCountableBicimadStage)
+        .toList(growable: false);
+    if (countableTrips.isEmpty ||
+        !await _validateIdentity(normalizedMpassEmail)) {
       return null;
     }
-    await socialRepository.upsertOwnTrips(trips);
-    return trips.length;
+    await socialRepository.upsertOwnTrips(countableTrips);
+    return countableTrips.length;
   }
 
   Future<bool> _validateIdentity(String normalizedMpassEmail) async {

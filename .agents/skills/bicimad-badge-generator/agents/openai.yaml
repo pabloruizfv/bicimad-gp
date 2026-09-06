@@ -1,0 +1,4 @@
+interface:
+  display_name: "BiciMAD Social Badge Generator"
+  short_description: "Genera emblemas SVG coherentes para logros"
+  default_prompt: "Usa $bicimad-badge-generator para crear una familia de badges SVG de logros con las bases oficiales."

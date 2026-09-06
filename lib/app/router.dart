@@ -11,6 +11,7 @@ import '../features/profile/presentation/profile_screen.dart';
 import '../features/rankings/domain/route_key.dart';
 import '../features/rankings/presentation/ranking_detail_screen.dart';
 import '../features/rankings/presentation/rankings_screen.dart';
+import '../features/rankings/presentation/head_to_head_screen.dart';
 import '../features/social/application/social_auth_controller.dart';
 import '../features/social/presentation/community_screen.dart';
 import '../features/social/presentation/social_onboarding_screen.dart';
@@ -108,6 +109,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
+        path: '/head-to-head/:otherUserId',
+        builder: (context, state) =>
+            HeadToHeadScreen(otherUserId: state.pathParameters['otherUserId']!),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
         path: '/trip/:tripId',
         builder: (context, state) {
           return TripDetailScreen(tripId: state.pathParameters['tripId']!);
@@ -128,6 +135,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             selectedTripId: state.uri.queryParameters['selectedTripId'],
             showOverview: !isRankingsView,
             allowTripNavigation: isRankingsView,
+            startInCommunity: state.uri.queryParameters['mode'] == 'community',
           );
         },
       ),
@@ -236,9 +244,9 @@ class MainScaffold extends StatelessWidget {
         },
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.query_stats_outlined),
-            selectedIcon: Icon(Icons.query_stats),
-            label: 'General',
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Mi Perfil',
           ),
           NavigationDestination(
             icon: Icon(Icons.directions_bike_outlined),

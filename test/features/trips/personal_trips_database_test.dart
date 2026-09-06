@@ -152,6 +152,30 @@ void main() {
       expect(page.single.externalId, 'trip-1');
     });
 
+    test('no almacena viajes de ubicaciones descartadas', () async {
+      final database = PersonalTripsDatabase.inMemory();
+      addTearDown(database.close);
+      final invalidOrigin = _trip(
+        1,
+      ).copyWith(originStationName: 'Bici mal anclada');
+      final invalidDestination = _trip(
+        2,
+      ).copyWith(destinationStationName: 'Ubicación no permitida');
+
+      await database.upsertTrips([invalidOrigin, invalidDestination, _trip(3)]);
+
+      expect(
+        (await database.getTripsForUser(
+          'user-1',
+        )).map((trip) => trip.externalId),
+        ['trip-3'],
+      );
+      expect(
+        await database.getKnownSourceIds('user-1'),
+        containsAll(['trip-1', 'trip-2', 'trip-3']),
+      );
+    });
+
     test('elimina viajes e IDs conocidos solo del usuario indicado', () async {
       final database = PersonalTripsDatabase.inMemory();
       addTearDown(database.close);

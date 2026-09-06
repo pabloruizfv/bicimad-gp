@@ -16,9 +16,14 @@ import '../features/authentication/data/real_bicimad_repository.dart';
 import '../features/authentication/data/technical_config_resolver.dart';
 import '../features/authentication/domain/bicimad_repository.dart';
 import '../features/authentication/domain/bicimad_session.dart';
+import '../features/achievements/domain/achievement.dart';
+import '../features/achievements/domain/achievement_ranking.dart';
+import '../features/achievements/domain/achievement_service.dart';
 import '../features/general/domain/station_usage.dart';
 import '../features/profile/data/avatar_repository.dart';
 import '../features/rankings/domain/ranking_service.dart';
+import '../features/rankings/domain/community_route_ranking.dart';
+import '../features/rankings/domain/head_to_head.dart';
 import '../features/rankings/domain/route_key.dart';
 import '../features/rankings/domain/route_ranking.dart';
 import '../features/rankings/domain/route_summary.dart';
@@ -247,12 +252,61 @@ final currentSocialProfileProvider = Provider<SocialProfile?>((ref) {
   return ref.watch(socialAuthControllerProvider).profile;
 });
 
+final achievementServiceProvider = Provider<AchievementService>((ref) {
+  return const AchievementService();
+});
+
+final ownAchievementProgressProvider = FutureProvider<List<AchievementProgress>>(
+  (ref) async {
+    final journeys = await ref.watch(myTripsProvider.future);
+    final repository = ref.watch(socialRepositoryProvider);
+    var persisted = const <UserAchievement>[];
+    final userId = repository.currentUserId;
+    if (repository.hasSession && userId != null) {
+      try {
+        persisted = await repository.getUserAchievements(userId);
+      } catch (_) {
+        // Local progress remains available while the social backend is offline.
+      }
+    }
+    return ref
+        .watch(achievementServiceProvider)
+        .evaluate(journeys: journeys, persisted: persisted);
+  },
+);
+
+final profileAchievementSummariesProvider =
+    FutureProvider.family<List<AchievementSummary>, String>((
+      ref,
+      userId,
+    ) async {
+      final repository = ref.watch(socialRepositoryProvider);
+      if (!repository.hasSession) {
+        return ref.watch(achievementServiceProvider).summaries(const []);
+      }
+      final achievements = await repository.getUserAchievements(userId);
+      return ref.watch(achievementServiceProvider).summaries(achievements);
+    });
+
+final achievementRankingProvider =
+    FutureProvider.family<AchievementCommunityRanking, String>((
+      ref,
+      categoryId,
+    ) async {
+      final repository = ref.watch(socialRepositoryProvider);
+      if (!repository.hasSession) {
+        return AchievementCommunityRanking(
+          categoryId: categoryId,
+          entries: const [],
+          totalUsers: 0,
+        );
+      }
+      return repository.getAchievementRanking(categoryId);
+    });
+
 final socialSearchProvider = FutureProvider.family<List<SocialProfile>, String>(
   (ref, query) async {
     final normalized = query.trim();
-    if (normalized.length < 2) {
-      return const [];
-    }
     return ref.watch(socialRepositoryProvider).searchProfiles(normalized);
   },
 );
@@ -269,6 +323,13 @@ final socialProfileDetailsProvider =
     FutureProvider.family<SocialProfileDetails?, String>((ref, userId) {
       return ref.watch(socialRepositoryProvider).getProfileDetails(userId);
     });
+
+final headToHeadProvider = FutureProvider.family<HeadToHeadSummary, String>((
+  ref,
+  otherUserId,
+) {
+  return ref.watch(socialRepositoryProvider).getHeadToHead(otherUserId);
+});
 
 final myTripsProvider = FutureProvider<List<Trip>>((ref) async {
   final canReadTrips = ref.watch(
@@ -440,6 +501,22 @@ final routeTripsProvider = FutureProvider.family<List<Trip>, RouteKey>((
         destinationStationId: routeKey.destinationStationId,
       );
 });
+
+final routeCommunityRankingProvider =
+    FutureProvider.family<CommunityRouteRanking, RouteKey>((
+      ref,
+      routeKey,
+    ) async {
+      ref.watch(tripDataRevisionProvider);
+      final repository = ref.watch(socialRepositoryProvider);
+      if (!repository.hasSession) {
+        return const CommunityRouteRanking(entries: []);
+      }
+      return repository.getCommunityRouteRanking(
+        originStationId: routeKey.originStationId,
+        destinationStationId: routeKey.destinationStationId,
+      );
+    });
 
 final legacyRouteModelProvider =
     FutureProvider.family<LegacyRouteModel?, RouteKey>((ref, routeKey) async {

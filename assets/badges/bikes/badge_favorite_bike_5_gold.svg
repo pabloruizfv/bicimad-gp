@@ -1,0 +1,62 @@
+﻿<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="metalOuter" x1="80" y1="80" x2="432" y2="432" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF2A8"/>
+      <stop offset="35%" stop-color="#F7C948"/>
+      <stop offset="70%" stop-color="#D89B1D"/>
+      <stop offset="100%" stop-color="#A86B00"/>
+    </linearGradient>
+
+    <linearGradient id="metalInner" x1="140" y1="120" x2="372" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF9D6"/>
+      <stop offset="50%" stop-color="#F4D56A"/>
+      <stop offset="100%" stop-color="#DCA623"/>
+    </linearGradient>
+
+    <linearGradient id="ribbonRed" x1="140" y1="390" x2="372" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E44848"/>
+      <stop offset="100%" stop-color="#A91E1E"/>
+    </linearGradient>
+
+    <filter id="shadow" x="0" y="0" width="512" height="512" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <g id="badge-root" filter="url(#shadow)">
+    <circle id="badge-outer-ring" cx="256" cy="220" r="170" fill="url(#metalOuter)"/>
+    <circle id="badge-mid-ring" cx="256" cy="220" r="148" fill="#C98912"/>
+    <circle id="badge-inner-ring" cx="256" cy="220" r="136" fill="url(#metalInner)"/>
+    <circle id="badge-content-border" cx="256" cy="220" r="118"
+            fill="none" stroke="#A86B00" stroke-opacity="0.35" stroke-width="8"/>
+
+    <g id="badge-ribbon">
+      <path d="M170 370H342L320 450L256 422L192 450L170 370Z" fill="url(#ribbonRed)"/>
+      <path d="M188 370H324L309 428L256 405L203 428L188 370Z" fill="#7D1414" opacity="0.22"/>
+    </g>
+
+    <!-- Zona reservada para el icono de cada emblema -->
+    <g id="badge-content" transform="translate(0 8)">
+      <!-- Material Symbols "favorite", Apache License 2.0; bicycle based on assets/bases/bike_base.svg. -->
+      <g transform="translate(145.6 109.8) scale(9.2)">
+        <path fill="#244E78" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z"/>
+      </g>
+      <g transform="translate(181.76 156) scale(0.29)" fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="110" cy="220" r="78"/>
+        <circle cx="402" cy="220" r="78"/>
+        <path d="M110 220 L200 90 L320 90"/>
+        <path d="M200 90 L260 220"/>
+        <path d="M110 220 L260 220"/>
+        <path d="M260 220 L365 100"/>
+        <path d="M320 90 L402 220"/>
+        <path d="M173 58 L225 58"/>
+        <path d="M198 90 L190 58"/>
+        <path d="M350 66 L405 66"/>
+        <path d="M365 100 L350 66"/>
+        <path d="M405 66 L420 96"/>
+      </g>
+    </g>
+  </g>
+</svg>
+
+

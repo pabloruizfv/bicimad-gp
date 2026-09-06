@@ -94,7 +94,7 @@ void main() {
     expect(find.text('@usuario'), findsOneWidget);
     expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(SwitchListTile), findsOneWidget);
-    expect(find.byType(Image), findsNWidgets(4));
+    expect(find.byType(Image), findsNWidgets(12));
   });
 }
 

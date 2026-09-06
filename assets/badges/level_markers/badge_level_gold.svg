@@ -1,0 +1,38 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="metalOuter" x1="80" y1="80" x2="432" y2="432" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF2A8"/>
+      <stop offset="35%" stop-color="#F7C948"/>
+      <stop offset="70%" stop-color="#D89B1D"/>
+      <stop offset="100%" stop-color="#A86B00"/>
+    </linearGradient>
+
+    <linearGradient id="metalInner" x1="140" y1="120" x2="372" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF9D6"/>
+      <stop offset="50%" stop-color="#F4D56A"/>
+      <stop offset="100%" stop-color="#DCA623"/>
+    </linearGradient>
+
+    <linearGradient id="ribbonRed" x1="140" y1="390" x2="372" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E44848"/>
+      <stop offset="100%" stop-color="#A91E1E"/>
+    </linearGradient>
+
+  </defs>
+
+  <g id="badge-root">
+    <circle id="badge-outer-ring" cx="256" cy="220" r="170" fill="url(#metalOuter)"/>
+    <circle id="badge-mid-ring" cx="256" cy="220" r="148" fill="#C98912"/>
+    <circle id="badge-inner-ring" cx="256" cy="220" r="136" fill="url(#metalInner)"/>
+    <circle id="badge-content-border" cx="256" cy="220" r="118"
+            fill="none" stroke="#A86B00" stroke-opacity="0.35" stroke-width="8"/>
+
+    <g id="badge-ribbon">
+      <path d="M170 370H342L320 450L256 422L192 450L170 370Z" fill="url(#ribbonRed)"/>
+      <path d="M188 370H324L309 428L256 405L203 428L188 370Z" fill="#7D1414" opacity="0.22"/>
+    </g>
+
+    <!-- Zona reservada para el icono de cada emblema -->
+    <g id="badge-content"></g>
+  </g>
+</svg>

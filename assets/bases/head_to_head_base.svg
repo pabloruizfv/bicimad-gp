@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 45 372 150" role="img" aria-labelledby="title desc">
+  <title id="title">Bikes head to head VS</title>
+  <desc id="desc">Two symmetric bicycles facing each other with a slightly left-shifted VS and simple triangular blue accents.</desc>
+
+  <defs>
+    <g id="bike-right" fill="none" stroke="#171A1F" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="-42" cy="56" r="26"/>
+      <circle cx="42" cy="56" r="26"/>
+
+      <path d="M-42 56 L-8 21 L10 56 Z"/>
+      <path d="M10 56 L42 56"/>
+      <path d="M-8 21 L25 21"/>
+      <path d="M25 21 L42 56"/>
+      <path d="M10 56 L-20 56"/>
+      <path d="M-20 56 L-8 21"/>
+
+      <path d="M25 21 L34 8"/>
+      <path d="M31 7 H46"/>
+      <path d="M32 10 L40 18"/>
+
+      <path d="M-8 21 L-16 9"/>
+      <path d="M-26 9 H-10"/>
+
+      <circle cx="10" cy="56" r="3.5"/>
+      <path d="M10 56 L18 64"/>
+      <path d="M10 56 L3 48"/>
+    </g>
+  </defs>
+
+  <g transform="translate(134 78) scale(0.88)">
+    <use href="#bike-right"/>
+  </g>
+
+  <g transform="translate(370 78) scale(-0.88 0.88)">
+    <use href="#bike-right"/>
+  </g>
+
+  <text fill="#1757E8" font-family="Arial, Helvetica, sans-serif" font-size="70" font-weight="800" font-style="italic" text-anchor="middle" dominant-baseline="middle" x="252" y="146">VS</text>
+
+  <!-- Simple triangular accents; lower one moved closer to VS -->
+  <path fill="#1757E8" d="M244 82 L255 61 L250 91 Z"/>
+  <path fill="#1757E8" d="M260 155 L249 176 L254 146 Z"/>
+</svg>

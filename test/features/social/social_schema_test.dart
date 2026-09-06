@@ -8,6 +8,9 @@ void main() {
   late String profileCountsMigration;
   late String accountDeletionMigration;
   late String canonicalStatsMigration;
+  late String mostUsedStationMigration;
+  late String stationPublicCodeMigration;
+  late String discardedStationTripsMigration;
 
   setUpAll(() {
     migration = File(
@@ -24,6 +27,15 @@ void main() {
     ).readAsStringSync();
     canonicalStatsMigration = File(
       'supabase/migrations/20260810120000_canonical_profile_stats.sql',
+    ).readAsStringSync();
+    mostUsedStationMigration = File(
+      'supabase/migrations/20260820120000_profile_most_used_station.sql',
+    ).readAsStringSync();
+    stationPublicCodeMigration = File(
+      'supabase/migrations/20260820200000_profile_station_public_code.sql',
+    ).readAsStringSync();
+    discardedStationTripsMigration = File(
+      'supabase/migrations/20260826120000_discard_invalid_station_trips.sql',
     ).readAsStringSync();
   });
 
@@ -140,5 +152,80 @@ void main() {
       contains('perform public.refresh_profile_stats'),
     );
     expect(canonicalStatsMigration, isNot(contains('service_role')));
+  });
+
+  test('estación más usada cuenta extremos de journeys y respeta privacidad', () {
+    expect(
+      mostUsedStationMigration,
+      contains('add column if not exists most_used_station_name text'),
+    );
+    expect(
+      mostUsedStationMigration,
+      contains('current_destination_id = stage.origin_station_id'),
+    );
+    expect(mostUsedStationMigration, contains('with endpoints as'));
+    expect(mostUsedStationMigration, contains('union all'));
+    expect(
+      mostUsedStationMigration,
+      contains('public.bicimad_public_station_code'),
+    );
+    expect(
+      mostUsedStationMigration,
+      contains(
+        'case when p.can_view_stats then s.most_used_station_name else null end',
+      ),
+    );
+    expect(
+      mostUsedStationMigration,
+      contains(
+        'case when p.can_view then s.most_used_station_name else null end',
+      ),
+    );
+    expect(
+      mostUsedStationMigration,
+      contains(
+        'perform public.refresh_profile_stats(existing_profile.user_id)',
+      ),
+    );
+    expect(mostUsedStationMigration, isNot(contains('service_role')));
+  });
+
+  test('estación social conserva el código público en el nombre mostrado', () {
+    expect(
+      stationPublicCodeMigration,
+      contains("public_code || ' - ' || station_name"),
+    );
+    expect(
+      stationPublicCodeMigration,
+      contains('public.bicimad_public_station_code'),
+    );
+    expect(
+      stationPublicCodeMigration,
+      contains(
+        'perform public.refresh_profile_stats(existing_profile.user_id)',
+      ),
+    );
+    expect(stationPublicCodeMigration, isNot(contains('service_role')));
+  });
+  test('descarta en nube los viajes de ubicaciones invalidas', () {
+    expect(
+      discardedStationTripsMigration,
+      contains('is_discarded_bicimad_station_name'),
+    );
+    expect(discardedStationTripsMigration, contains('bici mal anclada'));
+    expect(discardedStationTripsMigration, contains('ubicacion no permitida'));
+    expect(
+      discardedStationTripsMigration,
+      contains('before insert or update on public.trips'),
+    );
+    expect(
+      discardedStationTripsMigration,
+      contains('delete from public.trips'),
+    );
+    expect(
+      discardedStationTripsMigration,
+      contains('perform public.refresh_profile_stats'),
+    );
+    expect(discardedStationTripsMigration, isNot(contains('service_role')));
   });
 }

@@ -505,7 +505,9 @@ class SocialAuthController extends StateNotifier<SocialAuthState> {
 
   String _avatarKey(String asset) {
     final key = asset.split('/').last;
-    if (!const {'1.png', '2.png', '3.png', '4.png'}.contains(key)) {
+    if (!LocalAvatarRepository.avatarAssets
+        .map((asset) => asset.split('/').last)
+        .contains(key)) {
       throw ArgumentError.value(asset, 'avatarAsset');
     }
     return key;

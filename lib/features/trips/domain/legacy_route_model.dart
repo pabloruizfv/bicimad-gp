@@ -85,11 +85,14 @@ class LegacyRouteModel {
   }
 
   double? percentileForDuration(double seconds) {
-    if (!canPlot || seconds <= bestSeconds) {
+    if (!canPlot) {
+      return null;
+    }
+    if (seconds <= bestSeconds) {
       return 0;
     }
     if (seconds > upperCutoffSeconds) {
-      return null;
+      return 100;
     }
 
     var cumulative = 0.0;

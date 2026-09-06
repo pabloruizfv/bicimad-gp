@@ -5,6 +5,7 @@ import '../../authentication/domain/bicimad_repository.dart';
 import '../../authentication/domain/mpass_session.dart';
 import '../domain/community_repository.dart';
 import '../domain/trip.dart';
+import '../domain/trip_eligibility.dart';
 import '../domain/trip_history_sync.dart';
 
 class TripHistorySyncService {
@@ -86,14 +87,21 @@ class TripHistorySyncService {
           if (knownBefore.contains(trip.externalId)) {
             overlapsKnownTrips = true;
           }
-          oldestImportedAt = _earlier(oldestImportedAt, trip.startedAt);
-          newestImportedAt = _later(newestImportedAt, trip.startedAt);
+          if (isCountableBicimadStage(trip)) {
+            oldestImportedAt = _earlier(oldestImportedAt, trip.startedAt);
+            newestImportedAt = _later(newestImportedAt, trip.startedAt);
+          }
         }
 
         if (uniquePageTrips.isNotEmpty) {
           await communityRepository.upsertMyTripPage(uniquePageTrips);
-          await onPagePersisted?.call(uniquePageTrips);
-          tripsProcessed += uniquePageTrips.length;
+          final countablePageTrips = uniquePageTrips
+              .where(isCountableBicimadStage)
+              .toList(growable: false);
+          if (countablePageTrips.isNotEmpty) {
+            await onPagePersisted?.call(countablePageTrips);
+            tripsProcessed += countablePageTrips.length;
+          }
         }
         onProgress?.call(
           TripHistorySyncProgress(

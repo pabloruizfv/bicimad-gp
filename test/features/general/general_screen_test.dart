@@ -1,4 +1,5 @@
 import 'package:bicimad_social/app/providers.dart';
+import 'package:bicimad_social/features/achievements/domain/achievement.dart';
 import 'package:bicimad_social/features/general/domain/station_usage.dart';
 import 'package:bicimad_social/features/general/presentation/general_screen.dart';
 import 'package:bicimad_social/features/social/domain/profile_statistics.dart';
@@ -11,7 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  testWidgets('muestra metricas generales y mapa de estaciones usadas', (
+  testWidgets('muestra metricas y abre estaciones desde la tarjeta', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -60,6 +61,16 @@ void main() {
             return 'assets/avatar/1.png';
           }),
           currentDisplayNameProvider.overrideWith((ref) => 'Pablo'),
+          ownAchievementProgressProvider.overrideWith((ref) async {
+            return [
+              AchievementProgress(
+                definition: pitStopsAchievement,
+                progress: 1,
+                unlocks: {AchievementLevelId.graphite: DateTime(2026, 7, 10)},
+                relatedJourneys: const [],
+              ),
+            ];
+          }),
           currentSocialProfileProvider.overrideWith(
             (ref) => const SocialProfile(
               userId: 'user-1',
@@ -89,7 +100,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('General'), findsOneWidget);
+    expect(find.text('Mi Perfil'), findsOneWidget);
     expect(find.text('Pablo'), findsOneWidget);
     expect(find.text('@pablo'), findsOneWidget);
     expect(find.text('Seguidores'), findsOneWidget);
@@ -112,58 +123,51 @@ void main() {
     expect(find.text('12.50 km'), findsOneWidget);
     expect(find.text('Velocidad media'), findsOneWidget);
     expect(find.text('1.3 km/h'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('most-used-station-banner')),
+        matching: find.text('Origen'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('most-used-station-banner')),
+        matching: find.text('#1:'),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Actividad'), findsNothing);
     expect(find.text('Ritmo'), findsNothing);
     expect(find.text('Historial'), findsNothing);
     expect(find.text('Distancia'), findsOneWidget);
     expect(find.text('Cobertura de distancia'), findsNothing);
     expect(find.text('Periodos'), findsNothing);
-
-    await tester.scrollUntilVisible(
-      find.text('Estaciones más usadas'),
-      300,
-      scrollable: find.byType(Scrollable),
+    expect(find.byKey(const ValueKey('achievement-showcase')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('achievement-progress-pit_stops')),
+      findsOneWidget,
     );
+
+    await tester.tap(find.byKey(const ValueKey('achievement-badge-pit_stops')));
+    await tester.pumpAndSettle();
+    expect(find.text('Progreso'), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Estaciones más usadas'), findsNothing);
+    expect(
+      find.byKey(const ValueKey('station_usage_map_canvas')),
+      findsNothing,
+    );
+
+    await tester.tap(find.byKey(const ValueKey('most-used-station-action')));
     await tester.pumpAndSettle();
 
     expect(find.text('Estaciones más usadas'), findsOneWidget);
-    expect(find.text('Cuenta usos como origen y destino.'), findsNothing);
-    expect(find.byIcon(Icons.map_outlined), findsNothing);
-
-    await tester.scrollUntilVisible(
-      find.byKey(const ValueKey('station_marker_1')),
-      120,
-      scrollable: find.byType(Scrollable),
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tapAt(
-      tester.getCenter(find.byKey(const ValueKey('station_marker_1'))),
-    );
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.pumpAndSettle();
-
+    expect(find.byKey(const ValueKey('station_marker_1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('station_marker_2')), findsOneWidget);
     expect(find.text('Origen - 7 veces'), findsOneWidget);
-
-    await tester.tapAt(
-      tester.getCenter(find.byKey(const ValueKey('station_marker_1'))),
-    );
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.pumpAndSettle();
-    expect(find.text('Origen - 7 veces'), findsNothing);
-
-    final scrollable = tester.state<ScrollableState>(
-      find.byType(Scrollable).first,
-    );
-    final scrollOffset = scrollable.position.pixels;
-    final mapGesture = await tester.startGesture(
-      tester.getCenter(find.byKey(const ValueKey('station_marker_1'))),
-    );
-    await mapGesture.moveBy(const Offset(0, -70));
-    await mapGesture.up();
-    await tester.pumpAndSettle();
-
-    expect(scrollable.position.pixels, closeTo(scrollOffset, 0.1));
   });
 
   testWidgets('la tarjeta navega a Viajes, Comunidad y Ajustes', (
@@ -263,6 +267,12 @@ void main() {
     router.go('/general');
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('social-visibility-action')));
+    await tester.pumpAndSettle();
+    expect(find.text('profile'), findsOneWidget);
+
+    router.go('/general');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('profile-identity-action')));
     await tester.pumpAndSettle();
     expect(find.text('profile'), findsOneWidget);
   });

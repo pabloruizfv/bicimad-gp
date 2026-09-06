@@ -9,6 +9,7 @@ import '../domain/community_repository.dart';
 import '../domain/community_user.dart';
 import '../domain/journey_builder.dart';
 import '../domain/trip.dart';
+import '../domain/trip_eligibility.dart';
 import '../domain/trip_history_sync.dart';
 import '../domain/trip_metrics.dart';
 import 'personal_trips_database.dart';
@@ -286,7 +287,9 @@ class LocalCommunityRepository implements CommunityRepository {
     if (_cacheUserId == userId && _stageCache != null) {
       return _stageCache!;
     }
-    var stages = await database.getTripsForUser(userId);
+    var stages = (await database.getTripsForUser(
+      userId,
+    )).where(isCountableBicimadStage).toList(growable: false);
     final incomplete = stages.where(_needsMetricEnrichment).toList();
     if (incomplete.isNotEmpty) {
       final enriched = await _enrichTripsIfPossible(incomplete);
@@ -493,7 +496,6 @@ class LocalCommunityRepository implements CommunityRepository {
   String _stableTripKey(Trip trip) => '${trip.userId}:${trip.externalId}';
 
   bool _isCountableStage(Trip trip) {
-    return trip.originStationId != trip.destinationStationId &&
-        trip.durationSeconds > 0;
+    return isCountableBicimadStage(trip);
   }
 }

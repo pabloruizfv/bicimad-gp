@@ -47,6 +47,7 @@ dependencies:
   supabase_flutter: ^2.17.1
   path_provider: ^2.1.6
   crypto: ^3.0.7
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -73,7 +74,15 @@ flutter:
   assets:
     - android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
     - assets/logo/bicimad_bikes_blue.png
+    - assets/bases/bike_base.svg
+    - assets/bases/head_to_head_base.svg
     - assets/avatar/
+    - assets/badges/pit_stops/
+    - assets/badges/fast_trips/
+    - assets/badges/long_trips/
+    - assets/badges/stations/
+    - assets/badges/bikes/
+    - assets/badges/level_markers/
     - assets/data/legacy_route_models.sqlite
     - assets/data/legacy_route_models.manifest.json
     - assets/data/station_catalog_snapshot.json

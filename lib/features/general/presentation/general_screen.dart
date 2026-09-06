@@ -5,32 +5,29 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../../../app/providers.dart';
+import '../../../core/config/carto_basemap_config.dart';
 import '../../../shared/widgets/async_state_view.dart';
 import '../../../shared/widgets/arcade_user_stats_card.dart';
 import '../../../shared/widgets/docking_station_icon.dart';
 import '../../../shared/widgets/menu_app_bar.dart';
+import '../../achievements/presentation/achievement_detail_screen.dart';
+import '../../achievements/presentation/achievement_showcase.dart';
 import '../../trips/domain/trip_metrics.dart';
 import '../domain/station_usage.dart';
 import 'station_map_interaction.dart';
 
-class GeneralScreen extends ConsumerStatefulWidget {
+class GeneralScreen extends ConsumerWidget {
   const GeneralScreen({super.key});
 
   @override
-  ConsumerState<GeneralScreen> createState() => _GeneralScreenState();
-}
-
-class _GeneralScreenState extends ConsumerState<GeneralScreen> {
-  var _mapInteractionActive = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final metricsAsync = ref.watch(generalTripMetricsProvider);
     final stationUsageAsync = ref.watch(stationUsageProvider);
     final avatarAsync = ref.watch(selectedAvatarProvider);
     final showMapTiles = ref.watch(stationUsageMapTilesEnabledProvider);
     final displayName = ref.watch(currentDisplayNameProvider);
     final socialProfile = ref.watch(currentSocialProfileProvider);
+    final achievementsAsync = ref.watch(ownAchievementProgressProvider);
     final socialDetails = socialProfile == null
         ? null
         : ref
@@ -38,7 +35,7 @@ class _GeneralScreenState extends ConsumerState<GeneralScreen> {
               .valueOrNull;
 
     return Scaffold(
-      appBar: const MenuAppBar(title: Text('General')),
+      appBar: const MenuAppBar(title: Text('Mi Perfil')),
       body: SafeArea(
         child: AsyncStateView<GeneralTripMetrics>(
           value: metricsAsync,
@@ -46,10 +43,12 @@ class _GeneralScreenState extends ConsumerState<GeneralScreen> {
             if (metrics.totalTrips == 0) {
               return const Center(child: Text('No hay viajes disponibles.'));
             }
+            final stationUsages = stationUsageAsync.valueOrNull;
+            final mostUsedStationName =
+                stationUsages == null || stationUsages.isEmpty
+                ? null
+                : stationUsages.first.station.name;
             return ListView(
-              physics: _mapInteractionActive
-                  ? const NeverScrollableScrollPhysics()
-                  : null,
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
               children: [
                 ArcadeUserStatsCard(
@@ -57,6 +56,8 @@ class _GeneralScreenState extends ConsumerState<GeneralScreen> {
                   displayName: displayName ?? 'Piloto',
                   username: socialProfile?.username,
                   statistics: ProfileStatsCardData.fromStatistics(metrics),
+                  mostUsedStationName: mostUsedStationName,
+                  onIdentityTap: () => context.go('/profile'),
                   onTripsTap: () => context.go('/trips'),
                   socialSummary: socialProfile == null
                       ? null
@@ -74,93 +75,39 @@ class _GeneralScreenState extends ConsumerState<GeneralScreen> {
                   onVisibilityTap: socialProfile == null
                       ? null
                       : () => context.go('/profile'),
+                  onMostUsedStationTap:
+                      stationUsages == null || stationUsages.isEmpty
+                      ? null
+                      : () => showStationUsageMap(
+                          context,
+                          usages: stationUsages,
+                          showTiles: showMapTiles,
+                          initiallySelected: stationUsages.first,
+                        ),
                 ),
-                const SizedBox(height: 16),
-                _StationUsageMapCard(
-                  stationUsageAsync: stationUsageAsync,
-                  showTiles: showMapTiles,
-                  onInteractionChanged: _setMapInteractionActive,
+                const SizedBox(height: 12),
+                achievementsAsync.when(
+                  data: (progresses) => AchievementShowcase(
+                    badges: [
+                      for (final progress in progresses)
+                        AchievementBadgeViewData.fromProgress(progress),
+                    ],
+                    onBadgeTap: (index) => Navigator.of(context).push<void>(
+                      MaterialPageRoute(
+                        builder: (context) => OwnAchievementDetailScreen(
+                          progress: progresses[index],
+                          avatarAsset:
+                              avatarAsync.valueOrNull ?? 'assets/avatar/1.png',
+                        ),
+                      ),
+                    ),
+                  ),
+                  loading: () => const AchievementShowcaseLoading(),
+                  error: (_, _) => const SizedBox.shrink(),
                 ),
               ],
             );
           },
-        ),
-      ),
-    );
-  }
-
-  void _setMapInteractionActive(bool active) {
-    if (_mapInteractionActive == active || !mounted) {
-      return;
-    }
-    setState(() => _mapInteractionActive = active);
-  }
-}
-
-class _StationUsageMapCard extends StatelessWidget {
-  const _StationUsageMapCard({
-    required this.stationUsageAsync,
-    required this.showTiles,
-    required this.onInteractionChanged,
-  });
-
-  final AsyncValue<List<StationUsage>> stationUsageAsync;
-  final bool showTiles;
-  final ValueChanged<bool> onInteractionChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const DockingStationIcon(
-                  width: 25,
-                  height: 23,
-                  color: Colors.black,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Estaciones más usadas',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 17,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            stationUsageAsync.when(
-              loading: () => const SizedBox(
-                height: 240,
-                child: Center(child: CircularProgressIndicator()),
-              ),
-              error: (error, stackTrace) => const SizedBox(
-                height: 180,
-                child: Center(child: Text('No se ha podido cargar el mapa.')),
-              ),
-              data: (usages) {
-                if (usages.isEmpty) {
-                  return const SizedBox(
-                    height: 180,
-                    child: Center(
-                      child: Text('Aun no hay estaciones con coordenadas.'),
-                    ),
-                  );
-                }
-                return StationUsageMap(
-                  usages: usages,
-                  showTiles: showTiles,
-                  onInteractionChanged: onInteractionChanged,
-                );
-              },
-            ),
-          ],
         ),
       ),
     );
@@ -223,6 +170,7 @@ class _StationUsageMapState extends State<StationUsageMap> {
           selected: _selected,
           viewport: _viewport,
           showTiles: widget.showTiles,
+          showUsageCounts: true,
           onSelected: (usage) => setState(() => _selected = usage),
           onViewportChanged: (viewport) => _viewport = viewport,
           onInteractionChanged: widget.onInteractionChanged,
@@ -243,6 +191,8 @@ class _StationUsageMapState extends State<StationUsageMap> {
           usages: widget.usages,
           showTiles: widget.showTiles,
           session: session,
+          title: 'Estaciones más usadas',
+          showUsageCounts: true,
         ),
       ),
     );
@@ -265,6 +215,7 @@ class _StationMapSurface extends StatelessWidget {
     required this.selected,
     required this.viewport,
     required this.showTiles,
+    required this.showUsageCounts,
     required this.onSelected,
     required this.onViewportChanged,
     this.onInteractionChanged,
@@ -277,6 +228,7 @@ class _StationMapSurface extends StatelessWidget {
   final StationUsage? selected;
   final _MapViewport viewport;
   final bool showTiles;
+  final bool showUsageCounts;
   final ValueChanged<StationUsage?> onSelected;
   final ValueChanged<_MapViewport> onViewportChanged;
   final ValueChanged<bool>? onInteractionChanged;
@@ -294,6 +246,7 @@ class _StationMapSurface extends StatelessWidget {
             selected: selected,
             viewport: viewport,
             showTiles: showTiles,
+            showUsageCounts: showUsageCounts,
             onSelected: onSelected,
             onViewportChanged: onViewportChanged,
             onInteractionChanged: onInteractionChanged,
@@ -320,7 +273,10 @@ class _StationMapSurface extends StatelessWidget {
             left: 12,
             right: 12,
             bottom: 12,
-            child: _SelectedStationPanel(usage: selectedUsage),
+            child: _SelectedStationPanel(
+              usage: selectedUsage,
+              showUsageCount: showUsageCounts,
+            ),
           ),
       ],
     );
@@ -335,6 +291,7 @@ class _StreetTileMap extends StatefulWidget {
     required this.selected,
     required this.viewport,
     required this.showTiles,
+    required this.showUsageCounts,
     required this.onSelected,
     required this.onViewportChanged,
     this.onInteractionChanged,
@@ -345,6 +302,7 @@ class _StreetTileMap extends StatefulWidget {
   final StationUsage? selected;
   final _MapViewport viewport;
   final bool showTiles;
+  final bool showUsageCounts;
   final ValueChanged<StationUsage?> onSelected;
   final ValueChanged<_MapViewport> onViewportChanged;
   final ValueChanged<bool>? onInteractionChanged;
@@ -388,8 +346,7 @@ class _StreetTileMapState extends State<_StreetTileMap> {
       children: [
         if (widget.showTiles)
           TileLayer(
-            urlTemplate:
-                'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+            urlTemplate: CartoBasemapConfig.rasterTileUrlTemplate,
             subdomains: const ['a', 'b', 'c', 'd'],
             userAgentPackageName: 'bicimad_social',
           )
@@ -405,6 +362,7 @@ class _StreetTileMapState extends State<_StreetTileMap> {
                 child: _StationMarkerBubble(
                   usage: usage,
                   maxUses: widget.maxUses,
+                  showUsageCount: widget.showUsageCounts,
                   isSelected:
                       widget.selected?.station.publicCode ==
                       usage.station.publicCode,
@@ -515,11 +473,13 @@ class _StationMarkerBubble extends StatelessWidget {
   const _StationMarkerBubble({
     required this.usage,
     required this.maxUses,
+    required this.showUsageCount,
     required this.isSelected,
   });
 
   final StationUsage usage;
   final int maxUses;
+  final bool showUsageCount;
   final bool isSelected;
 
   @override
@@ -530,7 +490,9 @@ class _StationMarkerBubble extends StatelessWidget {
     );
     final diameter = isSelected ? baseDiameter * 1.12 : baseDiameter;
     return Semantics(
-      label: '${usage.station.name}: ${usage.uses} usos',
+      label: showUsageCount
+          ? '${usage.station.name}: ${usage.uses} usos'
+          : usage.station.name,
       child: IgnorePointer(
         child: Center(
           child: AnimatedContainer(
@@ -587,16 +549,48 @@ class _FallbackMapLayer extends StatelessWidget {
   }
 }
 
+Future<void> showStationUsageMap(
+  BuildContext context, {
+  required List<StationUsage> usages,
+  required bool showTiles,
+  StationUsage? initiallySelected,
+  String title = 'Estaciones más usadas',
+  bool showUsageCounts = true,
+}) {
+  if (usages.isEmpty) {
+    return Future<void>.value();
+  }
+  final session = _StationMapSession(
+    selected: initiallySelected,
+    viewport: _initialViewport(usages),
+  );
+  return Navigator.of(context).push<void>(
+    MaterialPageRoute(
+      builder: (context) => _FullScreenStationMap(
+        usages: usages,
+        showTiles: showTiles,
+        session: session,
+        title: title,
+        showUsageCounts: showUsageCounts,
+      ),
+    ),
+  );
+}
+
 class _FullScreenStationMap extends StatefulWidget {
   const _FullScreenStationMap({
     required this.usages,
     required this.showTiles,
     required this.session,
+    required this.title,
+    required this.showUsageCounts,
   });
 
   final List<StationUsage> usages;
   final bool showTiles;
   final _StationMapSession session;
+  final String title;
+  final bool showUsageCounts;
 
   @override
   State<_FullScreenStationMap> createState() => _FullScreenStationMapState();
@@ -621,7 +615,7 @@ class _FullScreenStationMapState extends State<_FullScreenStationMap> {
       (max, usage) => usage.uses > max ? usage.uses : max,
     );
     return Scaffold(
-      appBar: AppBar(title: const Text('Estaciones más usadas')),
+      appBar: AppBar(title: Text(widget.title)),
       body: SafeArea(
         child: _StationMapSurface(
           mapKey: _mapKey,
@@ -630,6 +624,7 @@ class _FullScreenStationMapState extends State<_FullScreenStationMap> {
           selected: _selected,
           viewport: _viewport,
           showTiles: widget.showTiles,
+          showUsageCounts: widget.showUsageCounts,
           onSelected: (usage) {
             setState(() => _selected = usage);
             widget.session.selected = usage;
@@ -670,9 +665,13 @@ _MapViewport _initialViewport(List<StationUsage> usages) {
 }
 
 class _SelectedStationPanel extends StatelessWidget {
-  const _SelectedStationPanel({required this.usage});
+  const _SelectedStationPanel({
+    required this.usage,
+    required this.showUsageCount,
+  });
 
   final StationUsage usage;
+  final bool showUsageCount;
 
   @override
   Widget build(BuildContext context) {
@@ -691,7 +690,9 @@ class _SelectedStationPanel extends StatelessWidget {
             const SizedBox(width: 8),
             Flexible(
               child: Text(
-                '${usage.station.name} - ${usage.uses} veces',
+                showUsageCount
+                    ? '${usage.station.name} - ${usage.uses} veces'
+                    : usage.station.name,
                 style: Theme.of(
                   context,
                 ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w900),

@@ -4,10 +4,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app/app.dart';
 import 'app/providers.dart';
+import 'core/config/carto_basemap_config.dart';
 import 'core/config/supabase_build_config.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  CartoBasemapConfig.ensureConfigured();
   final supabaseConfig = SupabaseBuildConfig.fromEnvironment();
   if (supabaseConfig.isComplete) {
     await Supabase.initialize(

@@ -1,0 +1,47 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="metalOuter" x1="80" y1="80" x2="432" y2="432" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F1F3F5"/>
+      <stop offset="35%" stop-color="#C7CDD2"/>
+      <stop offset="70%" stop-color="#929CA5"/>
+      <stop offset="100%" stop-color="#5C6670"/>
+    </linearGradient>
+
+    <linearGradient id="metalInner" x1="140" y1="120" x2="372" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E7EAED"/>
+      <stop offset="50%" stop-color="#BDC4CA"/>
+      <stop offset="100%" stop-color="#88929B"/>
+    </linearGradient>
+
+    <linearGradient id="ribbonRed" x1="140" y1="390" x2="372" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E44848"/>
+      <stop offset="100%" stop-color="#A91E1E"/>
+    </linearGradient>
+
+    <filter id="shadow" x="0" y="0" width="512" height="512" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <g id="badge-root" filter="url(#shadow)">
+    <circle id="badge-outer-ring" cx="256" cy="220" r="170" fill="url(#metalOuter)"/>
+    <circle id="badge-mid-ring" cx="256" cy="220" r="148" fill="#7D8791"/>
+    <circle id="badge-inner-ring" cx="256" cy="220" r="136" fill="url(#metalInner)"/>
+    <circle id="badge-content-border" cx="256" cy="220" r="118"
+            fill="none" stroke="#606A73" stroke-opacity="0.35" stroke-width="8"/>
+
+    <g id="badge-ribbon">
+      <path d="M170 370H342L320 450L256 422L192 450L170 370Z" fill="url(#ribbonRed)"/>
+      <path d="M188 370H324L309 428L256 405L203 428L188 370Z" fill="#7D1414" opacity="0.22"/>
+    </g>
+
+    <!-- Zona reservada para el icono de cada emblema -->
+    <g id="badge-content" transform="translate(0 8)">
+      <!-- Material Symbols "favorite", Apache License 2.0; docking station geometry from the app icon. -->
+      <g transform="translate(145.6 109.8) scale(9.2)">
+        <path fill="#244E78" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z"/>
+      </g>
+      <path transform="translate(15.36 19) scale(.94)" fill="#FFFFFF" fill-rule="evenodd" d="M223 235H232C235 235 236 232 236 228V179C236 160 244 150 256 150C268 150 276 160 276 179V228C276 232 277 235 280 235H289C292 235 293 237 293 240V247C293 250 291 251 288 251H224C221 251 219 250 219 247V240C219 237 220 235 223 235ZM250 225H262V183C262 176 260 172 256 172C252 172 250 176 250 183V225Z"/>
+    </g>
+  </g>
+</svg>

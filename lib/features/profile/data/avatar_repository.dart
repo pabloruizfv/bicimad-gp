@@ -16,6 +16,14 @@ class LocalAvatarRepository implements AvatarRepository {
     'assets/avatar/2.png',
     'assets/avatar/3.png',
     'assets/avatar/4.png',
+    'assets/avatar/5.png',
+    'assets/avatar/6.png',
+    'assets/avatar/7.png',
+    'assets/avatar/8.png',
+    'assets/avatar/9.png',
+    'assets/avatar/10.png',
+    'assets/avatar/11.png',
+    'assets/avatar/12.png',
   ];
   static const defaultAvatarAsset = 'assets/avatar/1.png';
   static const _storageKey = 'profile.avatarAsset.v1';

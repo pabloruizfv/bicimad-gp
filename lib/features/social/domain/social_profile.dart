@@ -5,6 +5,7 @@ class SocialProfile {
     required this.displayName,
     required this.avatarKey,
     required this.isPublic,
+    this.mostUsedStationName,
     this.outgoingFollowStatus,
     this.followsCurrentUser = false,
   });
@@ -14,6 +15,7 @@ class SocialProfile {
   final String displayName;
   final String avatarKey;
   final bool isPublic;
+  final String? mostUsedStationName;
   final FollowStatus? outgoingFollowStatus;
   final bool followsCurrentUser;
 
@@ -23,6 +25,8 @@ class SocialProfile {
     String? displayName,
     String? avatarKey,
     bool? isPublic,
+    String? mostUsedStationName,
+    bool clearMostUsedStationName = false,
     FollowStatus? outgoingFollowStatus,
     bool clearOutgoingFollowStatus = false,
     bool? followsCurrentUser,
@@ -33,6 +37,9 @@ class SocialProfile {
       displayName: displayName ?? this.displayName,
       avatarKey: avatarKey ?? this.avatarKey,
       isPublic: isPublic ?? this.isPublic,
+      mostUsedStationName: clearMostUsedStationName
+          ? null
+          : mostUsedStationName ?? this.mostUsedStationName,
       outgoingFollowStatus: clearOutgoingFollowStatus
           ? null
           : outgoingFollowStatus ?? this.outgoingFollowStatus,
@@ -46,6 +53,7 @@ class SocialProfile {
     'displayName': displayName,
     'avatarKey': avatarKey,
     'isPublic': isPublic,
+    'mostUsedStationName': mostUsedStationName,
   };
 
   static SocialProfile? fromJson(Map<String, Object?> json) {
@@ -67,6 +75,7 @@ class SocialProfile {
       displayName: displayName,
       avatarKey: avatarKey,
       isPublic: isPublic,
+      mostUsedStationName: json['mostUsedStationName'] as String?,
     );
   }
 }

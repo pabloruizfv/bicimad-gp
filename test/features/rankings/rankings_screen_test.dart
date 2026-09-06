@@ -109,6 +109,56 @@ void main() {
     );
   });
 
+  testWidgets('limita cada nombre de estacion a una linea con elipsis', (
+    tester,
+  ) async {
+    const longOrigin =
+        '172 - Estacion de tren de Delicias con un nombre especialmente largo';
+    const longDestination =
+        '320 - Metro Lago con otro nombre de estacion especialmente largo';
+    final summary = RouteSummary(
+      originStationId: '172',
+      originStationName: longOrigin,
+      destinationStationId: '320',
+      destinationStationName: longDestination,
+      personalBestDurationSeconds: 300,
+      personalBestDistanceMeters: 1000,
+      personalBestSpeedKmh: 12,
+      personalTripCount: 1,
+      personalBestStartedAt: DateTime(2026, 8, 1, 10),
+      historicalPercentile: 50,
+      currentUserPosition: null,
+      totalUsers: 1,
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          routePersonalSummariesProvider.overrideWith((ref) async => [summary]),
+          routeHistoricalPercentilesProvider.overrideWith(
+            (ref) async => {
+              const RouteKey(
+                originStationId: '172',
+                destinationStationId: '320',
+              ): 50,
+            },
+          ),
+          selectedAvatarProvider.overrideWith(
+            (ref) async => 'assets/avatar/1.png',
+          ),
+        ],
+        child: const MaterialApp(home: RankingsScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    for (final stationName in [longOrigin, longDestination]) {
+      final label = tester.widget<Text>(find.text(stationName));
+      expect(label.maxLines, 1);
+      expect(label.overflow, TextOverflow.ellipsis);
+    }
+  });
+
   testWidgets('muestra contenido personal sin esperar los percentiles', (
     tester,
   ) async {

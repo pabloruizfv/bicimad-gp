@@ -45,7 +45,15 @@ class TripsScreen extends ConsumerWidget {
         avatarAsync.valueOrNull ?? LocalAvatarRepository.defaultAvatarAsset;
 
     return Scaffold(
-      appBar: const MenuAppBar(title: Text('Mis viajes')),
+      appBar: MenuAppBar(
+        title: Text(
+          tripsAsync.when(
+            data: (trips) => 'Mis viajes (${trips.length})',
+            loading: () => 'Mis viajes',
+            error: (_, _) => 'Mis viajes',
+          ),
+        ),
+      ),
       body: SafeArea(
         child: AsyncStateView<List<Trip>>(
           value: tripsAsync,
@@ -152,7 +160,9 @@ class TripCard extends StatelessWidget {
     this.embedded = false,
     this.medalRank,
     this.showHistoricalPercentile = false,
+    this.showPrice = true,
     this.historicalPercentile,
+    this.identityHeader,
     this.onTap,
     super.key,
   });
@@ -165,7 +175,9 @@ class TripCard extends StatelessWidget {
   final bool embedded;
   final int? medalRank;
   final bool showHistoricalPercentile;
+  final bool showPrice;
   final double? historicalPercentile;
+  final Widget? identityHeader;
   final VoidCallback? onTap;
 
   @override
@@ -177,24 +189,16 @@ class TripCard extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(14),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _TripAvatarIcon(assetPath: avatarAsset),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _TripCardText(
-                trip: trip,
-                isPersonalRecord: isPersonalRecord,
-                medalRank: medalRank,
-                showRoute: showRoute,
-                showHistoricalPercentile: showHistoricalPercentile,
-                historicalPercentile: historicalPercentile,
-                textTheme: textTheme,
-              ),
-            ),
-          ],
-        ),
+        child: identityHeader == null
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _TripAvatarIcon(assetPath: avatarAsset),
+                  const SizedBox(width: 12),
+                  Expanded(child: _buildText(textTheme)),
+                ],
+              )
+            : _buildText(textTheme),
       ),
     );
 
@@ -240,6 +244,20 @@ class TripCard extends StatelessWidget {
       child: content,
     );
   }
+
+  Widget _buildText(TextTheme textTheme) {
+    return _TripCardText(
+      trip: trip,
+      isPersonalRecord: isPersonalRecord,
+      medalRank: medalRank,
+      showRoute: showRoute,
+      showHistoricalPercentile: showHistoricalPercentile,
+      showPrice: showPrice,
+      historicalPercentile: historicalPercentile,
+      identityHeader: identityHeader,
+      textTheme: textTheme,
+    );
+  }
 }
 
 class _TripCardText extends StatelessWidget {
@@ -249,7 +267,9 @@ class _TripCardText extends StatelessWidget {
     required this.medalRank,
     required this.showRoute,
     required this.showHistoricalPercentile,
+    required this.showPrice,
     required this.historicalPercentile,
+    required this.identityHeader,
     required this.textTheme,
   });
 
@@ -258,7 +278,9 @@ class _TripCardText extends StatelessWidget {
   final int? medalRank;
   final bool showRoute;
   final bool showHistoricalPercentile;
+  final bool showPrice;
   final double? historicalPercentile;
+  final Widget? identityHeader;
   final TextTheme textTheme;
 
   @override
@@ -287,13 +309,13 @@ class _TripCardText extends StatelessWidget {
                   ),
                 ),
               ),
-              if (isPositiveDecimalAmount(trip.tripCost)) ...[
+              if (showPrice && isPositiveDecimalAmount(trip.tripCost)) ...[
                 const SizedBox(width: 8),
                 _TripPricePill(tripId: trip.id, tripCost: trip.tripCost!),
               ],
               if (medalRank != null) ...[
                 const SizedBox(width: 8),
-                _PlacementMedalPill(rank: medalRank!),
+                TripRankingPlacement(rank: medalRank!),
               ] else if (isPersonalRecord) ...[
                 const SizedBox(width: 8),
                 const _PersonalRecordPill(),
@@ -301,6 +323,10 @@ class _TripCardText extends StatelessWidget {
             ],
           ),
         ),
+        if (identityHeader != null) ...[
+          const SizedBox(height: 8),
+          identityHeader!,
+        ],
         if (showRoute) ...[
           const SizedBox(height: 8),
           _TripRouteStop(name: trip.originStationName, style: titleStyle),
@@ -412,13 +438,25 @@ class _PitStopSummaryPill extends StatelessWidget {
   }
 }
 
-class _PlacementMedalPill extends StatelessWidget {
-  const _PlacementMedalPill({required this.rank});
+class TripRankingPlacement extends StatelessWidget {
+  const TripRankingPlacement({required this.rank, super.key});
 
   final int rank;
 
   @override
   Widget build(BuildContext context) {
+    final accent = tripRankAccentColor(rank);
+    if (rank > 3) {
+      return Text(
+        '$rank.º',
+        key: ValueKey('trip-rank-position-$rank'),
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+          color: accent,
+          fontWeight: FontWeight.w900,
+        ),
+      );
+    }
+
     final (background, foreground, border) = switch (rank) {
       1 => (bicimadArcadeYellow, const Color(0xFF503D00), tripRankGoldAccent),
       2 => (
@@ -433,17 +471,31 @@ class _PlacementMedalPill extends StatelessWidget {
       ),
     };
 
-    return DecoratedBox(
-      key: ValueKey('trip-rank-medal-$rank'),
-      decoration: BoxDecoration(
-        color: background,
-        border: Border.all(color: border),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-        child: Icon(Icons.workspace_premium, size: 15, color: foreground),
-      ),
+    return Row(
+      key: ValueKey('trip-rank-position-$rank'),
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          '$rank.º',
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            color: accent,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        const SizedBox(width: 5),
+        DecoratedBox(
+          key: ValueKey('trip-rank-medal-$rank'),
+          decoration: BoxDecoration(
+            color: background,
+            border: Border.all(color: border),
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            child: Icon(Icons.workspace_premium, size: 15, color: foreground),
+          ),
+        ),
+      ],
     );
   }
 }

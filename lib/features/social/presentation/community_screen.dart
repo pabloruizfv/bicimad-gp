@@ -13,6 +13,8 @@ import 'follow_confirmation.dart';
 
 enum CommunityTab { search, followers, following, requests }
 
+const _initialCommunityProfileLimit = 50;
+
 class CommunityScreen extends ConsumerStatefulWidget {
   const CommunityScreen({this.initialTab = CommunityTab.search, super.key});
 
@@ -97,37 +99,42 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           ),
         ),
         Expanded(
-          child: _query.length < 2
-              ? const _EmptySocialState(
+          child: results.when(
+            data: (profiles) {
+              if (_query.isEmpty &&
+                  profiles.length >= _initialCommunityProfileLimit) {
+                return const _EmptySocialState(
                   icon: Icons.manage_search,
-                  message: 'Escribe al menos dos caracteres.',
-                )
-              : results.when(
-                  data: (profiles) => profiles.isEmpty
-                      ? const _EmptySocialState(
-                          icon: Icons.person_search_outlined,
-                          message: 'No se han encontrado perfiles.',
-                        )
-                      : RefreshIndicator(
-                          onRefresh: () async =>
-                              ref.invalidate(socialSearchProvider(_query)),
-                          child: ListView.separated(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                            itemCount: profiles.length,
-                            separatorBuilder: (_, _) =>
-                                const SizedBox(height: 8),
-                            itemBuilder: (context, index) => _ProfileTile(
-                              profile: profiles[index],
-                              action: _searchAction(profiles[index]),
-                            ),
-                          ),
-                        ),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (_, _) => _ErrorSocialState(
-                    onRetry: () => ref.invalidate(socialSearchProvider(_query)),
+                  message: 'Busca por @usuario o nombre.',
+                );
+              }
+              if (profiles.isEmpty) {
+                return _EmptySocialState(
+                  icon: Icons.person_search_outlined,
+                  message: _query.isEmpty
+                      ? 'Todavía no hay otros perfiles.'
+                      : 'No se han encontrado perfiles.',
+                );
+              }
+              return RefreshIndicator(
+                onRefresh: () async =>
+                    ref.invalidate(socialSearchProvider(_query)),
+                child: ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  itemCount: profiles.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) => _ProfileTile(
+                    profile: profiles[index],
+                    action: _searchAction(profiles[index]),
                   ),
                 ),
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (_, _) => _ErrorSocialState(
+              onRetry: () => ref.invalidate(socialSearchProvider(_query)),
+            ),
+          ),
         ),
       ],
     );

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 320" width="512" height="320">
+  <g fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Wheels -->
+    <circle cx="110" cy="220" r="78"/>
+    <circle cx="402" cy="220" r="78"/>
+
+    <!-- Frame -->
+    <path d="M110 220 L200 90 L320 90"/>
+    <path d="M200 90 L260 220"/>
+    <path d="M110 220 L260 220"/>
+    <path d="M260 220 L365 100"/>
+    <path d="M320 90 L402 220"/>
+
+    <!-- Seat, slightly raised -->
+    <path d="M173 58 L225 58"/>
+    <path d="M198 90 L190 58"/>
+
+    <!-- Handlebar -->
+    <path d="M350 66 L405 66"/>
+    <path d="M365 100 L350 66"/>
+    <path d="M405 66 L420 96"/>
+  </g>
+</svg>

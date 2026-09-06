@@ -1,5 +1,6 @@
 import '../../../core/utils/decimal_amount.dart';
 import 'trip.dart';
+import 'trip_eligibility.dart';
 
 class JourneyBuilder {
   const JourneyBuilder({this.maxPitStop = const Duration(seconds: 119)});
@@ -45,15 +46,8 @@ class JourneyBuilder {
   }
 
   List<List<Trip>> _groupStages(Iterable<Trip> stages) {
-    final validStages =
-        stages
-            .where(
-              (stage) =>
-                  stage.originStationId != stage.destinationStationId &&
-                  stage.durationSeconds > 0,
-            )
-            .toList()
-          ..sort((a, b) => a.startedAt.compareTo(b.startedAt));
+    final validStages = stages.where(isCountableBicimadStage).toList()
+      ..sort((a, b) => a.startedAt.compareTo(b.startedAt));
     final groups = <List<Trip>>[];
     var index = 0;
     while (index < validStages.length) {

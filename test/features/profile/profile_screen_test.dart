@@ -9,6 +9,7 @@ import 'package:bicimad_social/features/social/data/social_profile_cache.dart';
 import 'package:bicimad_social/features/social/domain/social_profile.dart';
 import 'package:bicimad_social/features/trips/data/mock_community_repository.dart';
 import 'package:bicimad_social/features/trips/domain/community_user.dart';
+import 'package:bicimad_social/shared/widgets/profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -44,7 +45,7 @@ void main() {
     expect(find.text('Viajes importados'), findsNothing);
     expect(find.textContaining('sincronización'), findsWidgets);
     expect(find.text('Configuración experimental'), findsNothing);
-    await tester.tap(find.text('Cambiar nombre visible'));
+    await tester.tap(find.byIcon(Icons.edit_outlined));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextFormField), 'Nuevo Pablo');
     await tester.tap(find.text('Guardar'));
@@ -71,11 +72,11 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Avatar de piloto'), findsNothing);
-    await tester.tap(find.text('Cambiar avatar de piloto'));
+    expect(find.text('Selecciona tu avatar de piloto'), findsNothing);
+    await tester.tap(find.byType(ProfileAvatar).first);
     await tester.pumpAndSettle();
 
-    expect(find.text('Avatar de piloto'), findsOneWidget);
+    expect(find.text('Selecciona tu avatar de piloto'), findsOneWidget);
     expect(find.bySemanticsLabel('Avatar 1.png'), findsOneWidget);
   });
 

@@ -32,6 +32,10 @@ void main() {
         lessThan(social.operations.indexOf('upsertOwnTrips')),
       );
       expect(
+        social.operations.indexOf('upsertOwnTrips'),
+        lessThan(social.operations.indexOf('refreshOwnAchievements')),
+      );
+      expect(
         social.uploadedTripBatches.single
             .map((trip) => trip.externalId)
             .toSet(),
@@ -79,6 +83,39 @@ void main() {
 
     expect(uploaded, 1);
     expect(social.uploadedTripBatches, [batch]);
+  });
+
+  test('no sube ni restaura viajes de ubicaciones descartadas', () async {
+    final local = LocalCommunityRepository();
+    await local.createOrRecoverUser(externalUserId: 'mpass-user');
+    final invalid = _trip(
+      'invalid',
+      day: 2,
+    ).copyWith(destinationStationName: 'Ubicación no permitida');
+    final valid = _trip('valid', day: 1);
+    final social = FakeSocialRepository(ownTrips: [invalid, valid]);
+    final service = SocialTripSyncService(
+      socialRepository: social,
+      localRepository: local,
+    );
+
+    final downloaded = await service.pullCloudHistory(
+      normalizedMpassEmail: 'pablo@example.com',
+      mpassUserId: 'mpass-user',
+    );
+    final uploaded = await service.pushTripBatch(
+      normalizedMpassEmail: 'pablo@example.com',
+      trips: [invalid, valid],
+    );
+
+    expect(downloaded, 1);
+    expect(uploaded, 1);
+    expect((await local.getMyStages()).map((trip) => trip.externalId), [
+      'valid',
+    ]);
+    expect(social.uploadedTripBatches.single.map((trip) => trip.externalId), [
+      'valid',
+    ]);
   });
 
   test(

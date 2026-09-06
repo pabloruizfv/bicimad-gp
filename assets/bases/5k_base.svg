@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <g fill="none" stroke="#0A3B8F" stroke-linejoin="round" stroke-linecap="round">
+
+    <!-- Top cap -->
+    <path d="M154 155
+             C160 104 202 66 256 66
+             C310 66 352 104 358 155
+             L358 166
+             L154 166 Z"
+          fill="#0A3B8F" stroke-width="0"/>
+
+    <!-- Main body -->
+    <path d="M158 166
+             L354 166
+             L365 362
+             Q366 382 347 388
+             Q256 396 165 388
+             Q146 382 147 362
+             Z"
+          fill="#FFFFFF" stroke-width="14"/>
+
+    <!-- 5 km: compact, racing / kart-style lettering -->
+    <g fill="#0A3B8F" stroke="none" transform="translate(256 290) scale(0.88) skewX(-7) translate(-256 -290)">
+
+      <!-- Stylized 5 -->
+      <path d="M188 236
+               L253 236
+               L249 257
+               L210 257
+               L207 272
+               Q218 268 228 268
+               Q248 268 258 278
+               Q268 288 266 305
+               Q264 324 249 336
+               Q234 348 211 348
+               Q191 348 176 339
+               L191 318
+               Q201 326 214 326
+               Q226 326 233 321
+               Q240 316 241 307
+               Q242 298 235 293
+               Q228 288 218 288
+               Q206 288 196 295
+               L178 283 Z"/>
+
+      <!-- lowercase k, angular and readable -->
+      <path d="M275 270
+               L294 270
+               L294 297
+               L314 270
+               L337 270
+               L311 301
+               L339 340
+               L316 340
+               L294 310
+               L294 340
+               L275 340 Z"
+            transform="translate(8 0)"/>
+
+    </g>
+
+    <!-- Base -->
+    <path d="M124 386
+             Q130 366 150 364
+             L362 364
+             Q382 366 388 386
+             L396 424
+             Q398 439 382 442
+             Q256 451 130 442
+             Q114 439 116 424 Z"
+          fill="#FFFFFF" stroke-width="14"/>
+
+  </g>
+</svg>

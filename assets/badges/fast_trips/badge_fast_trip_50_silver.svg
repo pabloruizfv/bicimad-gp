@@ -1,0 +1,53 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="metalOuter" x1="80" y1="80" x2="432" y2="432" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F1F3F5"/>
+      <stop offset="35%" stop-color="#C7CDD2"/>
+      <stop offset="70%" stop-color="#929CA5"/>
+      <stop offset="100%" stop-color="#5C6670"/>
+    </linearGradient>
+    <linearGradient id="metalInner" x1="140" y1="120" x2="372" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E7EAED"/>
+      <stop offset="50%" stop-color="#BDC4CA"/>
+      <stop offset="100%" stop-color="#88929B"/>
+    </linearGradient>
+    <linearGradient id="ribbonRed" x1="140" y1="390" x2="372" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E44848"/>
+      <stop offset="100%" stop-color="#A91E1E"/>
+    </linearGradient>
+  </defs>
+  <g id="badge-root">
+    <circle id="badge-outer-ring" cx="256" cy="220" r="170" fill="url(#metalOuter)"/>
+    <circle id="badge-mid-ring" cx="256" cy="220" r="148" fill="#7D8791"/>
+    <circle id="badge-inner-ring" cx="256" cy="220" r="136" fill="url(#metalInner)"/>
+    <circle id="badge-content-border" cx="256" cy="220" r="118" fill="none" stroke="#59636C" stroke-opacity="0.80" stroke-width="8"/>
+    <g id="badge-ribbon">
+      <path d="M170 370H342L320 450L256 422L192 450L170 370Z" fill="url(#ribbonRed)"/>
+      <path d="M188 370H324L309 428L256 405L203 428L188 370Z" fill="#7D1414" opacity="0.22"/>
+    </g>
+    <g id="badge-content">
+      <!-- Geometry sourced from assets/bases/mushroom_base.svg and recolored for BiciMAD GP. -->
+      <g transform="translate(117.8 73.8) scale(0.27)">
+        <clipPath id="mushroomCapClip">
+          <path d="M205 646C160 572 160 470 204 386C270 259 391 214 512 214C633 214 754 259 820 386C864 470 864 572 819 646C789 697 742 729 675 742C623 752 568 757 512 757C456 757 401 752 349 742C282 729 235 697 205 646Z"/>
+        </clipPath>
+        <path fill="#244E78" d="M205 646C160 572 160 470 204 386C270 259 391 214 512 214C633 214 754 259 820 386C864 470 864 572 819 646C789 697 742 729 675 742C623 752 568 757 512 757C456 757 401 752 349 742C282 729 235 697 205 646Z"/>
+        <g clip-path="url(#mushroomCapClip)">
+          <path fill="#FFFFFF" stroke="#244E78" stroke-width="16" stroke-linejoin="round" d="M187 396C174 434 169 475 170 515C172 553 181 590 198 618C229 601 253 560 260 507C267 458 257 420 231 391C215 373 198 381 187 396Z"/>
+          <path fill="#FFFFFF" stroke="#244E78" stroke-width="16" stroke-linejoin="round" d="M837 396C850 434 855 475 854 515C852 553 843 590 826 618C795 601 771 560 764 507C757 458 767 420 793 391C809 373 826 381 837 396Z"/>
+        </g>
+        <path fill="#FFFFFF" stroke="#244E78" stroke-width="18" d="M394 328C427 275 468 250 512 250C556 250 597 275 630 328C648 357 655 394 650 428C642 490 592 528 512 528C432 528 382 490 374 428C369 394 376 357 394 328Z"/>
+        <path fill="none" stroke="#244E78" stroke-width="22" stroke-linejoin="round" d="M205 646C160 572 160 470 204 386C270 259 391 214 512 214C633 214 754 259 820 386C864 470 864 572 819 646C789 697 742 729 675 742C623 752 568 757 512 757C456 757 401 752 349 742C282 729 235 697 205 646Z"/>
+        <path fill="#FFFFFF" stroke="#244E78" stroke-width="20" stroke-linejoin="round" d="M338 610C360 589 400 575 449 569C490 564 534 564 575 569C624 575 664 589 686 610C694 618 697 628 697 642C697 714 682 779 652 818C627 852 574 869 512 869C450 869 397 852 372 818C342 779 327 714 327 642C327 628 330 618 338 610Z"/>
+        <g fill="#244E78">
+          <ellipse cx="455" cy="722" rx="26" ry="58"/>
+          <ellipse cx="569" cy="722" rx="26" ry="58"/>
+        </g>
+        <g fill="#FFFFFF">
+          <ellipse cx="455" cy="697" rx="10" ry="19"/>
+          <ellipse cx="569" cy="697" rx="10" ry="19"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

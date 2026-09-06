@@ -156,6 +156,36 @@ void main() {
     expect(stored.bikeId, '1234');
     expect(stored.tripCost, '1.50');
   });
+
+  test('descarta ubicaciones invalidas sin subirlas ni contarlas', () async {
+    final invalidOrigin = _trip(
+      'bad-origin',
+    ).copyWith(originStationName: 'Bici mal anclada');
+    final invalidDestination = _trip(
+      'bad-destination',
+    ).copyWith(destinationStationName: 'Ubicación no permitida');
+    final valid = _trip('valid');
+    final repository = _FakePagedBicimadRepository([
+      [invalidOrigin, valid, invalidDestination],
+    ]);
+    final local = await _localRepository();
+    final persistedPages = <List<Trip>>[];
+
+    final result = await _service(repository, local).synchronize(
+      _session(),
+      onPagePersisted: (trips) async => persistedPages.add(trips),
+    );
+
+    expect(result.tripsProcessed, 1);
+    expect((await local.getMyStages()).map((trip) => trip.externalId), [
+      'valid',
+    ]);
+    expect(persistedPages.single.map((trip) => trip.externalId), ['valid']);
+    expect(
+      await local.getKnownSourceTripIds(),
+      containsAll(['bad-origin', 'bad-destination', 'valid']),
+    );
+  });
 }
 
 TripHistorySyncService _service(

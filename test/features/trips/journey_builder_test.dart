@@ -46,6 +46,31 @@ void main() {
     expect(journeys.map((trip) => trip.id), ['ab']);
   });
 
+  test('descarta etapas a o desde ubicaciones invalidas de BiciMAD', () {
+    final stages = [
+      _stage(
+        'invalid-origin',
+        'X',
+        'A',
+        DateTime(2026, 8, 4, 9),
+        300,
+        originName: 'Bici mal anclada',
+      ),
+      _stage('ab', 'A', 'B', DateTime(2026, 8, 4, 10), 300),
+      _stage(
+        'invalid-destination',
+        'B',
+        'Y',
+        DateTime(2026, 8, 4, 10, 6),
+        300,
+        destinationName: 'Ubicación no permitida',
+      ),
+    ];
+
+    expect(builder.buildJourneys(stages).map((trip) => trip.id), ['ab']);
+    expect(builder.buildRankingTrips(stages).map((trip) => trip.id), ['ab']);
+  });
+
   test('conserva datos por etapa y suma el precio con la misma bicicleta', () {
     final journeys = builder.buildJourneys([
       _stage(
@@ -219,15 +244,17 @@ Trip _stage(
   int durationSeconds, {
   String? bikeId,
   String? tripCost,
+  String? originName,
+  String? destinationName,
 }) {
   return Trip(
     id: id,
     externalId: id,
     userId: 'user-1',
     originStationId: origin,
-    originStationName: 'Station $origin',
+    originStationName: originName ?? 'Station $origin',
     destinationStationId: destination,
-    destinationStationName: 'Station $destination',
+    destinationStationName: destinationName ?? 'Station $destination',
     startedAt: startedAt,
     durationSeconds: durationSeconds,
     isShared: true,

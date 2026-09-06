@@ -5,8 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../../../app/providers.dart';
+import '../../../core/config/carto_basemap_config.dart';
 import '../../../core/utils/decimal_amount.dart';
 import '../../../core/utils/date_formatters.dart';
+import '../../../core/utils/duration_axis_ticks.dart';
 import '../../../core/utils/duration_formatters.dart';
 import '../../../core/utils/geo_utils.dart';
 import '../../../core/utils/metric_formatters.dart';
@@ -14,8 +16,10 @@ import '../../../shared/widgets/async_state_view.dart';
 import '../../../shared/widgets/checkered_flag_strip.dart';
 import '../../../shared/widgets/docking_station_icon.dart';
 import '../../../shared/widgets/info_row.dart';
+import '../../../shared/widgets/metric_pill.dart';
 import '../../../shared/widgets/profile_avatar.dart';
 import '../../profile/data/avatar_repository.dart';
+import '../../rankings/domain/community_route_ranking.dart';
 import '../../rankings/domain/route_key.dart';
 import '../domain/legacy_route_model.dart';
 import '../domain/route_statistics.dart';
@@ -28,6 +32,7 @@ class RouteHistoryScreen extends ConsumerWidget {
     this.selectedTripId,
     this.showOverview = true,
     this.allowTripNavigation = false,
+    this.startInCommunity = false,
     super.key,
   });
 
@@ -35,6 +40,7 @@ class RouteHistoryScreen extends ConsumerWidget {
   final String? selectedTripId;
   final bool showOverview;
   final bool allowTripNavigation;
+  final bool startInCommunity;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -76,16 +82,30 @@ class RouteHistoryScreen extends ConsumerWidget {
             final avatarAsset =
                 avatarAsync.valueOrNull ??
                 LocalAvatarRepository.defaultAvatarAsset;
+            final selectedStages = _stagesForJourney(
+              selectedTrip,
+              stagesAsync.valueOrNull ?? const [],
+            );
+            final stageNavigationTargets = _stageNavigationTargets(
+              selectedTrip: selectedTrip,
+              stages: selectedStages,
+              rankingTrips: allTripsAsync.valueOrNull ?? const [],
+            );
             return ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
               children: [
                 if (showOverview) ...[
                   _RouteOverviewCard(
                     trip: selectedTrip,
-                    stages: _stagesForJourney(
-                      selectedTrip,
-                      stagesAsync.valueOrNull ?? const [],
-                    ),
+                    stages: selectedStages,
+                    stageNavigationTargets: stageNavigationTargets,
+                    onOpenTrip: (trip) =>
+                        context.push(_tripDetailLocation(trip)),
+                    onOpenParentJourney: selectedTrip.isJourneyProjection
+                        ? () => context.push(
+                            _parentJourneyDetailLocation(selectedTrip),
+                          )
+                        : null,
                     personalContext: allTripsAsync.when(
                       loading: () => const _TripContextLoadingSection(),
                       error: (error, stackTrace) =>
@@ -101,18 +121,15 @@ class RouteHistoryScreen extends ConsumerWidget {
                   _GenericRouteOverviewCard(trip: selectedTrip),
                   const SizedBox(height: 16),
                   _LegacyHistorySection(
+                    routeKey: routeKey,
                     modelAsync: legacyModelAsync,
                     personalTrips: trips,
                     personalStatistics: statistics,
                     avatarAsset: avatarAsset,
                     onTripSelected: allowTripNavigation
-                        ? (trip) => context.push(
-                            '/route-history/'
-                            '${Uri.encodeComponent(trip.navigationOriginStationId)}/'
-                            '${Uri.encodeComponent(trip.navigationDestinationStationId)}'
-                            '?selectedTripId=${Uri.encodeQueryComponent(trip.navigationJourneyId)}',
-                          )
+                        ? (trip) => context.push(_tripDetailLocation(trip))
                         : null,
+                    startInCommunity: startInCommunity,
                   ),
                 ],
               ],
@@ -185,11 +202,17 @@ class _RouteOverviewCard extends StatelessWidget {
   const _RouteOverviewCard({
     required this.trip,
     required this.stages,
+    required this.stageNavigationTargets,
+    required this.onOpenTrip,
+    required this.onOpenParentJourney,
     required this.personalContext,
   });
 
   final Trip trip;
   final List<Trip> stages;
+  final List<Trip?> stageNavigationTargets;
+  final ValueChanged<Trip> onOpenTrip;
+  final VoidCallback? onOpenParentJourney;
   final Widget personalContext;
 
   @override
@@ -222,11 +245,25 @@ class _RouteOverviewCard extends StatelessWidget {
                   _RouteStopRow(stop: stops[index]),
                   if (index < stops.length - 1)
                     _RouteConnectionRow(
+                      key: ValueKey('journey-stage-action-$index'),
                       from: stops[index],
                       to: stops[index + 1],
                       metrics: segments[index],
                       color: colorScheme.primary,
+                      onTap:
+                          stages.length > 1 &&
+                              index < stageNavigationTargets.length &&
+                              stageNavigationTargets[index] != null
+                          ? () => onOpenTrip(stageNavigationTargets[index]!)
+                          : null,
                     ),
+                ],
+                if (trip.isJourneyProjection) ...[
+                  const SizedBox(height: 14),
+                  _JourneyProjectionNotice(
+                    trip: trip,
+                    onOpenParentJourney: onOpenParentJourney,
+                  ),
                 ],
                 const Divider(height: 24),
                 InfoRow(
@@ -250,7 +287,7 @@ class _RouteOverviewCard extends StatelessWidget {
                   compact: true,
                 ),
                 InfoRow(
-                  label: 'Bicicleta',
+                  label: trip.hasMultipleBikes ? 'Bicicletas' : 'Bicicleta',
                   value: _formatBikeUsage(trip),
                   compact: true,
                 ),
@@ -280,6 +317,92 @@ class _RouteOverviewCard extends StatelessWidget {
   }
 }
 
+class _JourneyProjectionNotice extends StatelessWidget {
+  const _JourneyProjectionNotice({
+    required this.trip,
+    required this.onOpenParentJourney,
+  });
+
+  final Trip trip;
+  final VoidCallback? onOpenParentJourney;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isSingleStage = trip.stageCount == 1;
+    return DecoratedBox(
+      key: const ValueKey('journey-projection-notice'),
+      decoration: BoxDecoration(
+        color: const Color(0xFF075E56).withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: const Color(0xFF075E56).withValues(alpha: 0.24),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                const Icon(
+                  Icons.local_gas_station_outlined,
+                  color: Color(0xFF075E56),
+                  size: 22,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isSingleStage
+                            ? 'Etapa de un viaje más largo'
+                            : 'Tramo de ${trip.stageCount} etapas',
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: const Color(0xFF075E56),
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Forma parte de un viaje con más paradas.',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 2),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                key: const ValueKey('open-parent-journey-action'),
+                onPressed: onOpenParentJourney,
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(0, 36),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                ),
+                icon: const Icon(Icons.open_in_full, size: 17),
+                label: const Text('Ver viaje completo'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 String _formatBikeUsage(Trip trip) {
   if (!trip.hasCompleteBikeData || trip.bikeIds.isEmpty) {
     return 'No disponible';
@@ -287,7 +410,7 @@ String _formatBikeUsage(Trip trip) {
   if (trip.bikeIds.length == 1) {
     return trip.bikeIds.single;
   }
-  return 'Varias: ${trip.bikeIds.join(' · ')}';
+  return trip.bikeIds.join(' · ');
 }
 
 class _TripPersonalContextSection extends StatelessWidget {
@@ -507,11 +630,21 @@ class _RouteStop {
 enum _RouteStopKind { origin, pitStop, destination }
 
 List<_RouteStop> _routeStops(Trip trip, ColorScheme colorScheme) {
+  final originIsIntermediate =
+      trip.isJourneyProjection &&
+      trip.originStationId != trip.parentJourneyOriginStationId;
+  final destinationIsIntermediate =
+      trip.isJourneyProjection &&
+      trip.destinationStationId != trip.parentJourneyDestinationStationId;
   return [
     _RouteStop(
       name: trip.originStationName,
-      kind: _RouteStopKind.origin,
-      color: colorScheme.primary,
+      kind: originIsIntermediate
+          ? _RouteStopKind.pitStop
+          : _RouteStopKind.origin,
+      color: originIsIntermediate
+          ? const Color(0xFF075E56)
+          : colorScheme.primary,
       latitude: trip.originLatitude,
       longitude: trip.originLongitude,
     ),
@@ -525,8 +658,10 @@ List<_RouteStop> _routeStops(Trip trip, ColorScheme colorScheme) {
       ),
     _RouteStop(
       name: trip.destinationStationName,
-      kind: _RouteStopKind.destination,
-      color: Colors.black,
+      kind: destinationIsIntermediate
+          ? _RouteStopKind.pitStop
+          : _RouteStopKind.destination,
+      color: destinationIsIntermediate ? const Color(0xFF075E56) : Colors.black,
       latitude: trip.destinationLatitude,
       longitude: trip.destinationLongitude,
     ),
@@ -584,38 +719,51 @@ class _RouteConnectionRow extends StatelessWidget {
     required this.to,
     required this.metrics,
     required this.color,
+    this.onTap,
+    super.key,
   });
 
   final _RouteStop from;
   final _RouteStop to;
   final _RouteSegmentMetrics metrics;
   final Color color;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 34,
-            child: Icon(Icons.keyboard_arrow_down, color: color),
-          ),
-          Expanded(
-            child: Text(
-              '${formatDistanceMeters(metrics.distanceMeters)} · '
-              '${_formatSegmentDuration(metrics.durationSeconds)} · '
-              '${formatSpeedKmh(metrics.speedKmh)} · '
-              '${formatDecimalEuros(metrics.tripCost)}',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w800,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 34,
+              child: Icon(Icons.keyboard_arrow_down, color: color),
+            ),
+            Expanded(
+              child: Text(
+                '${formatDistanceMeters(metrics.distanceMeters)} · '
+                '${_formatSegmentDuration(metrics.durationSeconds)} · '
+                '${formatSpeedKmh(metrics.speedKmh)} · '
+                '${formatDecimalEuros(metrics.tripCost)}',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ),
-          ),
-        ],
+            if (onTap != null)
+              Icon(
+                Icons.chevron_right,
+                size: 18,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -695,6 +843,48 @@ List<Trip> _stagesForJourney(Trip journey, List<Trip> allStages) {
   return stages;
 }
 
+List<Trip?> _stageNavigationTargets({
+  required Trip selectedTrip,
+  required List<Trip> stages,
+  required List<Trip> rankingTrips,
+}) {
+  if (stages.length < 2) {
+    return const [];
+  }
+  final parentJourneyId = selectedTrip.parentJourneyId ?? selectedTrip.id;
+  return [
+    for (final stage in stages)
+      rankingTrips
+          .where(
+            (candidate) =>
+                candidate.parentJourneyId == parentJourneyId &&
+                candidate.stageIds.length == 1 &&
+                candidate.stageIds.single == stage.id,
+          )
+          .firstOrNull,
+  ];
+}
+
+String _tripDetailLocation(Trip trip) {
+  return '/route-history/'
+      '${Uri.encodeComponent(trip.originStationId)}/'
+      '${Uri.encodeComponent(trip.destinationStationId)}'
+      '?selectedTripId=${Uri.encodeQueryComponent(trip.id)}';
+}
+
+String _parentJourneyDetailLocation(Trip trip) {
+  final parentId = trip.parentJourneyId;
+  final originId = trip.parentJourneyOriginStationId;
+  final destinationId = trip.parentJourneyDestinationStationId;
+  if (parentId == null || originId == null || destinationId == null) {
+    throw StateError('El viaje no tiene un viaje padre.');
+  }
+  return '/route-history/'
+      '${Uri.encodeComponent(originId)}/'
+      '${Uri.encodeComponent(destinationId)}'
+      '?selectedTripId=${Uri.encodeQueryComponent(parentId)}';
+}
+
 List<_RouteSegmentMetrics> _routeSegmentMetrics(
   Trip trip,
   List<_RouteStop> stops,
@@ -769,8 +959,7 @@ class _RouteMap extends StatelessWidget {
       ),
       children: [
         TileLayer(
-          urlTemplate:
-              'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+          urlTemplate: CartoBasemapConfig.rasterTileUrlTemplate,
           subdomains: const ['a', 'b', 'c', 'd'],
           userAgentPackageName: 'bicimad_social',
         ),
@@ -904,6 +1093,9 @@ class _RoutePointMarker extends StatelessWidget {
     }
 
     return SizedBox(
+      key: stop.kind == _RouteStopKind.pitStop
+          ? const ValueKey('route-pit-stop-marker')
+          : null,
       width: 34,
       height: 34,
       child: DecoratedBox(
@@ -1012,26 +1204,63 @@ class _RouteMapUnavailable extends StatelessWidget {
   }
 }
 
-class _LegacyHistorySection extends StatelessWidget {
+enum _RouteRankingViewMode { personal, community }
+
+class _LegacyHistorySection extends ConsumerStatefulWidget {
   const _LegacyHistorySection({
+    required this.routeKey,
     required this.modelAsync,
     required this.personalTrips,
     required this.personalStatistics,
     required this.avatarAsset,
     this.onTripSelected,
+    this.startInCommunity = false,
   });
 
+  final RouteKey routeKey;
   final AsyncValue<LegacyRouteModel?> modelAsync;
   final List<Trip> personalTrips;
   final RouteStatistics personalStatistics;
   final String avatarAsset;
   final ValueChanged<Trip>? onTripSelected;
+  final bool startInCommunity;
+
+  @override
+  ConsumerState<_LegacyHistorySection> createState() =>
+      _LegacyHistorySectionState();
+}
+
+class _LegacyHistorySectionState extends ConsumerState<_LegacyHistorySection> {
+  late _RouteRankingViewMode _mode = widget.startInCommunity
+      ? _RouteRankingViewMode.community
+      : _RouteRankingViewMode.personal;
+  String? _selectedPersonalTripId;
+  String? _selectedCommunityUserId;
 
   @override
   Widget build(BuildContext context) {
+    final currentProfile = ref.watch(currentSocialProfileProvider);
+    final currentDisplayName =
+        currentProfile?.displayName ??
+        ref.watch(currentDisplayNameProvider) ??
+        '\u0054\u00FA';
+    final communityRankingAsync = _mode == _RouteRankingViewMode.community
+        ? ref.watch(routeCommunityRankingProvider(widget.routeKey))
+        : const AsyncData<CommunityRouteRanking>(
+            CommunityRouteRanking(entries: []),
+          );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        _RouteRankingModeSelector(
+          mode: _mode,
+          onChanged: (mode) => setState(() {
+            _mode = mode;
+            _selectedPersonalTripId = null;
+            _selectedCommunityUserId = null;
+          }),
+        ),
+        const SizedBox(height: 12),
         Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -1039,13 +1268,15 @@ class _LegacyHistorySection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Mis viajes vs Histórico usuarios BiciMAD',
+                  _mode == _RouteRankingViewMode.personal
+                      ? 'Mis viajes vs Histórico usuarios BiciMAD'
+                      : 'Comunidad vs Histórico usuarios BiciMAD',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 const SizedBox(height: 12),
-                modelAsync.when(
+                widget.modelAsync.when(
                   loading: () => const SizedBox(
                     height: 120,
                     child: Center(child: CircularProgressIndicator()),
@@ -1054,45 +1285,126 @@ class _LegacyHistorySection extends StatelessWidget {
                     'No se ha podido leer el historico comparable.',
                   ),
                   data: (model) {
-                    if (model == null || !model.canPlot) {
-                      return const Text(
-                        'No hay suficiente historico comparable para esta ruta.',
+                    final rankedTrips = _rankTripsByDuration(
+                      widget.personalTrips,
+                    );
+                    final hasHistoricalCurve = model?.canPlot == true;
+                    final chartRange = _routeChartRange(
+                      model,
+                      rankedTrips.map(
+                        (trip) => trip.durationSeconds.toDouble(),
+                      ),
+                    );
+                    final selectedPersonalTrip = rankedTrips
+                        .where((trip) => trip.id == _selectedPersonalTripId)
+                        .firstOrNull;
+                    if (_mode == _RouteRankingViewMode.community) {
+                      return communityRankingAsync.when(
+                        loading: () => _CommunityChartLoading(
+                          model: model,
+                          fallbackDurations: [
+                            for (final trip in rankedTrips)
+                              trip.durationSeconds.toDouble(),
+                          ],
+                        ),
+                        error: (error, stackTrace) => _CommunityChartError(
+                          model: model,
+                          fallbackDurations: [
+                            for (final trip in rankedTrips)
+                              trip.durationSeconds.toDouble(),
+                          ],
+                          onRetry: () => ref.invalidate(
+                            routeCommunityRankingProvider(widget.routeKey),
+                          ),
+                        ),
+                        data: (ranking) => _CommunityChartContent(
+                          model: model,
+                          ranking: ranking,
+                          selectedUserId: _selectedCommunityUserId,
+                          onUserSelected: (userId) => setState(() {
+                            _selectedCommunityUserId =
+                                _selectedCommunityUserId == userId
+                                ? null
+                                : userId;
+                          }),
+                        ),
                       );
                     }
 
-                    final rankedTrips = _rankTripsByDuration(personalTrips);
-                    final rangeStart = model.bestSeconds;
-                    final rangeEnd = model.upperCutoffSeconds;
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 180,
-                          width: double.infinity,
-                          child: _LegacyDurationChart(
-                            painter: _LegacyCurvePainter(
-                              points: model.smoothedDensityPoints(),
-                              personalDurations: [
-                                for (final trip in rankedTrips)
-                                  trip.durationSeconds.toDouble(),
-                              ],
-                              rangeStart: rangeStart,
-                              rangeEnd: rangeEnd,
-                              colorScheme: Theme.of(context).colorScheme,
+                    return TapRegion(
+                      onTapOutside: selectedPersonalTrip == null
+                          ? null
+                          : (_) =>
+                                setState(() => _selectedPersonalTripId = null),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (!hasHistoricalCurve) ...[
+                            const Text(
+                              'No hay suficiente historico comparable para esta ruta.',
                             ),
-                            trips: rankedTrips,
-                            avatarAsset: avatarAsset,
-                            rangeStart: rangeStart,
-                            rangeEnd: rangeEnd,
+                            const SizedBox(height: 10),
+                          ],
+                          SizedBox(
+                            key: const ValueKey('route-duration-chart'),
+                            height: 216,
+                            width: double.infinity,
+                            child: _LegacyDurationChart(
+                              painter: _LegacyCurvePainter(
+                                points: hasHistoricalCurve
+                                    ? model!.smoothedDensityPoints()
+                                    : const [],
+                                personalDurations: [
+                                  for (final trip in rankedTrips)
+                                    trip.durationSeconds.toDouble(),
+                                ],
+                                rangeStart: chartRange.start,
+                                rangeEnd: chartRange.end,
+                                colorScheme: Theme.of(context).colorScheme,
+                              ),
+                              trips: rankedTrips,
+                              avatarAsset: widget.avatarAsset,
+                              rangeEnd: chartRange.end,
+                              selectedTripId: _selectedPersonalTripId,
+                              onTripSelected: (tripId) => setState(() {
+                                _selectedPersonalTripId =
+                                    _selectedPersonalTripId == tripId
+                                    ? null
+                                    : tripId;
+                              }),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        _RouteHistoryComparison(
-                          historicalModel: model,
-                          personalStatistics: personalStatistics,
-                          avatarAsset: avatarAsset,
-                        ),
-                      ],
+                          if (selectedPersonalTrip != null) ...[
+                            const SizedBox(height: 8),
+                            _PersonalMarkerCallout(
+                              trip: selectedPersonalTrip,
+                              position:
+                                  rankedTrips.indexOf(selectedPersonalTrip) + 1,
+                              historicalModel: model,
+                              avatarAsset: widget.avatarAsset,
+                              displayName: currentDisplayName,
+                              username: currentProfile?.username,
+                            ),
+                          ],
+                          const SizedBox(height: 16),
+                          _RouteHistoryComparison(
+                            historicalModel: model,
+                            comparisonTitle: 'MIS VIAJES',
+                            comparisonTripCount:
+                                widget.personalStatistics.totalTrips,
+                            comparisonBestSeconds:
+                                widget.personalStatistics.bestDurationSeconds,
+                            comparisonTypicalSeconds:
+                                widget.personalStatistics.medianDurationSeconds,
+                            comparisonLeading: ProfileAvatar(
+                              key: const ValueKey('personal-comparison-avatar'),
+                              assetPath: widget.avatarAsset,
+                              radius: 10,
+                              isSelected: false,
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -1101,18 +1413,293 @@ class _LegacyHistorySection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: _PersonalTripsSection(
-              trips: personalTrips,
-              avatarAsset: avatarAsset,
-              historicalModel: modelAsync.valueOrNull,
-              onTripSelected: onTripSelected,
+        if (_mode == _RouteRankingViewMode.personal)
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: _PersonalTripsSection(
+                trips: widget.personalTrips,
+                avatarAsset: widget.avatarAsset,
+                displayName: currentDisplayName,
+                username: currentProfile?.username,
+                historicalModel: widget.modelAsync.valueOrNull,
+                onTripSelected: widget.onTripSelected,
+              ),
             ),
+          )
+        else
+          _CommunityTripsCard(
+            rankingAsync: communityRankingAsync,
+            historicalModel: widget.modelAsync.valueOrNull,
+            personalTrips: widget.personalTrips,
+            onTripSelected: widget.onTripSelected,
+            onRetry: () =>
+                ref.invalidate(routeCommunityRankingProvider(widget.routeKey)),
+          ),
+      ],
+    );
+  }
+}
+
+class _RouteRankingModeSelector extends StatelessWidget {
+  const _RouteRankingModeSelector({
+    required this.mode,
+    required this.onChanged,
+  });
+
+  final _RouteRankingViewMode mode;
+  final ValueChanged<_RouteRankingViewMode> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return SegmentedButton<_RouteRankingViewMode>(
+      key: const ValueKey('route-ranking-mode-selector'),
+      segments: const [
+        ButtonSegment(
+          value: _RouteRankingViewMode.personal,
+          label: Text('Mis viajes'),
+          icon: Icon(Icons.directions_bike_outlined),
+        ),
+        ButtonSegment(
+          value: _RouteRankingViewMode.community,
+          label: Text('Comunidad'),
+          icon: Icon(Icons.people_outline),
+        ),
+      ],
+      selected: {mode},
+      showSelectedIcon: false,
+      onSelectionChanged: (selection) => onChanged(selection.single),
+    );
+  }
+}
+
+typedef _DurationViewportBuilder =
+    Widget Function(
+      BuildContext context,
+      double visibleStart,
+      double visibleEnd,
+      bool isFullRange,
+    );
+
+class _HorizontalDurationViewport extends StatefulWidget {
+  const _HorizontalDurationViewport({
+    required this.fullRangeEnd,
+    required this.builder,
+  });
+
+  final double fullRangeEnd;
+  final _DurationViewportBuilder builder;
+
+  @override
+  State<_HorizontalDurationViewport> createState() =>
+      _HorizontalDurationViewportState();
+}
+
+class _HorizontalDurationViewportState
+    extends State<_HorizontalDurationViewport> {
+  double _zoom = 1;
+  double _visibleStart = 0;
+  final Map<int, Offset> _pointers = {};
+  double? _pinchStartDistance;
+  double _pinchStartZoom = 1;
+  double _pinchAnchorSeconds = 0;
+
+  double get _fullRangeEnd =>
+      widget.fullRangeEnd.isFinite && widget.fullRangeEnd > 0
+      ? widget.fullRangeEnd
+      : 60;
+
+  double get _visibleSpan => _fullRangeEnd / _zoom;
+  double get _maxZoom => (_fullRangeEnd / 5).clamp(1.0, 12.0);
+
+  @override
+  void didUpdateWidget(covariant _HorizontalDurationViewport oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.fullRangeEnd != widget.fullRangeEnd) {
+      _zoom = 1;
+      _visibleStart = 0;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final visibleEnd = _visibleStart + _visibleSpan;
+              final isFullRange = _zoom <= 1.0001;
+              return Semantics(
+                key: const ValueKey('duration-chart-zoom-viewport'),
+                label: 'Gráfico de duración ampliable en horizontal',
+                value:
+                    '${_visibleStart.round()}-${visibleEnd.round()} segundos',
+                child: Listener(
+                  onPointerDown: (event) =>
+                      _handlePointerDown(event, constraints.maxWidth),
+                  onPointerMove: (event) =>
+                      _handlePointerMove(event, constraints.maxWidth),
+                  onPointerUp: _handlePointerEnd,
+                  onPointerCancel: _handlePointerEnd,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onHorizontalDragUpdate: (details) {
+                      if (_pointers.length > 1) return;
+                      final chartWidth =
+                          constraints.maxWidth -
+                          _legacyChartLeft -
+                          _legacyChartRight;
+                      if (chartWidth <= 0 || _zoom <= 1.0001) return;
+                      _applyViewport(
+                        zoom: _zoom,
+                        start:
+                            _visibleStart -
+                            details.delta.dx * _visibleSpan / chartWidth,
+                      );
+                    },
+                    child: widget.builder(
+                      context,
+                      _visibleStart,
+                      visibleEnd,
+                      isFullRange,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        SizedBox(
+          height: 36,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              _DurationChartControl(
+                key: const ValueKey('duration-chart-zoom-out'),
+                tooltip: 'Alejar',
+                icon: Icons.zoom_out,
+                onPressed: _zoom <= 1.0001 ? null : () => _zoomBy(1 / 1.5),
+              ),
+              _DurationChartControl(
+                key: const ValueKey('duration-chart-zoom-in'),
+                tooltip: 'Ampliar',
+                icon: Icons.zoom_in,
+                onPressed: _zoom >= _maxZoom ? null : () => _zoomBy(1.5),
+              ),
+              _DurationChartControl(
+                key: const ValueKey('duration-chart-zoom-reset'),
+                tooltip: 'Ver rango completo',
+                icon: Icons.fit_screen,
+                onPressed: _zoom <= 1.0001 ? null : _reset,
+              ),
+            ],
           ),
         ),
       ],
+    );
+  }
+
+  double _focalFraction(double localX, double width) {
+    final chartWidth = width - _legacyChartLeft - _legacyChartRight;
+    if (chartWidth <= 0) return 0.5;
+    return ((localX - _legacyChartLeft) / chartWidth).clamp(0.0, 1.0);
+  }
+
+  void _handlePointerDown(PointerDownEvent event, double width) {
+    _pointers[event.pointer] = event.localPosition;
+    if (_pointers.length == 2) {
+      _beginPinch(width);
+    }
+  }
+
+  void _handlePointerMove(PointerMoveEvent event, double width) {
+    if (!_pointers.containsKey(event.pointer)) return;
+    _pointers[event.pointer] = event.localPosition;
+    final startDistance = _pinchStartDistance;
+    if (_pointers.length != 2 || startDistance == null || startDistance <= 0) {
+      return;
+    }
+    final points = _pointers.values.toList(growable: false);
+    final currentDistance = (points.first - points.last).distance;
+    final nextZoom = (_pinchStartZoom * currentDistance / startDistance).clamp(
+      1.0,
+      _maxZoom,
+    );
+    final nextSpan = _fullRangeEnd / nextZoom;
+    final midpointX = (points.first.dx + points.last.dx) / 2;
+    final fraction = _focalFraction(midpointX, width);
+    _applyViewport(
+      zoom: nextZoom,
+      start: _pinchAnchorSeconds - fraction * nextSpan,
+    );
+  }
+
+  void _handlePointerEnd(PointerEvent event) {
+    _pointers.remove(event.pointer);
+    _pinchStartDistance = null;
+  }
+
+  void _beginPinch(double width) {
+    final points = _pointers.values.toList(growable: false);
+    _pinchStartDistance = (points.first - points.last).distance;
+    _pinchStartZoom = _zoom;
+    final midpointX = (points.first.dx + points.last.dx) / 2;
+    _pinchAnchorSeconds =
+        _visibleStart + _focalFraction(midpointX, width) * _visibleSpan;
+  }
+
+  void _zoomBy(double factor) {
+    final anchor = _visibleStart + _visibleSpan / 2;
+    final nextZoom = (_zoom * factor).clamp(1.0, _maxZoom);
+    final nextSpan = _fullRangeEnd / nextZoom;
+    _applyViewport(zoom: nextZoom, start: anchor - nextSpan / 2);
+  }
+
+  void _applyViewport({required double zoom, required double start}) {
+    final nextSpan = _fullRangeEnd / zoom;
+    final maxStart = _fullRangeEnd - nextSpan;
+    final nextStart = start.clamp(0.0, maxStart);
+    if ((zoom - _zoom).abs() < 0.0001 &&
+        (nextStart - _visibleStart).abs() < 0.0001) {
+      return;
+    }
+    setState(() {
+      _zoom = zoom;
+      _visibleStart = nextStart;
+    });
+  }
+
+  void _reset() {
+    if (_zoom <= 1.0001 && _visibleStart == 0) return;
+    setState(() {
+      _zoom = 1;
+      _visibleStart = 0;
+    });
+  }
+}
+
+class _DurationChartControl extends StatelessWidget {
+  const _DurationChartControl({
+    required this.tooltip,
+    required this.icon,
+    required this.onPressed,
+    super.key,
+  });
+
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: tooltip,
+      onPressed: onPressed,
+      icon: Icon(icon, size: 19),
+      visualDensity: VisualDensity.compact,
+      constraints: const BoxConstraints.tightFor(width: 34, height: 32),
+      padding: EdgeInsets.zero,
     );
   }
 }
@@ -1122,59 +1709,232 @@ class _LegacyDurationChart extends StatelessWidget {
     required this.painter,
     required this.trips,
     required this.avatarAsset,
-    required this.rangeStart,
     required this.rangeEnd,
+    required this.selectedTripId,
+    required this.onTripSelected,
   });
 
   final _LegacyCurvePainter painter;
   final List<Trip> trips;
   final String avatarAsset;
-  final double rangeStart;
   final double rangeEnd;
+  final String? selectedTripId;
+  final ValueChanged<String> onTripSelected;
 
   @override
   Widget build(BuildContext context) {
-    final avatarTrips = trips.reversed.toList(growable: false);
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final chartRight = constraints.maxWidth - _legacyChartRight;
-        final chartWidth = chartRight - _legacyChartLeft;
-        return Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned.fill(child: CustomPaint(painter: painter)),
-            if (chartWidth > 0 && rangeEnd > rangeStart)
-              for (final trip in avatarTrips)
-                if (trip.durationSeconds >= rangeStart)
-                  Positioned(
-                    key: ValueKey('legacy-chart-avatar-${trip.id}'),
-                    left:
-                        (_markerX(
-                                  trip.durationSeconds.toDouble(),
-                                  chartWidth,
-                                  chartRight,
-                                ) -
-                                11)
-                            .clamp(0, constraints.maxWidth - 22),
-                    top: 2,
-                    child: IgnorePointer(
-                      child: ProfileAvatar(
-                        assetPath: avatarAsset,
-                        radius: 11,
-                        isSelected: false,
+    final avatarTrips = trips.asMap().entries.toList(growable: false).reversed;
+    return _HorizontalDurationViewport(
+      fullRangeEnd: rangeEnd,
+      builder: (context, visibleStart, visibleEnd, isFullRange) =>
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final chartRight = constraints.maxWidth - _legacyChartRight;
+              final chartWidth = chartRight - _legacyChartLeft;
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned.fill(
+                    child: CustomPaint(
+                      painter: painter.withViewport(
+                        rangeStart: visibleStart,
+                        rangeEnd: visibleEnd,
+                        showUpperOutliers: isFullRange,
                       ),
                     ),
                   ),
-          ],
-        );
-      },
+                  if (chartWidth > 0 && visibleEnd > visibleStart)
+                    for (final rankedTrip in avatarTrips)
+                      if (_durationIsVisible(
+                        rankedTrip.value.durationSeconds.toDouble(),
+                        visibleStart: visibleStart,
+                        visibleEnd: visibleEnd,
+                        fullRangeEnd: rangeEnd,
+                        showUpperOutliers: isFullRange,
+                      ))
+                        Positioned(
+                          key: ValueKey(
+                            'legacy-chart-avatar-${rankedTrip.value.id}',
+                          ),
+                          left:
+                              (_markerX(
+                                        rankedTrip.value.durationSeconds
+                                            .toDouble(),
+                                        visibleStart,
+                                        visibleEnd,
+                                        chartWidth,
+                                        chartRight,
+                                      ) -
+                                      14)
+                                  .clamp(0, constraints.maxWidth - 28),
+                          top: 0,
+                          child: _PersonalChartAvatar(
+                            avatarAsset: avatarAsset,
+                            position: rankedTrip.key + 1,
+                            isSelected: selectedTripId == rankedTrip.value.id,
+                            onTap: () => onTripSelected(rankedTrip.value.id),
+                          ),
+                        ),
+                ],
+              );
+            },
+          ),
     );
   }
 
-  double _markerX(double duration, double chartWidth, double chartRight) {
-    if (duration > rangeEnd) return chartRight;
+  double _markerX(
+    double duration,
+    double visibleStart,
+    double visibleEnd,
+    double chartWidth,
+    double chartRight,
+  ) {
+    if (duration > visibleEnd) return chartRight;
     return _legacyChartLeft +
-        ((duration - rangeStart) / (rangeEnd - rangeStart)) * chartWidth;
+        ((duration - visibleStart) / (visibleEnd - visibleStart)) * chartWidth;
+  }
+}
+
+bool _durationIsVisible(
+  double duration, {
+  required double visibleStart,
+  required double visibleEnd,
+  required double fullRangeEnd,
+  required bool showUpperOutliers,
+}) {
+  if (duration < visibleStart) return false;
+  if (duration <= visibleEnd) return true;
+  return showUpperOutliers && duration > fullRangeEnd;
+}
+
+class _PersonalChartAvatar extends StatelessWidget {
+  const _PersonalChartAvatar({
+    required this.avatarAsset,
+    required this.position,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String avatarAsset;
+  final int position;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: 'Ver mi viaje en posición $position',
+      child: InkResponse(
+        onTap: onTap,
+        radius: 24,
+        child: _RankedChartAvatarFrame(
+          key: ValueKey('personal-chart-rank-frame-$position'),
+          assetPath: avatarAsset,
+          rank: position,
+        ),
+      ),
+    );
+  }
+}
+
+class _PersonalMarkerCallout extends StatelessWidget {
+  const _PersonalMarkerCallout({
+    required this.trip,
+    required this.position,
+    required this.historicalModel,
+    required this.avatarAsset,
+    required this.displayName,
+    required this.username,
+  });
+
+  final Trip trip;
+  final int position;
+  final LegacyRouteModel? historicalModel;
+  final String avatarAsset;
+  final String displayName;
+  final String? username;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final percentile = historicalModel?.canPlot == true
+        ? historicalModel!.percentileForDuration(
+            trip.durationSeconds.toDouble(),
+          )
+        : null;
+    final percentileLabel = percentile == null
+        ? 'P--'
+        : 'P${percentile.clamp(0, 100).round()}';
+    return DecoratedBox(
+      key: ValueKey('personal-marker-callout-${trip.id}'),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLowest,
+        border: Border.all(color: colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        child: Row(
+          children: [
+            ProfileAvatar(assetPath: avatarAsset, radius: 18),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          displayName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      const _YouBadge(),
+                    ],
+                  ),
+                  if (username?.trim().isNotEmpty == true)
+                    Text(
+                      '@${username!.trim()}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '$position.\u00BA \u00B7 '
+                  '${formatDurationSeconds(trip.durationSeconds)} \u00B7 '
+                  '$percentileLabel',
+                  key: ValueKey('personal-marker-summary-${trip.id}'),
+                  textAlign: TextAlign.right,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800),
+                ),
+                Text(
+                  formatSpeedKmh(trip.equivalentAverageSpeedKmh),
+                  textAlign: TextAlign.right,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -1183,6 +1943,33 @@ const _legacyChartTop = 26.0;
 const _legacyChartRight = 8.0;
 const _legacyChartBottom = 28.0;
 
+({double start, double end}) _routeChartRange(
+  LegacyRouteModel? model,
+  Iterable<double> durations,
+) {
+  if (model != null &&
+      model.bestSeconds.isFinite &&
+      model.upperCutoffSeconds.isFinite &&
+      model.upperCutoffSeconds > model.bestSeconds) {
+    return (start: 0, end: model.upperCutoffSeconds);
+  }
+
+  final values =
+      durations
+          .where((value) => value.isFinite && value > 0)
+          .toList(growable: false)
+        ..sort();
+  if (values.isEmpty) {
+    return (start: 0, end: 60);
+  }
+
+  final maximum = values.last;
+  final spread = maximum - values.first;
+  final proportionalPadding = spread > 0 ? spread * 0.12 : maximum * 0.15;
+  final padding = proportionalPadding < 15 ? 15.0 : proportionalPadding;
+  return (start: 0, end: maximum + padding);
+}
+
 class _LegacyCurvePainter extends CustomPainter {
   const _LegacyCurvePainter({
     required this.points,
@@ -1190,6 +1977,8 @@ class _LegacyCurvePainter extends CustomPainter {
     required this.rangeStart,
     required this.rangeEnd,
     required this.colorScheme,
+    this.markerPositions,
+    this.showUpperOutliers = true,
   });
 
   final List<HistogramPoint> points;
@@ -1197,6 +1986,24 @@ class _LegacyCurvePainter extends CustomPainter {
   final double rangeStart;
   final double rangeEnd;
   final ColorScheme colorScheme;
+  final List<int>? markerPositions;
+  final bool showUpperOutliers;
+
+  _LegacyCurvePainter withViewport({
+    required double rangeStart,
+    required double rangeEnd,
+    required bool showUpperOutliers,
+  }) {
+    return _LegacyCurvePainter(
+      points: points,
+      personalDurations: personalDurations,
+      markerPositions: markerPositions,
+      rangeStart: rangeStart,
+      rangeEnd: rangeEnd,
+      colorScheme: colorScheme,
+      showUpperOutliers: showUpperOutliers,
+    );
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1220,63 +2027,68 @@ class _LegacyCurvePainter extends CustomPainter {
       0,
       (max, point) => point.density > max ? point.density : max,
     );
-    if (maxDensity <= 0) {
-      return;
-    }
-
-    final path = Path();
-    for (var index = 0; index < points.length; index++) {
-      final point = points[index];
-      final x = _mapX(point.seconds, chart);
-      final y = chart.bottom - (point.density / maxDensity) * chart.height;
-      if (index == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
+    canvas.save();
+    canvas.clipRect(chart);
+    if (maxDensity > 0) {
+      final path = Path();
+      for (var index = 0; index < points.length; index++) {
+        final point = points[index];
+        final x = _mapX(point.seconds, chart);
+        final y = chart.bottom - (point.density / maxDensity) * chart.height;
+        if (index == 0) {
+          path.moveTo(x, y);
+        } else {
+          path.lineTo(x, y);
+        }
       }
+      canvas.drawPath(
+        path,
+        Paint()
+          ..color = colorScheme.primary
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      );
     }
-    canvas.drawPath(
-      path,
-      Paint()
-        ..color = colorScheme.primary
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.5,
-    );
 
     for (var index = personalDurations.length - 1; index >= 0; index--) {
       final duration = personalDurations[index];
       if (duration < rangeStart) continue;
+      if (duration > rangeEnd && !showUpperOutliers) continue;
       final x = duration > rangeEnd ? chart.right : _mapX(duration, chart);
       canvas.drawLine(
         Offset(x, chart.bottom),
         Offset(x, chart.top),
         Paint()
-          ..color = tripRankAccentColor(index + 1)
-          ..strokeWidth = index < 3 ? 2.5 : 1.2,
+          ..color = tripRankAccentColor(
+            markerPositions == null ? index + 1 : markerPositions![index],
+          )
+          ..strokeWidth = (markerPositions?[index] ?? index + 1) <= 3
+              ? 2.5
+              : 1.2,
       );
     }
+    canvas.restore();
 
     final textPainter = TextPainter(textDirection: TextDirection.ltr);
-    _paintAxisLabel(
-      canvas,
-      textPainter,
-      formatReadableDurationSeconds(rangeStart),
-      Offset(chart.left, chart.bottom + 6),
-    );
-    _paintAxisLabel(
-      canvas,
-      textPainter,
-      formatReadableDurationSeconds(rangeEnd),
-      Offset(chart.right - 58, chart.bottom + 6),
-    );
+    for (final tick in durationAxisTicks(rangeStart, rangeEnd)) {
+      final x = _mapX(tick, chart);
+      canvas.drawLine(
+        Offset(x, chart.bottom),
+        Offset(x, chart.bottom + 4),
+        axisPaint,
+      );
+      _paintAxisLabel(canvas, textPainter, tick, chart);
+    }
   }
 
   @override
   bool shouldRepaint(covariant _LegacyCurvePainter oldDelegate) {
     return oldDelegate.points != points ||
         oldDelegate.personalDurations != personalDurations ||
+        oldDelegate.markerPositions != markerPositions ||
         oldDelegate.rangeStart != rangeStart ||
-        oldDelegate.rangeEnd != rangeEnd;
+        oldDelegate.rangeEnd != rangeEnd ||
+        oldDelegate.showUpperOutliers != showUpperOutliers;
   }
 
   double _mapX(double seconds, Rect chart) {
@@ -1287,36 +2099,569 @@ class _LegacyCurvePainter extends CustomPainter {
   void _paintAxisLabel(
     Canvas canvas,
     TextPainter textPainter,
-    String text,
-    Offset offset,
+    double seconds,
+    Rect chart,
   ) {
     textPainter
       ..text = TextSpan(
-        text: text,
+        text: formatDurationAxisTick(seconds),
         style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 10),
       )
-      ..layout(maxWidth: 70);
-    textPainter.paint(canvas, offset);
+      ..layout(maxWidth: 64);
+    final tickX = _mapX(seconds, chart);
+    final labelX = (tickX - textPainter.width / 2)
+        .clamp(chart.left, chart.right - textPainter.width)
+        .toDouble();
+    textPainter.paint(canvas, Offset(labelX, chart.bottom + 7));
   }
+}
+
+class _CommunityChartLoading extends StatelessWidget {
+  const _CommunityChartLoading({
+    required this.model,
+    required this.fallbackDurations,
+  });
+
+  final LegacyRouteModel? model;
+  final List<double> fallbackDurations;
+
+  @override
+  Widget build(BuildContext context) {
+    final chartRange = _routeChartRange(model, fallbackDurations);
+    final hasHistoricalCurve = model?.canPlot == true;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (!hasHistoricalCurve) ...[
+          const Text('No hay suficiente historico comparable para esta ruta.'),
+          const SizedBox(height: 10),
+        ],
+        SizedBox(
+          height: 216,
+          width: double.infinity,
+          child: _HorizontalDurationViewport(
+            fullRangeEnd: chartRange.end,
+            builder: (context, visibleStart, visibleEnd, isFullRange) =>
+                CustomPaint(
+                  painter: _LegacyCurvePainter(
+                    points: hasHistoricalCurve
+                        ? model!.smoothedDensityPoints()
+                        : const [],
+                    personalDurations: const [],
+                    rangeStart: visibleStart,
+                    rangeEnd: visibleEnd,
+                    colorScheme: Theme.of(context).colorScheme,
+                    showUpperOutliers: isFullRange,
+                  ),
+                ),
+          ),
+        ),
+        const LinearProgressIndicator(
+          key: ValueKey('community-route-ranking-loading'),
+        ),
+      ],
+    );
+  }
+}
+
+class _CommunityChartError extends StatelessWidget {
+  const _CommunityChartError({
+    required this.model,
+    required this.fallbackDurations,
+    required this.onRetry,
+  });
+
+  final LegacyRouteModel? model;
+  final List<double> fallbackDurations;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final chartRange = _routeChartRange(model, fallbackDurations);
+    final hasHistoricalCurve = model?.canPlot == true;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (!hasHistoricalCurve) ...[
+          const Text('No hay suficiente historico comparable para esta ruta.'),
+          const SizedBox(height: 10),
+        ],
+        SizedBox(
+          height: 216,
+          width: double.infinity,
+          child: _HorizontalDurationViewport(
+            fullRangeEnd: chartRange.end,
+            builder: (context, visibleStart, visibleEnd, isFullRange) =>
+                CustomPaint(
+                  painter: _LegacyCurvePainter(
+                    points: hasHistoricalCurve
+                        ? model!.smoothedDensityPoints()
+                        : const [],
+                    personalDurations: const [],
+                    rangeStart: visibleStart,
+                    rangeEnd: visibleEnd,
+                    colorScheme: Theme.of(context).colorScheme,
+                    showUpperOutliers: isFullRange,
+                  ),
+                ),
+          ),
+        ),
+        const Text('No se ha podido cargar el ranking de Comunidad.'),
+        TextButton.icon(
+          onPressed: onRetry,
+          icon: const Icon(Icons.refresh),
+          label: const Text('Reintentar'),
+        ),
+      ],
+    );
+  }
+}
+
+class _CommunityChartContent extends StatelessWidget {
+  const _CommunityChartContent({
+    required this.model,
+    required this.ranking,
+    required this.selectedUserId,
+    required this.onUserSelected,
+  });
+
+  final LegacyRouteModel? model;
+  final CommunityRouteRanking ranking;
+  final String? selectedUserId;
+  final ValueChanged<String> onUserSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedEntry = ranking.entries
+        .where((entry) => entry.userId == selectedUserId)
+        .firstOrNull;
+    final bestEntry = ranking.entries.firstOrNull;
+    final ownEntry = ranking.currentUserEntry;
+    final hasHistoricalCurve = model?.canPlot == true;
+
+    return TapRegion(
+      onTapOutside: selectedEntry == null
+          ? null
+          : (_) => onUserSelected(selectedEntry.userId),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            key: const ValueKey('community-duration-chart'),
+            height: 216,
+            width: double.infinity,
+            child: _CommunityDurationChart(
+              model: model,
+              entries: ranking.entries,
+              showHistoricalCurve:
+                  hasHistoricalCurve && ranking.entries.isNotEmpty,
+              onUserSelected: onUserSelected,
+            ),
+          ),
+          if (selectedEntry != null) ...[
+            const SizedBox(height: 8),
+            _CommunityMarkerCallout(
+              entry: selectedEntry,
+              historicalModel: model,
+            ),
+          ],
+          if (!hasHistoricalCurve || ranking.entries.isEmpty) ...[
+            const SizedBox(height: 10),
+            const Text(
+              'No hay suficiente historico comparable para esta ruta.',
+              key: ValueKey('community-route-empty-chart'),
+            ),
+          ],
+          const SizedBox(height: 16),
+          _RouteHistoryComparison(
+            historicalModel: model,
+            comparisonTitle: 'COMUNIDAD',
+            comparisonTripCount: ranking.entries.length,
+            comparisonBestSeconds: bestEntry?.durationSeconds,
+            comparisonTypicalSeconds: ownEntry?.durationSeconds,
+            comparisonLeading: Icon(
+              Icons.people_outline,
+              size: 19,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+            comparisonCountLabel: 'Usuarios',
+            comparisonTypicalLabel: 'Mi mejor',
+            comparisonBestValueLeading: bestEntry == null
+                ? null
+                : _ComparisonUserMarker(entry: bestEntry),
+            comparisonTypicalValueLeading: ownEntry == null
+                ? null
+                : _ComparisonUserMarker(entry: ownEntry),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CommunityDurationChart extends StatelessWidget {
+  const _CommunityDurationChart({
+    required this.model,
+    required this.entries,
+    required this.showHistoricalCurve,
+    required this.onUserSelected,
+  });
+
+  final LegacyRouteModel? model;
+  final List<CommunityRouteRankingEntry> entries;
+  final bool showHistoricalCurve;
+  final ValueChanged<String> onUserSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final chartRange = _routeChartRange(
+      model,
+      entries.map((entry) => entry.durationSeconds),
+    );
+    return _HorizontalDurationViewport(
+      fullRangeEnd: chartRange.end,
+      builder: (context, visibleStart, visibleEnd, isFullRange) =>
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final chartRight = constraints.maxWidth - _legacyChartRight;
+              final chartWidth = chartRight - _legacyChartLeft;
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned.fill(
+                    child: CustomPaint(
+                      painter: _LegacyCurvePainter(
+                        points: showHistoricalCurve
+                            ? model!.smoothedDensityPoints()
+                            : const [],
+                        personalDurations: [
+                          for (final entry in entries) entry.durationSeconds,
+                        ],
+                        markerPositions: [
+                          for (final entry in entries) entry.position,
+                        ],
+                        rangeStart: visibleStart,
+                        rangeEnd: visibleEnd,
+                        colorScheme: Theme.of(context).colorScheme,
+                        showUpperOutliers: isFullRange,
+                      ),
+                    ),
+                  ),
+                  if (chartWidth > 0)
+                    for (final entry in entries.reversed)
+                      if (_durationIsVisible(
+                        entry.durationSeconds,
+                        visibleStart: visibleStart,
+                        visibleEnd: visibleEnd,
+                        fullRangeEnd: chartRange.end,
+                        showUpperOutliers: isFullRange,
+                      ))
+                        Positioned(
+                          key: ValueKey(
+                            'community-chart-avatar-${entry.userId}',
+                          ),
+                          left:
+                              (_communityMarkerX(
+                                        entry.durationSeconds,
+                                        visibleStart,
+                                        visibleEnd,
+                                        chartWidth,
+                                        chartRight,
+                                      ) -
+                                      14)
+                                  .clamp(0, constraints.maxWidth - 28),
+                          top: 0,
+                          child: _CommunityChartAvatar(
+                            entry: entry,
+                            onTap: () => onUserSelected(entry.userId),
+                          ),
+                        ),
+                ],
+              );
+            },
+          ),
+    );
+  }
+}
+
+double _communityMarkerX(
+  double duration,
+  double rangeStart,
+  double rangeEnd,
+  double chartWidth,
+  double chartRight,
+) {
+  if (duration > rangeEnd) return chartRight;
+  return _legacyChartLeft +
+      ((duration - rangeStart) / (rangeEnd - rangeStart)) * chartWidth;
+}
+
+class _CommunityChartAvatar extends StatelessWidget {
+  const _CommunityChartAvatar({required this.entry, required this.onTap});
+
+  final CommunityRouteRankingEntry entry;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: 'Ver resultado de ${entry.displayName}',
+      child: InkResponse(
+        onTap: onTap,
+        radius: 24,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _RankedChartAvatarFrame(
+              key: ValueKey('community-chart-rank-frame-${entry.userId}'),
+              assetPath: entry.avatarAsset,
+              rank: entry.position,
+            ),
+            if (entry.isCurrentUser)
+              Positioned(top: 23, left: -3, child: _YouBadge(compact: true)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RankedChartAvatarFrame extends StatelessWidget {
+  const _RankedChartAvatarFrame({
+    required this.assetPath,
+    required this.rank,
+    super.key,
+  });
+
+  final String assetPath;
+  final int rank;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasRankBorder = rank <= 3;
+    return Container(
+      width: 28,
+      height: 28,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: hasRankBorder
+            ? Border.all(color: tripRankAccentColor(rank), width: 2.5)
+            : null,
+        color: hasRankBorder ? Theme.of(context).colorScheme.surface : null,
+      ),
+      padding: EdgeInsets.all(hasRankBorder ? 1 : 3.5),
+      child: ClipOval(
+        child: Image.asset(
+          assetPath,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => Image.asset(
+            LocalAvatarRepository.defaultAvatarAsset,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CommunityMarkerCallout extends StatelessWidget {
+  const _CommunityMarkerCallout({
+    required this.entry,
+    required this.historicalModel,
+  });
+
+  final CommunityRouteRankingEntry entry;
+  final LegacyRouteModel? historicalModel;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final percentile = historicalModel?.canPlot == true
+        ? historicalModel!.percentileForDuration(entry.durationSeconds)
+        : null;
+    final percentileLabel = percentile == null
+        ? 'P--'
+        : 'P${percentile.clamp(0, 100).round()}';
+    return DecoratedBox(
+      key: ValueKey('community-marker-callout-${entry.userId}'),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLowest,
+        border: Border.all(color: colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        child: Row(
+          children: [
+            ProfileAvatar(
+              assetPath: entry.avatarAsset,
+              radius: 18,
+              isSelected: false,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          entry.displayName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                      if (entry.isCurrentUser) ...[
+                        const SizedBox(width: 6),
+                        const _YouBadge(),
+                      ],
+                    ],
+                  ),
+                  Text(
+                    '@${entry.username}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '${entry.position}.\u00BA \u00B7 '
+                  '${_formatCommunityDuration(entry.durationMilliseconds)} '
+                  '\u00B7 $percentileLabel',
+                  key: ValueKey('community-marker-summary-${entry.userId}'),
+                  textAlign: TextAlign.right,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800),
+                ),
+                Text(
+                  formatSpeedKmh(entry.equivalentAverageSpeedKmh),
+                  textAlign: TextAlign.right,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _YouBadge extends StatelessWidget {
+  const _YouBadge({this.compact = false});
+
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      key: compact ? const ValueKey('community-chart-you-badge') : null,
+      decoration: BoxDecoration(
+        color: colorScheme.primary,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: compact ? 4 : 6,
+          vertical: compact ? 1 : 2,
+        ),
+        child: Text(
+          'Tú',
+          style: TextStyle(
+            color: colorScheme.onPrimary,
+            fontSize: compact ? 8 : 10,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ComparisonUserMarker extends StatelessWidget {
+  const _ComparisonUserMarker({required this.entry});
+
+  final CommunityRouteRankingEntry entry;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      key: ValueKey('comparison-user-marker-${entry.userId}'),
+      width: entry.isCurrentUser ? 28 : 20,
+      height: 22,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ProfileAvatar(
+            assetPath: entry.avatarAsset,
+            radius: 9,
+            isSelected: false,
+          ),
+          if (entry.isCurrentUser)
+            const Positioned(
+              left: 12,
+              top: 13,
+              child: _YouBadge(compact: true),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+String _formatCommunityDuration(int milliseconds) {
+  final totalSeconds = milliseconds ~/ 1000;
+  final remainderMilliseconds = milliseconds.remainder(1000);
+  final base = formatDurationSeconds(totalSeconds);
+  if (remainderMilliseconds == 0) return base;
+  return '$base.${remainderMilliseconds.toString().padLeft(3, '0')}';
 }
 
 class _RouteHistoryComparison extends StatelessWidget {
   const _RouteHistoryComparison({
     required this.historicalModel,
-    required this.personalStatistics,
-    required this.avatarAsset,
+    required this.comparisonTitle,
+    required this.comparisonTripCount,
+    required this.comparisonBestSeconds,
+    required this.comparisonTypicalSeconds,
+    required this.comparisonLeading,
+    this.comparisonCountLabel = 'Viajes',
+    this.comparisonTypicalLabel = 'Típico',
+    this.comparisonBestValueLeading,
+    this.comparisonTypicalValueLeading,
   });
 
-  final LegacyRouteModel historicalModel;
-  final RouteStatistics personalStatistics;
-  final String avatarAsset;
+  final LegacyRouteModel? historicalModel;
+  final String comparisonTitle;
+  final int comparisonTripCount;
+  final num? comparisonBestSeconds;
+  final num? comparisonTypicalSeconds;
+  final Widget comparisonLeading;
+  final String comparisonCountLabel;
+  final String comparisonTypicalLabel;
+  final Widget? comparisonBestValueLeading;
+  final Widget? comparisonTypicalValueLeading;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final historicalTypical = historicalModel.durationForPercentile(50);
-    final personalBest = personalStatistics.bestDurationSeconds;
-    final personalTypical = personalStatistics.medianDurationSeconds;
+    final hasComparableHistory = historicalModel?.canPlot == true;
+    final historicalTypical = hasComparableHistory
+        ? historicalModel!.durationForPercentile(50)
+        : null;
 
     return IntrinsicHeight(
       child: Row(
@@ -1324,27 +2669,33 @@ class _RouteHistoryComparison extends StatelessWidget {
         children: [
           Expanded(
             child: _RouteComparisonColumn(
-              title: 'MIS VIAJES',
-              titleLeading: ProfileAvatar(
-                key: const ValueKey('personal-comparison-avatar'),
-                assetPath: avatarAsset,
-                radius: 10,
-                isSelected: false,
-              ),
+              title: comparisonTitle,
+              titleLeading: comparisonLeading,
               titleColor: colorScheme.onSurface,
               valueColor: colorScheme.onSurface,
               percentileColor: colorScheme.primary,
-              tripCount: personalStatistics.totalTrips,
-              bestSeconds: personalBest,
-              bestPercentile: personalBest == null
+              tripCount: comparisonTripCount,
+              bestSeconds: comparisonBestSeconds,
+              bestPercentile: comparisonBestSeconds == null
                   ? null
-                  : historicalModel.percentileForDuration(
-                      personalBest.toDouble(),
-                    ),
-              typicalSeconds: personalTypical,
-              typicalPercentile: personalTypical == null
+                  : hasComparableHistory
+                  ? historicalModel!.percentileForDuration(
+                      comparisonBestSeconds!.toDouble(),
+                    )
+                  : null,
+              typicalSeconds: comparisonTypicalSeconds,
+              typicalPercentile: comparisonTypicalSeconds == null
                   ? null
-                  : historicalModel.percentileForDuration(personalTypical),
+                  : hasComparableHistory
+                  ? historicalModel!.percentileForDuration(
+                      comparisonTypicalSeconds!.toDouble(),
+                    )
+                  : null,
+              countLabel: comparisonCountLabel,
+              bestLabel: 'Mejor',
+              typicalLabel: comparisonTypicalLabel,
+              bestValueLeading: comparisonBestValueLeading,
+              typicalValueLeading: comparisonTypicalValueLeading,
             ),
           ),
           Padding(
@@ -1361,8 +2712,8 @@ class _RouteHistoryComparison extends StatelessWidget {
               titleLeading: _DistributionIcon(color: colorScheme.primary),
               titleColor: colorScheme.primary,
               valueColor: colorScheme.primary,
-              tripCount: historicalModel.totalCount,
-              bestSeconds: historicalModel.bestSeconds,
+              tripCount: historicalModel?.totalCount,
+              bestSeconds: historicalModel?.bestSeconds,
               typicalSeconds: historicalTypical,
             ),
           ),
@@ -1372,7 +2723,10 @@ class _RouteHistoryComparison extends StatelessWidget {
   }
 }
 
-String _historicalUsersTitle(LegacyRouteModel model) {
+String _historicalUsersTitle(LegacyRouteModel? model) {
+  if (model == null) {
+    return 'USUARIOS';
+  }
   final firstYear = model.firstTripAt.year;
   final lastYear = model.lastTripAt.year;
   if (firstYear == lastYear) {
@@ -1447,6 +2801,11 @@ class _RouteComparisonColumn extends StatelessWidget {
     required this.tripCount,
     required this.bestSeconds,
     required this.typicalSeconds,
+    this.countLabel = 'Viajes',
+    this.bestLabel = 'Mejor',
+    this.typicalLabel = 'Típico',
+    this.bestValueLeading,
+    this.typicalValueLeading,
     this.bestPercentile,
     this.typicalPercentile,
     this.percentileColor,
@@ -1456,9 +2815,14 @@ class _RouteComparisonColumn extends StatelessWidget {
   final Widget titleLeading;
   final Color titleColor;
   final Color valueColor;
-  final int tripCount;
+  final int? tripCount;
   final num? bestSeconds;
   final num? typicalSeconds;
+  final String countLabel;
+  final String bestLabel;
+  final String typicalLabel;
+  final Widget? bestValueLeading;
+  final Widget? typicalValueLeading;
   final double? bestPercentile;
   final double? typicalPercentile;
   final Color? percentileColor;
@@ -1491,25 +2855,27 @@ class _RouteComparisonColumn extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         _RouteComparisonValue(
-          label: 'Viajes',
-          value: '$tripCount',
+          label: countLabel,
+          value: tripCount?.toString() ?? '—',
           valueColor: valueColor,
         ),
         const SizedBox(height: 12),
         _RouteComparisonMetric(
-          label: 'Mejor',
+          label: bestLabel,
           seconds: bestSeconds,
           percentile: bestPercentile,
           valueColor: valueColor,
           percentileColor: percentileColor,
+          valueLeading: bestValueLeading,
         ),
         const SizedBox(height: 10),
         _RouteComparisonMetric(
-          label: 'Típico',
+          label: typicalLabel,
           seconds: typicalSeconds,
           percentile: typicalPercentile,
           valueColor: valueColor,
           percentileColor: percentileColor,
+          valueLeading: typicalValueLeading,
         ),
       ],
     );
@@ -1523,6 +2889,7 @@ class _RouteComparisonMetric extends StatelessWidget {
     required this.percentile,
     required this.valueColor,
     this.percentileColor,
+    this.valueLeading,
   });
 
   final String label;
@@ -1530,6 +2897,7 @@ class _RouteComparisonMetric extends StatelessWidget {
   final double? percentile;
   final Color valueColor;
   final Color? percentileColor;
+  final Widget? valueLeading;
 
   @override
   Widget build(BuildContext context) {
@@ -1537,6 +2905,7 @@ class _RouteComparisonMetric extends StatelessWidget {
       label: label,
       value: seconds == null ? '—' : formatPrimeDurationSeconds(seconds!),
       valueColor: valueColor,
+      valueLeading: valueLeading,
       secondaryColor: percentileColor,
       secondary: percentile == null
           ? null
@@ -1552,6 +2921,7 @@ class _RouteComparisonValue extends StatelessWidget {
     required this.valueColor,
     this.secondary,
     this.secondaryColor,
+    this.valueLeading,
   });
 
   final String label;
@@ -1559,6 +2929,7 @@ class _RouteComparisonValue extends StatelessWidget {
   final Color valueColor;
   final String? secondary;
   final Color? secondaryColor;
+  final Widget? valueLeading;
 
   @override
   Widget build(BuildContext context) {
@@ -1579,6 +2950,7 @@ class _RouteComparisonValue extends StatelessWidget {
           spacing: 4,
           runSpacing: 0,
           children: [
+            ?valueLeading,
             Text(
               value,
               style: textTheme.titleMedium?.copyWith(
@@ -1603,16 +2975,250 @@ class _RouteComparisonValue extends StatelessWidget {
   }
 }
 
+class _CommunityTripsCard extends StatelessWidget {
+  const _CommunityTripsCard({
+    required this.rankingAsync,
+    required this.historicalModel,
+    required this.personalTrips,
+    this.onTripSelected,
+    required this.onRetry,
+  });
+
+  final AsyncValue<CommunityRouteRanking> rankingAsync;
+  final LegacyRouteModel? historicalModel;
+  final List<Trip> personalTrips;
+  final ValueChanged<Trip>? onTripSelected;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      key: const ValueKey('community-route-ranking-card'),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Ranking de la comunidad',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 12),
+            rankingAsync.when(
+              loading: () => const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (error, stackTrace) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('No se ha podido cargar el ranking de Comunidad.'),
+                  TextButton.icon(
+                    onPressed: onRetry,
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Reintentar'),
+                  ),
+                ],
+              ),
+              data: (ranking) {
+                if (ranking.entries.isEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    child: Text(
+                      'Nadie de tu Comunidad tiene viajes en este sentido.',
+                      key: ValueKey('community-route-empty-list'),
+                    ),
+                  );
+                }
+                return Column(
+                  children: [
+                    for (
+                      var index = 0;
+                      index < ranking.entries.length;
+                      index++
+                    ) ...[
+                      _CommunityTripRow(
+                        entry: ranking.entries[index],
+                        historicalModel: historicalModel,
+                        ownTrip: ranking.entries[index].isCurrentUser
+                            ? _matchingOwnTrip(
+                                ranking.entries[index],
+                                personalTrips,
+                              )
+                            : null,
+                        onTripSelected: onTripSelected,
+                      ),
+                      if (index < ranking.entries.length - 1)
+                        const Divider(height: 1, thickness: 1),
+                    ],
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CommunityTripRow extends StatelessWidget {
+  const _CommunityTripRow({
+    required this.entry,
+    required this.historicalModel,
+    required this.ownTrip,
+    this.onTripSelected,
+  });
+
+  final CommunityRouteRankingEntry entry;
+  final LegacyRouteModel? historicalModel;
+  final Trip? ownTrip;
+  final ValueChanged<Trip>? onTripSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final background = tripRankBackgroundColor(entry.position);
+    final startedAt = entry.isCurrentUser
+        ? ownTrip?.startedAt ?? entry.startedAt
+        : null;
+    final endedAt = startedAt == null
+        ? null
+        : ownTrip?.endedAt ??
+              startedAt.add(Duration(milliseconds: entry.durationMilliseconds));
+    final percentile = historicalModel?.canPlot == true
+        ? historicalModel!.percentileForDuration(entry.durationSeconds)
+        : null;
+    final content = Padding(
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (startedAt != null && endedAt != null) ...[
+            SizedBox(
+              height: 28,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${formatShortDateTime(startedAt)} - '
+                      '${formatShortTime(endedAt)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  TripRankingPlacement(rank: entry.position),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+          _RouteTripUserIdentity(
+            avatarAsset: entry.avatarAsset,
+            displayName: entry.displayName,
+            username: entry.username,
+            isCurrentUser: entry.isCurrentUser,
+            trailing: startedAt == null
+                ? TripRankingPlacement(rank: entry.position)
+                : null,
+          ),
+          if (entry.isCurrentUser && ownTrip?.hasPitStops == true) ...[
+            const SizedBox(height: 8),
+            for (final pitStop in ownTrip!.pitStops)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: MetricPill(
+                  icon: Icons.local_gas_station_outlined,
+                  label:
+                      '${formatDurationSeconds(pitStop.durationSeconds)}  ·  '
+                      '${pitStop.stationName}',
+                  backgroundColor: const Color(0xFFDDF3EE),
+                  foregroundColor: const Color(0xFF075E56),
+                  borderColor: const Color(0xFF91D5C8),
+                  dense: true,
+                ),
+              ),
+          ],
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: [
+              MetricPill(
+                icon: Icons.leaderboard_outlined,
+                label: percentile == null
+                    ? 'P--'
+                    : 'P${percentile.clamp(0, 100).round()}',
+                dense: true,
+              ),
+              MetricPill(
+                icon: Icons.timer_outlined,
+                label: _formatCommunityDuration(entry.durationMilliseconds),
+                dense: true,
+              ),
+              MetricPill(
+                icon: Icons.speed_outlined,
+                label: formatSpeedKmh(entry.equivalentAverageSpeedKmh),
+                dense: true,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    return Material(
+      key: ValueKey('community-route-entry-${entry.userId}'),
+      color: background,
+      child: InkWell(
+        onTap: entry.isCurrentUser
+            ? (ownTrip == null || onTripSelected == null
+                  ? null
+                  : () => onTripSelected!(ownTrip!))
+            : () => context.push('/social-profile/${entry.userId}'),
+        child: content,
+      ),
+    );
+  }
+}
+
+Trip? _matchingOwnTrip(
+  CommunityRouteRankingEntry entry,
+  List<Trip> personalTrips,
+) {
+  Trip? best;
+  for (final trip in personalTrips) {
+    if (best == null || trip.durationSeconds < best.durationSeconds) {
+      best = trip;
+    }
+    if (trip.durationSeconds * 1000 == entry.durationMilliseconds) {
+      return trip;
+    }
+  }
+  return best;
+}
+
 class _PersonalTripsSection extends StatelessWidget {
   const _PersonalTripsSection({
     required this.trips,
     required this.avatarAsset,
+    required this.displayName,
+    required this.username,
     required this.historicalModel,
     this.onTripSelected,
   });
 
   final List<Trip> trips;
   final String avatarAsset;
+  final String displayName;
+  final String? username;
   final LegacyRouteModel? historicalModel;
   final ValueChanged<Trip>? onTripSelected;
 
@@ -1636,7 +3242,8 @@ class _PersonalTripsSection extends StatelessWidget {
             isPersonalRecord: false,
             showRoute: false,
             embedded: true,
-            medalRank: index < 3 ? index + 1 : null,
+            showPrice: false,
+            medalRank: index + 1,
             showHistoricalPercentile: true,
             historicalPercentile: historicalModel?.canPlot == true
                 ? historicalModel!.percentileForDuration(
@@ -1644,6 +3251,13 @@ class _PersonalTripsSection extends StatelessWidget {
                   )
                 : null,
             avatarAsset: avatarAsset,
+            identityHeader: _RouteTripUserIdentity(
+              key: ValueKey('personal-route-user-${orderedTrips[index].id}'),
+              avatarAsset: avatarAsset,
+              displayName: displayName,
+              username: username,
+              isCurrentUser: true,
+            ),
             onTap: onTripSelected == null
                 ? null
                 : () => onTripSelected!(orderedTrips[index]),
@@ -1651,6 +3265,70 @@ class _PersonalTripsSection extends StatelessWidget {
           if (index < orderedTrips.length - 1)
             const Divider(height: 1, thickness: 1),
         ],
+      ],
+    );
+  }
+}
+
+class _RouteTripUserIdentity extends StatelessWidget {
+  const _RouteTripUserIdentity({
+    required this.avatarAsset,
+    required this.displayName,
+    required this.username,
+    required this.isCurrentUser,
+    this.trailing,
+    super.key,
+  });
+
+  final String avatarAsset;
+  final String displayName;
+  final String? username;
+  final bool isCurrentUser;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    final normalizedUsername = username?.trim();
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ProfileAvatar(assetPath: avatarAsset, radius: 23, isSelected: false),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      displayName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  if (isCurrentUser) ...[
+                    const SizedBox(width: 6),
+                    const _YouBadge(),
+                  ],
+                ],
+              ),
+              if (normalizedUsername?.isNotEmpty == true)
+                Text(
+                  '@$normalizedUsername',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        if (trailing != null) ...[const SizedBox(width: 8), trailing!],
       ],
     );
   }

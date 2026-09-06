@@ -4,6 +4,8 @@ import '../../core/models/profile_statistics_values.dart';
 import '../../core/utils/duration_formatters.dart';
 import '../../core/utils/metric_formatters.dart';
 import 'checkered_flag_strip.dart';
+import 'docking_station_icon.dart';
+import 'head_to_head_icon.dart';
 import 'profile_avatar.dart';
 
 class ProfileStatsCardData {
@@ -41,12 +43,16 @@ class ArcadeUserStatsCard extends StatelessWidget {
     required this.displayName,
     required this.username,
     required this.statistics,
+    this.mostUsedStationName,
     this.socialSummary,
     this.socialAction,
+    this.headToHeadAction,
     this.onFollowersTap,
     this.onFollowingTap,
     this.onVisibilityTap,
     this.onTripsTap,
+    this.onMostUsedStationTap,
+    this.onIdentityTap,
     super.key,
   });
 
@@ -54,12 +60,16 @@ class ArcadeUserStatsCard extends StatelessWidget {
   final String displayName;
   final String? username;
   final ProfileStatsCardData? statistics;
+  final String? mostUsedStationName;
   final SocialConnectionSummary? socialSummary;
   final Widget? socialAction;
+  final Widget? headToHeadAction;
   final VoidCallback? onFollowersTap;
   final VoidCallback? onFollowingTap;
   final VoidCallback? onVisibilityTap;
   final VoidCallback? onTripsTap;
+  final VoidCallback? onMostUsedStationTap;
+  final VoidCallback? onIdentityTap;
 
   @override
   Widget build(BuildContext context) {
@@ -85,77 +95,107 @@ class ArcadeUserStatsCard extends StatelessWidget {
                   child: CheckeredFlagStrip(height: 8),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(18, 24, 18, 18),
-                  child: Row(
+                  padding: EdgeInsets.fromLTRB(
+                    18,
+                    24,
+                    18,
+                    mostUsedStationName == null ? 18 : 6,
+                  ),
+                  child: Column(
                     children: [
-                      SizedBox(
-                        width: 88,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              displayName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.labelLarge
-                                  ?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                            ),
-                            if (username?.trim().isNotEmpty == true) ...[
-                              const SizedBox(height: 2),
-                              Text(
-                                '@${username!.trim()}',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.labelMedium
-                                    ?.copyWith(color: Colors.white),
-                              ),
-                            ],
-                            const SizedBox(height: 8),
-                            DecoratedBox(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 4,
+                      Row(
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              key: const ValueKey('profile-identity-action'),
+                              onTap: onIdentityTap,
+                              borderRadius: BorderRadius.circular(8),
+                              child: SizedBox(
+                                width: 88,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      displayName,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                    ),
+                                    if (username?.trim().isNotEmpty ==
+                                        true) ...[
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        '@${username!.trim()}',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium
+                                            ?.copyWith(color: Colors.white),
+                                      ),
+                                    ],
+                                    const SizedBox(height: 8),
+                                    DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(
+                                              alpha: 0.22,
+                                            ),
+                                            blurRadius: 14,
+                                            offset: const Offset(0, 6),
+                                          ),
+                                        ],
+                                      ),
+                                      child: ProfileAvatar(
+                                        assetPath: avatarAsset,
+                                        radius: 38,
+                                        borderColor: Colors.white,
+                                        borderWidth: 2,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.22),
-                                    blurRadius: 14,
-                                    offset: const Offset(0, 6),
-                                  ),
-                                ],
-                              ),
-                              child: ProfileAvatar(
-                                assetPath: avatarAsset,
-                                radius: 38,
                               ),
                             ),
-                          ],
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: statistics != null
+                                ? _StatisticsGrid(
+                                    totalTrips: statistics!.totalTrips,
+                                    days: statistics!.historySpanDays,
+                                    totalDurationSeconds:
+                                        statistics!.totalDurationSeconds,
+                                    totalDistanceMeters:
+                                        statistics!.totalDistanceMeters,
+                                    equivalentAverageSpeedKmh:
+                                        statistics!.equivalentAverageSpeedKmh,
+                                    hasDistance:
+                                        statistics!.tripsWithDistance > 0,
+                                    onTripsTap: onTripsTap,
+                                  )
+                                : const _PrivateStatisticsState(),
+                          ),
+                        ],
+                      ),
+                      if (mostUsedStationName case final stationName?) ...[
+                        const SizedBox(height: 12),
+                        MostUsedStationBanner(
+                          stationName: stationName,
+                          onTap: onMostUsedStationTap,
                         ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: statistics != null
-                            ? _StatisticsGrid(
-                                totalTrips: statistics!.totalTrips,
-                                days: statistics!.historySpanDays,
-                                totalDurationSeconds:
-                                    statistics!.totalDurationSeconds,
-                                totalDistanceMeters:
-                                    statistics!.totalDistanceMeters,
-                                equivalentAverageSpeedKmh:
-                                    statistics!.equivalentAverageSpeedKmh,
-                                hasDistance: statistics!.tripsWithDistance > 0,
-                                onTripsTap: onTripsTap,
-                              )
-                            : const _PrivateStatisticsState(),
-                      ),
+                      ],
                     ],
                   ),
                 ),
@@ -166,6 +206,7 @@ class ArcadeUserStatsCard extends StatelessWidget {
             _SocialConnectionFooter(
               summary: summary,
               action: socialAction,
+              adjacentAction: headToHeadAction,
               onFollowersTap: onFollowersTap,
               onFollowingTap: onFollowingTap,
               onVisibilityTap: onVisibilityTap,
@@ -173,6 +214,200 @@ class ArcadeUserStatsCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class MostUsedStationBanner extends StatelessWidget {
+  const MostUsedStationBanner({
+    required this.stationName,
+    this.onTap,
+    super.key,
+  });
+
+  final String stationName;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      key: const ValueKey('most-used-station-banner'),
+      color: Colors.transparent,
+      child: InkWell(
+        key: const ValueKey('most-used-station-action'),
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(4, 7, 10, 3),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.white.withValues(alpha: 0.28)),
+            ),
+          ),
+          child: Row(
+            children: [
+              Transform.translate(
+                offset: const Offset(0, -1),
+                child: const DockingStationIcon(
+                  color: Colors.white,
+                  width: 22,
+                  height: 20,
+                ),
+              ),
+              const SizedBox(width: 2),
+              Text(
+                '#1:',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(width: 7),
+              Expanded(
+                child: _OverflowingStationName(
+                  text: stationName,
+                  style:
+                      Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                      ) ??
+                      const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                      ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OverflowingStationName extends StatefulWidget {
+  const _OverflowingStationName({required this.text, required this.style});
+
+  final String text;
+  final TextStyle style;
+
+  @override
+  State<_OverflowingStationName> createState() =>
+      _OverflowingStationNameState();
+}
+
+class _OverflowingStationNameState extends State<_OverflowingStationName>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(vsync: this);
+  double _distance = 0;
+  double _requestedDistance = -1;
+  int _animationGeneration = 0;
+
+  @override
+  void dispose() {
+    _animationGeneration++;
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final painter = TextPainter(
+          text: TextSpan(text: widget.text, style: widget.style),
+          maxLines: 1,
+          textDirection: Directionality.of(context),
+          textScaler: MediaQuery.textScalerOf(context),
+        )..layout();
+        final distance =
+            constraints.maxWidth.isFinite &&
+                painter.width > constraints.maxWidth
+            ? painter.width - constraints.maxWidth
+            : 0.0;
+        _requestDistance(distance);
+
+        if (distance <= 0) {
+          return Text(widget.text, maxLines: 1, style: widget.style);
+        }
+
+        return Semantics(
+          label: widget.text,
+          child: ExcludeSemantics(
+            child: SizedBox(
+              height: painter.height,
+              child: Stack(
+                clipBehavior: Clip.hardEdge,
+                children: [
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    width: painter.width,
+                    child: AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, child) => Transform.translate(
+                        key: const ValueKey('most-used-station-scroll'),
+                        offset: Offset(-_distance * _controller.value, 0),
+                        child: child,
+                      ),
+                      child: Text(
+                        widget.text,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: widget.style,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _requestDistance(double distance) {
+    if ((_requestedDistance - distance).abs() < 0.5) {
+      return;
+    }
+    _requestedDistance = distance;
+    final generation = ++_animationGeneration;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || generation != _animationGeneration) {
+        return;
+      }
+      _controller.stop();
+      _controller.value = 0;
+      _distance = distance;
+      if (distance > 0) {
+        _runAnimation(generation);
+      }
+    });
+  }
+
+  Future<void> _runAnimation(int generation) async {
+    final travelMilliseconds = (_distance / 30 * 1000).round().clamp(
+      1600,
+      9000,
+    );
+    _controller.duration = Duration(milliseconds: travelMilliseconds);
+
+    while (mounted && generation == _animationGeneration) {
+      await Future<void>.delayed(const Duration(milliseconds: 1100));
+      if (!mounted || generation != _animationGeneration) {
+        return;
+      }
+      try {
+        await _controller.forward(from: 0).orCancel;
+        await Future<void>.delayed(const Duration(milliseconds: 900));
+        if (!mounted || generation != _animationGeneration) {
+          return;
+        }
+        await _controller.reverse().orCancel;
+      } on TickerCanceled {
+        return;
+      }
+    }
   }
 }
 
@@ -192,6 +427,7 @@ class _SocialConnectionFooter extends StatelessWidget {
   const _SocialConnectionFooter({
     required this.summary,
     this.action,
+    this.adjacentAction,
     this.onFollowersTap,
     this.onFollowingTap,
     this.onVisibilityTap,
@@ -199,6 +435,7 @@ class _SocialConnectionFooter extends StatelessWidget {
 
   final SocialConnectionSummary summary;
   final Widget? action;
+  final Widget? adjacentAction;
   final VoidCallback? onFollowersTap;
   final VoidCallback? onFollowingTap;
   final VoidCallback? onVisibilityTap;
@@ -283,9 +520,69 @@ class _SocialConnectionFooter extends StatelessWidget {
           ),
           if (action case final actionWidget?) ...[
             const SizedBox(height: 12),
-            SizedBox(width: double.infinity, child: actionWidget),
+            SizedBox(
+              height: 40,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: adjacentAction == null ? 1 : 2,
+                    child: SizedBox.expand(child: actionWidget),
+                  ),
+                  if (adjacentAction case final adjacentWidget?) ...[
+                    const SizedBox(width: 8),
+                    Expanded(flex: 3, child: adjacentWidget),
+                  ],
+                ],
+              ),
+            ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class HeadToHeadButton extends StatelessWidget {
+  const HeadToHeadButton({required this.onTap, super.key});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: 'Cara a cara',
+      child: SizedBox(
+        height: 40,
+        child: OutlinedButton(
+          key: const ValueKey('head-to-head-action'),
+          onPressed: onTap,
+          style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const HeadToHeadIcon(width: 72, height: 34),
+                const SizedBox(width: 4),
+                Text(
+                  'Ver cara a cara',
+                  maxLines: 1,
+                  softWrap: false,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -7,6 +7,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/utils/bike_id.dart';
 import '../../../core/utils/decimal_amount.dart';
+import '../../achievements/domain/achievement.dart';
+import '../../achievements/domain/achievement_ranking.dart';
+import '../../rankings/domain/community_route_ranking.dart';
+import '../../rankings/domain/head_to_head.dart';
+import '../../rankings/domain/route_key.dart';
 import '../../trips/domain/trip.dart';
 import '../domain/follow_connection.dart';
 import '../domain/profile_statistics.dart';
@@ -275,6 +280,109 @@ class SupabaseSocialRepository implements SocialRepository {
     }
   }
 
+  @override
+  Future<List<UserAchievement>> getUserAchievements(String userId) async {
+    final result = await client
+        .from('user_achievements')
+        .select('category_id, level_id, threshold, progress, unlocked_at')
+        .eq('user_id', userId)
+        .order('threshold');
+    return _mapsFromResult(
+      result,
+    ).map(_achievementFromMap).whereType<UserAchievement>().toList();
+  }
+
+  @override
+  Future<AchievementCommunityRanking> getAchievementRanking(
+    String categoryId,
+  ) async {
+    final result = await client.rpc(
+      'get_achievement_ranking',
+      params: {'p_category_id': categoryId},
+    );
+    final rows = _mapsFromResult(result);
+    final entries = [
+      for (final row in rows)
+        AchievementRankingEntry(
+          rank: _intValue(row['rank_position']),
+          userId: _requiredString(row['user_id']),
+          displayName: _requiredString(row['display_name']),
+          avatarKey: _requiredString(row['avatar_key']),
+          value: _intValue(row['metric_value']),
+          isCurrentUser: row['is_current_user'] == true,
+        ),
+    ];
+    return AchievementCommunityRanking(
+      categoryId: categoryId,
+      entries: List.unmodifiable(entries),
+      totalUsers: rows.isEmpty ? 0 : _intValue(rows.first['total_users']),
+    );
+  }
+
+  @override
+  Future<CommunityRouteRanking> getCommunityRouteRanking({
+    required String originStationId,
+    required String destinationStationId,
+  }) async {
+    final result = await client.rpc(
+      'get_community_route_ranking',
+      params: {
+        'p_origin_station_id': originStationId,
+        'p_destination_station_id': destinationStationId,
+      },
+    );
+    final candidates = [
+      for (final row in _mapsFromResult(result))
+        CommunityRouteCandidate(
+          userId: _requiredString(row['user_id']),
+          displayName: _requiredString(row['display_name']),
+          username: _requiredString(row['username']),
+          avatarKey: _optionalString(row['avatar_key']) ?? '1.png',
+          durationMilliseconds: _intValue(row['duration_milliseconds']),
+          directDistanceMeters: _doubleValue(row['direct_distance_meters']),
+          startedAt: DateTime.tryParse(row['started_at']?.toString() ?? ''),
+          isCurrentUser: row['is_current_user'] == true,
+        ),
+    ];
+    return CommunityRouteRanking.fromCandidates(candidates);
+  }
+
+  @override
+  Future<HeadToHeadSummary> getHeadToHead(String otherUserId) async {
+    final result = await client.rpc(
+      'get_head_to_head',
+      params: {'p_other_user_id': otherUserId},
+    );
+    final entries = [
+      for (final row in _mapsFromResult(result))
+        HeadToHeadEntry(
+          routeKey: RouteKey(
+            originStationId: _requiredString(row['origin_station_id']),
+            destinationStationId: _requiredString(
+              row['destination_station_id'],
+            ),
+          ),
+          originStationName: _requiredString(row['origin_station_name']),
+          destinationStationName: _requiredString(
+            row['destination_station_name'],
+          ),
+          currentDurationMilliseconds: _intValue(
+            row['current_duration_milliseconds'],
+          ),
+          otherDurationMilliseconds: _intValue(
+            row['other_duration_milliseconds'],
+          ),
+        ),
+    ];
+    return HeadToHeadSummary(entries: orderHeadToHeadEntries(entries));
+  }
+
+  @override
+  Future<void> refreshOwnAchievements() async {
+    _requireUserId();
+    await client.rpc('refresh_own_achievements');
+  }
+
   Future<void> _callFollowRpc(String function, String userId) async {
     await client.rpc(function, params: {'p_user_id': userId});
   }
@@ -304,6 +412,7 @@ class SupabaseSocialRepository implements SocialRepository {
       displayName: _requiredString(row['display_name']),
       avatarKey: _requiredString(row['avatar_key']),
       isPublic: row['is_public'] == true,
+      mostUsedStationName: _optionalString(row['most_used_station_name']),
       outgoingFollowStatus: parseFollowStatus(row['outgoing_status']),
       followsCurrentUser: row['follows_current_user'] == true,
     );
@@ -337,11 +446,36 @@ class SupabaseSocialRepository implements SocialRepository {
     );
   }
 
+  UserAchievement? _achievementFromMap(Map<String, Object?> row) {
+    final categoryId = _optionalString(row['category_id']);
+    final levelId = AchievementLevelIdValues.parse(row['level_id']);
+    final threshold = _optionalIntValue(row['threshold']);
+    final unlockedAt = DateTime.tryParse(row['unlocked_at']?.toString() ?? '');
+    if (categoryId == null ||
+        levelId == null ||
+        threshold == null ||
+        unlockedAt == null) {
+      return null;
+    }
+    return UserAchievement(
+      categoryId: categoryId,
+      levelId: levelId,
+      threshold: threshold,
+      unlockedAt: unlockedAt,
+      progress: _optionalIntValue(row['progress']) ?? threshold,
+    );
+  }
+
   int? _optionalIntValue(Object? value) {
     if (value == null) {
       return null;
     }
     return value is int ? value : int.tryParse(value.toString());
+  }
+
+  String? _optionalString(Object? value) {
+    final result = value?.toString().trim();
+    return result == null || result.isEmpty ? null : result;
   }
 
   Trip _tripFromMap(Map<String, Object?> row, {required String localUserId}) {
@@ -475,6 +609,21 @@ class UnavailableSocialRepository implements SocialRepository {
   Future<List<Trip>> getOwnTrips({required String localUserId}) async =>
       _unavailable();
   @override
+  Future<List<UserAchievement>> getUserAchievements(String userId) async =>
+      _unavailable();
+  @override
+  Future<AchievementCommunityRanking> getAchievementRanking(
+    String categoryId,
+  ) async => _unavailable();
+  @override
+  Future<CommunityRouteRanking> getCommunityRouteRanking({
+    required String originStationId,
+    required String destinationStationId,
+  }) async => _unavailable();
+  @override
+  Future<HeadToHeadSummary> getHeadToHead(String otherUserId) async =>
+      _unavailable();
+  @override
   Future<SocialProfileDetails?> getProfileDetails(String userId) async =>
       _unavailable();
   @override
@@ -500,6 +649,8 @@ class UnavailableSocialRepository implements SocialRepository {
   }) async => _unavailable();
   @override
   Future<void> upsertOwnTrips(List<Trip> trips) async => _unavailable();
+  @override
+  Future<void> refreshOwnAchievements() async => _unavailable();
   @override
   Future<void> verifyOtp({
     required String normalizedEmail,

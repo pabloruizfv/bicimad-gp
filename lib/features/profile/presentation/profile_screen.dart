@@ -8,6 +8,7 @@ import '../../../shared/widgets/checkered_flag_strip.dart';
 import '../../../shared/widgets/menu_app_bar.dart';
 import '../../../shared/widgets/profile_avatar.dart';
 import '../data/avatar_repository.dart';
+import '../../social/domain/social_profile.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -38,18 +39,61 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        ProfileAvatar(assetPath: selectedAvatar, radius: 32),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(36),
+                          onTap: () => _showAvatarPicker(
+                            context,
+                            ref,
+                            selectedAvatar,
+                            socialProfile,
+                          ),
+                          child: ProfileAvatar(
+                            assetPath: selectedAvatar,
+                            radius: 32,
+                          ),
+                        ),
                         const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                socialProfile?.displayName ??
-                                    user?.displayName ??
-                                    '-',
-                                style: Theme.of(context).textTheme.headlineSmall
-                                    ?.copyWith(fontWeight: FontWeight.w900),
+                              Row(
+                                children: [
+                                  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: Text(
+                                      socialProfile?.displayName ??
+                                          user?.displayName ??
+                                          '-',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  IconButton(
+                                    tooltip: 'Cambiar nombre visible',
+                                    visualDensity: VisualDensity.compact,
+                                    constraints: const BoxConstraints.tightFor(
+                                      width: 32,
+                                      height: 32,
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    icon: const Icon(Icons.edit_outlined),
+                                    onPressed: () => _renameProfile(
+                                      context,
+                                      ref,
+                                      selectedAvatar,
+                                      socialProfile,
+                                      user?.displayName,
+                                    ),
+                                  ),
+                                ],
                               ),
                               if (socialProfile != null)
                                 Text(
@@ -62,59 +106,6 @@ class ProfileScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 18),
-                    OutlinedButton.icon(
-                      onPressed: () async {
-                        final authController = ref.read(
-                          authControllerProvider.notifier,
-                        );
-                        final newName = await _showRenameDialog(
-                          context,
-                          socialProfile?.displayName ?? user?.displayName,
-                        );
-                        if (newName == null) {
-                          return;
-                        }
-                        if (socialProfile == null) {
-                          await authController.completeDisplayName(newName);
-                        } else {
-                          await ref
-                              .read(socialAuthControllerProvider.notifier)
-                              .updateProfile(
-                                displayName: newName,
-                                avatarAsset: selectedAvatar,
-                                isPublic: socialProfile.isPublic,
-                              );
-                        }
-                      },
-                      icon: const Icon(Icons.edit_outlined),
-                      label: const Text('Cambiar nombre visible'),
-                    ),
-                    const SizedBox(height: 10),
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        final repository = ref.read(avatarRepositoryProvider);
-                        _showAvatarPickerSheet(
-                          context,
-                          selectedAsset: selectedAvatar,
-                          onSelected: (assetPath) async {
-                            if (socialProfile == null) {
-                              await repository.saveSelectedAvatar(assetPath);
-                              ref.invalidate(selectedAvatarProvider);
-                            } else {
-                              await ref
-                                  .read(socialAuthControllerProvider.notifier)
-                                  .updateProfile(
-                                    displayName: socialProfile.displayName,
-                                    avatarAsset: assetPath,
-                                    isPublic: socialProfile.isPublic,
-                                  );
-                            }
-                          },
-                        );
-                      },
-                      icon: const Icon(Icons.account_circle_outlined),
-                      label: const Text('Cambiar avatar de piloto'),
-                    ),
                     if (socialProfile != null) ...[
                       const SizedBox(height: 10),
                       SwitchListTile(
@@ -196,6 +187,62 @@ class ProfileScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _showAvatarPicker(
+    BuildContext context,
+    WidgetRef ref,
+    String selectedAvatar,
+    SocialProfile? socialProfile,
+  ) {
+    final repository = ref.read(avatarRepositoryProvider);
+    return _showAvatarPickerSheet(
+      context,
+      selectedAsset: selectedAvatar,
+      onSelected: (assetPath) async {
+        if (socialProfile == null) {
+          await repository.saveSelectedAvatar(assetPath);
+          ref.invalidate(selectedAvatarProvider);
+        } else {
+          await ref
+              .read(socialAuthControllerProvider.notifier)
+              .updateProfile(
+                displayName: socialProfile.displayName,
+                avatarAsset: assetPath,
+                isPublic: socialProfile.isPublic,
+              );
+        }
+      },
+    );
+  }
+
+  Future<void> _renameProfile(
+    BuildContext context,
+    WidgetRef ref,
+    String selectedAvatar,
+    SocialProfile? socialProfile,
+    String? fallbackName,
+  ) async {
+    final newName = await _showRenameDialog(
+      context,
+      socialProfile?.displayName ?? fallbackName,
+    );
+    if (newName == null) {
+      return;
+    }
+    if (socialProfile == null) {
+      await ref
+          .read(authControllerProvider.notifier)
+          .completeDisplayName(newName);
+    } else {
+      await ref
+          .read(socialAuthControllerProvider.notifier)
+          .updateProfile(
+            displayName: newName,
+            avatarAsset: selectedAvatar,
+            isPublic: socialProfile.isPublic,
+          );
+    }
   }
 
   Future<String?> _showRenameDialog(
@@ -455,36 +502,43 @@ class _AvatarPickerSheet extends StatelessWidget {
             const CheckeredFlagStrip(height: 6),
             const SizedBox(height: 14),
             Text(
-              'Avatar de piloto',
+              'Selecciona tu avatar de piloto',
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 12),
-            Wrap(
-              spacing: 14,
-              runSpacing: 14,
-              children: [
-                for (final asset in LocalAvatarRepository.avatarAssets)
-                  Semantics(
-                    label: 'Avatar ${asset.split('/').last}',
-                    selected: selectedAsset == asset,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(40),
-                      onTap: () {
-                        onSelected(asset);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: ProfileAvatar(
-                          assetPath: asset,
-                          radius: 30,
-                          isSelected: selectedAsset == asset,
+            SizedBox(
+              width: double.infinity,
+              child: Wrap(
+                spacing: 14,
+                runSpacing: 14,
+                alignment: WrapAlignment.center,
+                runAlignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  for (final asset in LocalAvatarRepository.avatarAssets)
+                    Semantics(
+                      label: 'Avatar ${asset.split('/').last}',
+                      selected: selectedAsset == asset,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(40),
+                        onTap: () {
+                          onSelected(asset);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: ProfileAvatar(
+                            assetPath: asset,
+                            radius: 30,
+                            isSelected: selectedAsset == asset,
+                            emphasizeSelection: true,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

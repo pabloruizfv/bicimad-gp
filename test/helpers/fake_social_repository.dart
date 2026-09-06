@@ -2,6 +2,11 @@ import 'package:bicimad_social/features/social/domain/follow_connection.dart';
 import 'package:bicimad_social/features/social/domain/profile_statistics.dart';
 import 'package:bicimad_social/features/social/domain/social_profile.dart';
 import 'package:bicimad_social/features/social/domain/social_repository.dart';
+import 'package:bicimad_social/features/achievements/domain/achievement.dart';
+import 'package:bicimad_social/features/achievements/domain/achievement_ranking.dart';
+import 'package:bicimad_social/features/rankings/domain/community_route_ranking.dart';
+import 'package:bicimad_social/features/rankings/domain/head_to_head.dart';
+import 'package:bicimad_social/features/rankings/domain/route_key.dart';
 import 'package:bicimad_social/features/trips/domain/trip.dart';
 
 class FakeSocialRepository implements SocialRepository {
@@ -18,10 +23,16 @@ class FakeSocialRepository implements SocialRepository {
       isPublic: true,
     ),
     List<Trip> ownTrips = const [],
+    List<UserAchievement> achievements = const [],
+    Map<String, AchievementCommunityRanking> achievementRankings = const {},
+    Map<RouteKey, CommunityRouteRanking> communityRouteRankings = const {},
     this.sendOtpError,
     this.sendOtpHandler,
     this.restoreSessionHandler,
-  }) : ownTrips = [...ownTrips];
+  }) : ownTrips = [...ownTrips],
+       achievements = [...achievements],
+       achievementRankings = {...achievementRankings},
+       communityRouteRankings = {...communityRouteRankings};
 
   bool configured;
   bool session;
@@ -29,6 +40,9 @@ class FakeSocialRepository implements SocialRepository {
   String? email;
   SocialProfile? profile;
   final List<Trip> ownTrips;
+  final List<UserAchievement> achievements;
+  final Map<String, AchievementCommunityRanking> achievementRankings;
+  final Map<RouteKey, CommunityRouteRanking> communityRouteRankings;
   final Object? sendOtpError;
   final Future<void> Function(String email)? sendOtpHandler;
   final Future<bool> Function()? restoreSessionHandler;
@@ -178,5 +192,48 @@ class FakeSocialRepository implements SocialRepository {
   Future<void> upsertOwnTrips(List<Trip> trips) async {
     operations.add('upsertOwnTrips');
     uploadedTripBatches.add([...trips]);
+  }
+
+  @override
+  Future<List<UserAchievement>> getUserAchievements(String userId) async {
+    operations.add('getUserAchievements');
+    return [...achievements];
+  }
+
+  @override
+  Future<AchievementCommunityRanking> getAchievementRanking(
+    String categoryId,
+  ) async {
+    operations.add('getAchievementRanking:$categoryId');
+    return achievementRankings[categoryId] ??
+        AchievementCommunityRanking(
+          categoryId: categoryId,
+          entries: const [],
+          totalUsers: 0,
+        );
+  }
+
+  @override
+  Future<CommunityRouteRanking> getCommunityRouteRanking({
+    required String originStationId,
+    required String destinationStationId,
+  }) async {
+    operations.add('getCommunityRouteRanking');
+    return communityRouteRankings[RouteKey(
+          originStationId: originStationId,
+          destinationStationId: destinationStationId,
+        )] ??
+        const CommunityRouteRanking(entries: []);
+  }
+
+  @override
+  Future<HeadToHeadSummary> getHeadToHead(String otherUserId) async {
+    operations.add('getHeadToHead');
+    return const HeadToHeadSummary(entries: []);
+  }
+
+  @override
+  Future<void> refreshOwnAchievements() async {
+    operations.add('refreshOwnAchievements');
   }
 }

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
+import '../../general/domain/station_usage.dart';
+import '../../general/presentation/general_screen.dart';
+import '../../achievements/presentation/achievement_detail_screen.dart';
+import '../../achievements/presentation/achievement_showcase.dart';
 import '../../../shared/widgets/arcade_user_stats_card.dart';
 import '../domain/social_profile.dart';
 import 'follow_confirmation.dart';
@@ -26,6 +31,8 @@ class SocialProfileScreen extends ConsumerWidget {
             }
             final profile = value.profile;
             final stats = value.statistics;
+            final currentProfile = ref.watch(currentSocialProfileProvider);
+            final ownId = currentProfile?.userId;
             return RefreshIndicator(
               onRefresh: () async =>
                   ref.invalidate(socialProfileDetailsProvider(userId)),
@@ -36,6 +43,17 @@ class SocialProfileScreen extends ConsumerWidget {
                     avatarAsset: profile.avatarAsset,
                     displayName: profile.displayName,
                     username: profile.username,
+                    mostUsedStationName: stats == null
+                        ? null
+                        : profile.mostUsedStationName,
+                    onMostUsedStationTap:
+                        stats == null || profile.mostUsedStationName == null
+                        ? null
+                        : () => _openMostUsedStationMap(
+                            context,
+                            ref,
+                            profile.mostUsedStationName!,
+                          ),
                     statistics: stats == null
                         ? null
                         : ProfileStatsCardData.fromStatistics(stats),
@@ -45,7 +63,65 @@ class SocialProfileScreen extends ConsumerWidget {
                       isPublic: profile.isPublic,
                     ),
                     socialAction: _FollowButton(profile: profile),
+                    headToHeadAction: stats != null && profile.userId != ownId
+                        ? HeadToHeadButton(
+                            onTap: () =>
+                                context.push('/head-to-head/${profile.userId}'),
+                          )
+                        : null,
                   ),
+                  if (stats != null) ...[
+                    const SizedBox(height: 12),
+                    if (profile.userId == ownId)
+                      ref
+                          .watch(ownAchievementProgressProvider)
+                          .when(
+                            data: (progresses) => AchievementShowcase(
+                              badges: [
+                                for (final progress in progresses)
+                                  AchievementBadgeViewData.fromProgress(
+                                    progress,
+                                  ),
+                              ],
+                              onBadgeTap: (index) =>
+                                  Navigator.of(context).push<void>(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          OwnAchievementDetailScreen(
+                                            progress: progresses[index],
+                                            avatarAsset: profile.avatarAsset,
+                                          ),
+                                    ),
+                                  ),
+                            ),
+                            loading: () => const AchievementShowcaseLoading(),
+                            error: (_, _) => const SizedBox.shrink(),
+                          )
+                    else
+                      ref
+                          .watch(
+                            profileAchievementSummariesProvider(profile.userId),
+                          )
+                          .when(
+                            data: (summaries) => AchievementShowcase(
+                              badges: [
+                                for (final summary in summaries)
+                                  AchievementBadgeViewData.fromSummary(summary),
+                              ],
+                              onBadgeTap: (index) =>
+                                  Navigator.of(context).push<void>(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          PublicAchievementDetailScreen(
+                                            summary: summaries[index],
+                                          ),
+                                    ),
+                                  ),
+                            ),
+                            loading: () => const AchievementShowcaseLoading(),
+                            error: (_, _) => const SizedBox.shrink(),
+                          ),
+                  ],
                 ],
               ),
             );
@@ -61,6 +137,29 @@ class SocialProfileScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _openMostUsedStationMap(
+    BuildContext context,
+    WidgetRef ref,
+    String stationName,
+  ) async {
+    final catalog = await ref
+        .read(stationCatalogRepositoryProvider)
+        .getCatalog();
+    final station = catalog.resolve(stationId: '', stationName: stationName);
+    if (station == null || !context.mounted) {
+      return;
+    }
+    final usage = StationUsage(station: station, uses: 1);
+    await showStationUsageMap(
+      context,
+      usages: [usage],
+      showTiles: ref.read(stationUsageMapTilesEnabledProvider),
+      initiallySelected: usage,
+      title: 'Estación más usada',
+      showUsageCounts: false,
     );
   }
 }
@@ -81,6 +180,11 @@ class _FollowButton extends ConsumerWidget {
       null => profile.isPublic ? 'Seguir' : 'Solicitar',
     };
     return FilledButton.tonal(
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(0, 40),
+        maximumSize: const Size(double.infinity, 40),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
       onPressed: () async {
         if (profile.outgoingFollowStatus == FollowStatus.accepted) {
           final confirmed = await showFollowRemovalConfirmation(

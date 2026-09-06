@@ -7,6 +7,7 @@ import 'package:sqlite3/sqlite3.dart';
 import '../../../core/storage/secure_key_value_store.dart';
 import '../../../core/utils/bike_id.dart';
 import '../domain/trip.dart';
+import '../domain/trip_eligibility.dart';
 
 class PersonalTripsDatabase {
   PersonalTripsDatabase._(this._databaseFuture);
@@ -22,6 +23,8 @@ class PersonalTripsDatabase {
   static const legacyTripsStorageKey = 'community.localTrips.v1';
   static const legacyKnownIdsStorageKey = 'community.knownSourceTripIds.v1';
   static const _legacyMigrationKey = 'legacy_secure_trips_v1';
+  static const _discardedStationTripsMigrationKey =
+      'discarded_station_trips_v1';
 
   final Future<Database> _databaseFuture;
   Future<void>? _initialization;
@@ -97,6 +100,7 @@ class PersonalTripsDatabase {
         value TEXT NOT NULL
       )
     ''');
+    _purgeDiscardedStationTrips(database);
   }
 
   Future<void> migrateLegacyTrips(SecureKeyValueStore? store) async {
@@ -271,6 +275,9 @@ class PersonalTripsDatabase {
 
   static void _upsertTripsSync(Database database, Iterable<Trip> trips) {
     for (final trip in trips) {
+      if (!isCountableBicimadStage(trip)) {
+        continue;
+      }
       database.execute('''
         INSERT INTO personal_trips (
           user_id, external_id, id,
@@ -512,6 +519,34 @@ class PersonalTripsDatabase {
       [key],
     );
     return rows.isEmpty ? null : rows.single['value'] as String;
+  }
+
+  static void _purgeDiscardedStationTrips(Database database) {
+    if (_metadataValue(database, _discardedStationTripsMigrationKey) ==
+        'completed') {
+      return;
+    }
+    database.execute('BEGIN IMMEDIATE');
+    try {
+      final rows = database.select('SELECT * FROM personal_trips');
+      for (final row in rows) {
+        final trip = _tripFromRow(row);
+        if (!isCountableBicimadStage(trip)) {
+          database.execute(
+            'DELETE FROM personal_trips WHERE user_id = ? AND external_id = ?',
+            [trip.userId, trip.externalId],
+          );
+        }
+      }
+      database.execute(
+        'INSERT OR REPLACE INTO app_metadata(key, value) VALUES (?, ?)',
+        [_discardedStationTripsMigrationKey, 'completed'],
+      );
+      database.execute('COMMIT');
+    } catch (_) {
+      database.execute('ROLLBACK');
+      rethrow;
+    }
   }
 
   static Future<void> _deleteLegacyBestEffort(SecureKeyValueStore store) async {

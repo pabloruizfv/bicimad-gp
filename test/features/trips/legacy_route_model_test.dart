@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:bicimad_social/app/providers.dart';
 import 'package:bicimad_social/features/rankings/domain/route_key.dart';
+import 'package:bicimad_social/features/rankings/domain/community_route_ranking.dart';
+import 'package:bicimad_social/features/social/domain/social_profile.dart';
 import 'package:bicimad_social/features/trips/data/legacy_route_model_repository.dart';
 import 'package:bicimad_social/features/trips/domain/legacy_route_model.dart';
+import 'package:bicimad_social/features/trips/domain/journey_builder.dart';
 import 'package:bicimad_social/features/trips/domain/station_code.dart';
 import 'package:bicimad_social/features/trips/domain/trip.dart';
 import 'package:bicimad_social/features/trips/presentation/route_history_screen.dart';
@@ -57,8 +60,9 @@ void main() {
     expect(model.percentileForDuration(60), 0);
     expect(model.percentileForDuration(100), closeTo(20, 0.001));
     expect(model.percentileForDuration(140), closeTo(50, 0.001));
-    expect(model.percentileForDuration(260), isNull);
+    expect(model.percentileForDuration(260), 100);
     expect(model.isAboveDisplayedRange(260), isTrue);
+    expect(_model(displayedCount: 4).percentileForDuration(140), isNull);
   });
 
   test('reconstruye el tiempo tipico desde el mismo histograma', () {
@@ -93,12 +97,15 @@ void main() {
 
   testWidgets('muestra estado sin historico comparable', (tester) async {
     await _pumpRouteHistory(tester, model: null, trips: [_trip('selected')]);
-    await _scrollToLegacySection(tester);
+    await _scrollToRankingModeSelector(tester);
 
     expect(
       find.text('No hay suficiente historico comparable para esta ruta.'),
       findsOneWidget,
     );
+    expect(find.byKey(const ValueKey('route-duration-chart')), findsOneWidget);
+    expect(find.text('MIS VIAJES'), findsOneWidget);
+    expect(find.text('USUARIOS'), findsOneWidget);
   });
 
   testWidgets('usa anclaje en origen y meta ajedrezada en destino', (
@@ -253,7 +260,7 @@ void main() {
       model: _model(displayedCount: 4),
       trips: [_trip('selected')],
     );
-    await _scrollToLegacySection(tester);
+    await _scrollToRankingModeSelector(tester);
     expect(find.text('Muestra'), findsNothing);
     expect(
       find.text('No hay suficiente historico comparable para esta ruta.'),
@@ -318,6 +325,391 @@ void main() {
     expect(personalTripsCard, isNot(same(historicalCard)));
   });
 
+  testWidgets('el eje X empieza en cero y permite ampliar, mover y restaurar', (
+    tester,
+  ) async {
+    await _pumpRouteHistory(
+      tester,
+      model: _model(displayedCount: 5),
+      trips: [_trip('selected')],
+    );
+    await _scrollToRankingModeSelector(tester);
+
+    final viewport = find.byKey(const ValueKey('duration-chart-zoom-viewport'));
+    expect(viewport, findsOneWidget);
+    expect(tester.getSemantics(viewport).value, '0-220 segundos');
+
+    final center = tester.getCenter(viewport);
+    final firstFinger = await tester.startGesture(
+      center - const Offset(24, 0),
+      pointer: 1,
+    );
+    final secondFinger = await tester.startGesture(
+      center + const Offset(24, 0),
+      pointer: 2,
+    );
+    await firstFinger.moveTo(center - const Offset(58, 0));
+    await secondFinger.moveTo(center + const Offset(58, 0));
+    await tester.pump();
+    await firstFinger.up();
+    await secondFinger.up();
+    expect(tester.getSemantics(viewport).value, isNot('0-220 segundos'));
+
+    await tester.tap(find.byKey(const ValueKey('duration-chart-zoom-reset')));
+    await tester.pump();
+    expect(tester.getSemantics(viewport).value, '0-220 segundos');
+
+    await tester.tap(find.byKey(const ValueKey('duration-chart-zoom-in')));
+    await tester.pump();
+    final zoomedRange = tester.getSemantics(viewport).value;
+    expect(zoomedRange, isNot('0-220 segundos'));
+
+    await tester.drag(viewport, const Offset(-70, 0));
+    await tester.pump();
+    expect(tester.getSemantics(viewport).value, isNot(zoomedRange));
+
+    await tester.tap(find.byKey(const ValueKey('duration-chart-zoom-reset')));
+    await tester.pump();
+    expect(tester.getSemantics(viewport).value, '0-220 segundos');
+  });
+
+  testWidgets('Comunidad reutiliza el mismo viewport ampliable desde cero', (
+    tester,
+  ) async {
+    final ranking = CommunityRouteRanking.fromCandidates([
+      const CommunityRouteCandidate(
+        userId: 'user-1',
+        displayName: 'Pablo',
+        username: 'pablo',
+        avatarKey: '1.png',
+        durationMilliseconds: 120000,
+        isCurrentUser: true,
+      ),
+    ]);
+    await _pumpRouteHistory(
+      tester,
+      model: _model(displayedCount: 5),
+      trips: [_trip('selected')],
+      communityRanking: ranking,
+    );
+    await _scrollToRankingModeSelector(tester);
+    await tester.tap(find.text('Comunidad'));
+    await tester.pumpAndSettle();
+
+    final viewport = find.byKey(const ValueKey('duration-chart-zoom-viewport'));
+    expect(viewport, findsOneWidget);
+    expect(tester.getSemantics(viewport).value, '0-220 segundos');
+    expect(
+      find.byKey(const ValueKey('duration-chart-zoom-in')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('un selector único cambia gráfico y lista a Comunidad', (
+    tester,
+  ) async {
+    final ranking = CommunityRouteRanking.fromCandidates([
+      CommunityRouteCandidate(
+        userId: 'followed-user',
+        displayName: 'Laura García',
+        username: 'laurag',
+        avatarKey: '2.png',
+        durationMilliseconds: 90000,
+        directDistanceMeters: 1000,
+        startedAt: DateTime(2026, 8, 19, 9),
+        isCurrentUser: false,
+      ),
+      CommunityRouteCandidate(
+        userId: 'user-1',
+        displayName: 'Pablo',
+        username: 'pablo',
+        avatarKey: '1.png',
+        durationMilliseconds: 120000,
+        directDistanceMeters: 1000,
+        startedAt: DateTime(2026, 8, 2, 10),
+        isCurrentUser: true,
+      ),
+    ]);
+    await _pumpRouteHistory(
+      tester,
+      model: _model(displayedCount: 5),
+      trips: [_trip('selected')],
+      communityRanking: ranking,
+    );
+    await _scrollToRankingModeSelector(tester);
+
+    expect(find.text('Mis viajes vs Histórico usuarios BiciMAD'), findsOne);
+    await tester.tap(find.text('Comunidad'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Comunidad vs Histórico usuarios BiciMAD'),
+      findsOneWidget,
+    );
+    expect(find.text('Todos mis viajes'), findsNothing);
+    await tester.scrollUntilVisible(
+      find.text('Ranking de la comunidad'),
+      260,
+      scrollable: find.byType(Scrollable),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Laura García'), findsOneWidget);
+    expect(find.text('@laurag'), findsOneWidget);
+    expect(find.text('Pablo'), findsWidgets);
+    expect(find.text('Tú'), findsWidgets);
+    expect(find.textContaining('19/08/2026'), findsNothing);
+    expect(find.textContaining('02/08/2026'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('community-route-entry-followed-user')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('community-route-entry-user-1')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('trip-rank-position-1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('trip-rank-position-2')), findsOneWidget);
+    expect(find.byKey(const ValueKey('trip-rank-medal-1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('trip-rank-medal-2')), findsOneWidget);
+    expect(
+      tester
+          .widget<Material>(
+            find.byKey(const ValueKey('community-route-entry-followed-user')),
+          )
+          .color,
+      tripRankBackgroundColor(1),
+    );
+    expect(
+      tester
+          .widget<Material>(
+            find.byKey(const ValueKey('community-route-entry-user-1')),
+          )
+          .color,
+      tripRankBackgroundColor(2),
+    );
+    expect(
+      tester
+          .getSize(
+            find.byKey(const ValueKey('community-route-entry-followed-user')),
+          )
+          .height,
+      lessThan(
+        tester
+            .getSize(find.byKey(const ValueKey('community-route-entry-user-1')))
+            .height,
+      ),
+    );
+    expect(find.text('Usuarios'), findsOneWidget);
+    expect(find.text('Mi mejor'), findsOneWidget);
+    expect(find.text('Mejor'), findsNWidgets(2));
+    expect(
+      find.byKey(const ValueKey('comparison-user-marker-followed-user')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('comparison-user-marker-user-1')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+    'Comunidad vacía conserva el gráfico sin curva histórica y el resumen',
+    (tester) async {
+      await _pumpRouteHistory(
+        tester,
+        model: _model(displayedCount: 5),
+        trips: [_trip('selected')],
+      );
+      await _scrollToRankingModeSelector(tester);
+
+      await tester.tap(find.text('Comunidad'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey('community-duration-chart')),
+        findsOneWidget,
+      );
+      expect(
+        find.text('No hay suficiente historico comparable para esta ruta.'),
+        findsOneWidget,
+      );
+      expect(find.text('Usuarios'), findsOneWidget);
+      expect(find.text('Mi mejor'), findsOneWidget);
+    },
+  );
+
+  testWidgets('el marcador comunitario abre un callout sanitizado', (
+    tester,
+  ) async {
+    final ranking = CommunityRouteRanking.fromCandidates([
+      const CommunityRouteCandidate(
+        userId: 'followed-user',
+        displayName: 'Laura',
+        username: 'laura',
+        avatarKey: '2.png',
+        durationMilliseconds: 90000,
+        directDistanceMeters: 1000,
+        isCurrentUser: false,
+      ),
+    ]);
+    await _pumpRouteHistory(
+      tester,
+      model: _model(displayedCount: 5),
+      trips: [_trip('selected')],
+      communityRanking: ranking,
+    );
+    await _scrollToRankingModeSelector(tester);
+    await tester.tap(find.text('Comunidad'));
+    await tester.pumpAndSettle();
+
+    final avatar = find.byKey(
+      const ValueKey('community-chart-avatar-followed-user'),
+    );
+    await tester.ensureVisible(avatar);
+    await tester.tap(avatar);
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey('community-marker-callout-followed-user')),
+      findsOneWidget,
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(
+              const ValueKey('community-marker-summary-followed-user'),
+            ),
+          )
+          .data,
+      matches(RegExp(r'P\d+')),
+    );
+    expect(find.text('@laura'), findsWidgets);
+
+    await tester.tap(find.text('Ranking 34 → 164'));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('community-marker-callout-followed-user')),
+      findsNothing,
+    );
+  });
+
+  testWidgets('el marcador personal abre y cierra el detalle del viaje', (
+    tester,
+  ) async {
+    await _pumpRouteHistory(
+      tester,
+      model: _model(displayedCount: 5),
+      trips: [_trip('selected')],
+    );
+    await _scrollToRankingModeSelector(tester);
+
+    final avatar = find.byKey(const ValueKey('legacy-chart-avatar-selected'));
+    await tester.ensureVisible(avatar);
+    await tester.tap(avatar);
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey('personal-marker-callout-selected')),
+      findsOneWidget,
+    );
+    expect(
+      tester
+          .widget<Text>(
+            find.byKey(const ValueKey('personal-marker-summary-selected')),
+          )
+          .data,
+      matches(RegExp(r'P\d+')),
+    );
+    expect(find.text('T\u00fa'), findsWidgets);
+
+    await tester.tap(avatar);
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('personal-marker-callout-selected')),
+      findsNothing,
+    );
+  });
+
+  testWidgets('cambiar repetidamente de modo no mezcla las dos listas', (
+    tester,
+  ) async {
+    final ranking = CommunityRouteRanking.fromCandidates([
+      const CommunityRouteCandidate(
+        userId: 'user-1',
+        displayName: 'Pablo',
+        username: 'pablo',
+        avatarKey: '1.png',
+        durationMilliseconds: 120000,
+        isCurrentUser: true,
+      ),
+    ]);
+    await _pumpRouteHistory(
+      tester,
+      model: _model(displayedCount: 5),
+      trips: [_trip('selected')],
+      communityRanking: ranking,
+    );
+    await _scrollToRankingModeSelector(tester);
+
+    for (var iteration = 0; iteration < 2; iteration++) {
+      await tester.tap(find.text('Comunidad'));
+      await tester.pumpAndSettle();
+      expect(find.text('Comunidad vs Histórico usuarios BiciMAD'), findsOne);
+      expect(find.text('Todos mis viajes'), findsNothing);
+
+      await tester.ensureVisible(
+        find.byKey(const ValueKey('route-ranking-mode-selector')),
+      );
+      await tester.tap(find.text('Mis viajes'));
+      await tester.pumpAndSettle();
+      expect(find.text('Mis viajes vs Histórico usuarios BiciMAD'), findsOne);
+      expect(find.text('Ranking de la comunidad'), findsNothing);
+    }
+  });
+
+  testWidgets('el ranking de ruta oculta distancia y coste en ambos modos', (
+    tester,
+  ) async {
+    final ranking = CommunityRouteRanking.fromCandidates([
+      const CommunityRouteCandidate(
+        userId: 'user-1',
+        displayName: 'Pablo',
+        username: 'pablo',
+        avatarKey: '1.png',
+        durationMilliseconds: 120000,
+        directDistanceMeters: 1000,
+        isCurrentUser: true,
+      ),
+    ]);
+    await _pumpRouteHistory(
+      tester,
+      model: _model(displayedCount: 5),
+      trips: [_trip('selected', distanceMeters: 1000, tripCost: '0.5')],
+      communityRanking: ranking,
+    );
+    await _scrollToRankingModeSelector(tester);
+
+    expect(
+      find.byKey(const ValueKey('trip-price-pill-selected')),
+      findsNothing,
+    );
+    expect(find.byIcon(Icons.route_outlined), findsNothing);
+
+    await tester.tap(find.text('Comunidad'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Ranking de la comunidad'),
+      260,
+      scrollable: find.byType(Scrollable),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('trip-price-pill-selected')),
+      findsNothing,
+    );
+    expect(find.byIcon(Icons.route_outlined), findsNothing);
+  });
+
   testWidgets('muestra bicicleta y precio en el detalle del viaje', (
     tester,
   ) async {
@@ -334,6 +726,39 @@ void main() {
     expect(find.text('1,2300 €'), findsOneWidget);
   });
 
+  testWidgets('muestra varias bicicletas sin prefijo y con etiqueta plural', (
+    tester,
+  ) async {
+    await _pumpRouteHistory(
+      tester,
+      model: _model(displayedCount: 5),
+      trips: [
+        _trip(
+          'selected',
+          stageDetails: const [
+            JourneyStageDetails(
+              stageId: 'stage-1',
+              sourceTripId: 'source-1',
+              bikeId: '123',
+              tripCost: '0.5',
+            ),
+            JourneyStageDetails(
+              stageId: 'stage-2',
+              sourceTripId: 'source-2',
+              bikeId: '456',
+              tripCost: '0.7',
+            ),
+          ],
+        ),
+      ],
+      showOverview: true,
+    );
+
+    expect(find.text('Bicicletas'), findsOneWidget);
+    expect(find.text('123 · 456'), findsOneWidget);
+    expect(find.textContaining('Varias:'), findsNothing);
+  });
+
   testWidgets('no muestra seleccion roja para viajes fuera de rango', (
     tester,
   ) async {
@@ -347,6 +772,7 @@ void main() {
     expect(find.text('Valores atipicos excluidos'), findsNothing);
     expect(find.text('por encima del rango habitual'), findsNothing);
     expect(find.text('Percentil del viaje seleccionado'), findsNothing);
+    expect(find.text('P100'), findsOneWidget);
   });
 
   testWidgets('lista personal reutiliza tarjetas sin extremos y con pit stop', (
@@ -360,6 +786,13 @@ void main() {
     await _pumpRouteHistory(
       tester,
       model: _model(displayedCount: 5),
+      currentProfile: const SocialProfile(
+        userId: 'user-1',
+        username: 'pablo',
+        displayName: 'Pablo',
+        avatarKey: '1.png',
+        isPublic: true,
+      ),
       trips: [
         _trip('selected', pitStops: const [pitStop]),
         _trip('second', durationSeconds: 130),
@@ -376,6 +809,22 @@ void main() {
 
     final tripCard = find.byType(TripCard);
     expect(tripCard, findsNWidgets(4));
+    for (final id in ['selected', 'second', 'third', 'fourth']) {
+      final identity = find.byKey(ValueKey('personal-route-user-$id'));
+      expect(identity, findsOneWidget);
+      expect(
+        find.descendant(of: identity, matching: find.text('Pablo')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: identity, matching: find.text('@pablo')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: identity, matching: find.text('Tú')),
+        findsOneWidget,
+      );
+    }
     expect(find.text('Viajes'), findsNWidgets(2));
     expect(find.text('Tiempo típico'), findsNothing);
     expect(
@@ -403,6 +852,46 @@ void main() {
     expect(find.byKey(const ValueKey('trip-rank-medal-1')), findsOneWidget);
     expect(find.byKey(const ValueKey('trip-rank-medal-2')), findsOneWidget);
     expect(find.byKey(const ValueKey('trip-rank-medal-3')), findsOneWidget);
+    expect(find.byKey(const ValueKey('trip-rank-position-1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('trip-rank-position-2')), findsOneWidget);
+    expect(find.byKey(const ValueKey('trip-rank-position-3')), findsOneWidget);
+    expect(find.byKey(const ValueKey('trip-rank-position-4')), findsOneWidget);
+    expect(find.text('1.º'), findsOneWidget);
+    expect(find.text('2.º'), findsOneWidget);
+    expect(find.text('3.º'), findsOneWidget);
+    expect(find.text('4.º'), findsOneWidget);
+    expect(find.byKey(const ValueKey('trip-rank-medal-4')), findsNothing);
+    for (var position = 1; position <= 4; position++) {
+      final frameFinder = find.byKey(
+        ValueKey('personal-chart-rank-frame-$position'),
+      );
+      final frame = tester.widget<Container>(
+        find.descendant(of: frameFinder, matching: find.byType(Container)),
+      );
+      final decoration = frame.decoration! as BoxDecoration;
+      if (position <= 3) {
+        final border = decoration.border! as Border;
+        expect(border.top.color, tripRankAccentColor(position));
+        expect(border.top.width, 2.5);
+      } else {
+        expect(decoration.border, isNull);
+        expect(decoration.color, isNull);
+        expect(frame.padding, const EdgeInsets.all(3.5));
+      }
+    }
+    final firstAvatar = tester.getSize(
+      find.descendant(
+        of: find.byKey(const ValueKey('personal-chart-rank-frame-1')),
+        matching: find.byType(ClipOval),
+      ),
+    );
+    final fourthAvatar = tester.getSize(
+      find.descendant(
+        of: find.byKey(const ValueKey('personal-chart-rank-frame-4')),
+        matching: find.byType(ClipOval),
+      ),
+    );
+    expect(fourthAvatar, firstAvatar);
     expect(
       find.descendant(
         of: tripCard,
@@ -421,7 +910,9 @@ void main() {
       find.descendant(
         of: tripCard,
         matching: find.byWidgetPredicate(
-          (widget) => widget is Text && widget.data?.startsWith('P') == true,
+          (widget) =>
+              widget is Text &&
+              RegExp(r'^P(?:--|\d+)$').hasMatch(widget.data ?? ''),
         ),
       ),
       findsNWidgets(4),
@@ -593,22 +1084,40 @@ void main() {
   testWidgets('modo rankings omite resumen y abre el viaje pulsado', (
     tester,
   ) async {
-    final parentJourney = Trip(
-      id: 'journey-parent',
-      externalId: 'parent',
-      userId: 'user-1',
-      originStationId: '1',
-      originStationName: '1 - Origen completo',
-      destinationStationId: '2',
-      destinationStationName: '2 - Destino completo',
-      startedAt: DateTime(2026, 8, 2, 10),
-      durationSeconds: 240,
-      isShared: true,
+    final stages = [
+      _stage(
+        id: 'ab',
+        originId: '34',
+        destinationId: '164',
+        startedAt: DateTime(2026, 8, 2, 10),
+        durationSeconds: 100,
+        distanceMeters: 500,
+      ),
+      _stage(
+        id: 'bc',
+        originId: '164',
+        destinationId: '200',
+        startedAt: DateTime(2026, 8, 2, 10, 2),
+        durationSeconds: 100,
+        distanceMeters: 600,
+      ),
+      _stage(
+        id: 'cd',
+        originId: '200',
+        destinationId: '300',
+        startedAt: DateTime(2026, 8, 2, 10, 4),
+        durationSeconds: 100,
+        distanceMeters: 700,
+      ),
+    ];
+    final rankingTrips = const JourneyBuilder().buildRankingTrips(stages);
+    final projectedTrip = rankingTrips.singleWhere(
+      (trip) =>
+          trip.originStationId == '34' && trip.destinationStationId == '164',
     );
-    final projectedTrip = _trip('projected', durationSeconds: 100).copyWith(
-      parentJourneyId: parentJourney.id,
-      parentJourneyOriginStationId: parentJourney.originStationId,
-      parentJourneyDestinationStationId: parentJourney.destinationStationId,
+    final parentJourney = rankingTrips.singleWhere(
+      (trip) =>
+          trip.originStationId == '34' && trip.destinationStationId == '300',
     );
     final router = GoRouter(
       initialLocation: '/route-history/34/164?view=rankings',
@@ -637,17 +1146,20 @@ void main() {
       ProviderScope(
         overrides: [
           routeTripsProvider.overrideWith(
-            (ref, routeKey) async => routeKey.originStationId == '34'
-                ? [projectedTrip]
-                : [parentJourney],
+            (ref, routeKey) async => rankingTrips
+                .where(
+                  (trip) => trip.matchesRoute(
+                    originStationId: routeKey.originStationId,
+                    destinationStationId: routeKey.destinationStationId,
+                  ),
+                )
+                .toList(),
           ),
           legacyRouteModelProvider.overrideWith(
             (ref, routeKey) async => _model(displayedCount: 5),
           ),
-          myRankingTripsProvider.overrideWith(
-            (ref) async => [projectedTrip, parentJourney],
-          ),
-          myTripStagesProvider.overrideWith((ref) async => [parentJourney]),
+          myRankingTripsProvider.overrideWith((ref) async => rankingTrips),
+          myTripStagesProvider.overrideWith((ref) async => stages),
         ],
         child: MaterialApp.router(routerConfig: router),
       ),
@@ -673,15 +1185,58 @@ void main() {
     await tester.tap(find.byType(TripCard).first);
     await tester.pumpAndSettle();
 
-    expect(router.state.uri.path, '/route-history/1/2');
+    expect(router.state.uri.path, '/route-history/34/164');
     expect(
       router.state.uri.queryParameters['selectedTripId'],
-      'journey-parent',
+      projectedTrip.id,
     );
-    expect(find.text('1 - Origen completo'), findsOneWidget);
     expect(
       find.byKey(const ValueKey('route-origin-dock-icon')),
       findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('route-pit-stop-marker')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('route-destination-checkered-marker')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey('journey-projection-notice')),
+      findsOneWidget,
+    );
+
+    final parentAction = find.byKey(
+      const ValueKey('open-parent-journey-action'),
+    );
+    await tester.ensureVisible(parentAction);
+    await tester.tap(parentAction);
+    await tester.pumpAndSettle();
+
+    expect(router.state.uri.path, '/route-history/34/300');
+    expect(
+      router.state.uri.queryParameters['selectedTripId'],
+      parentJourney.id,
+    );
+    expect(
+      find.byKey(const ValueKey('journey-stage-action-1')),
+      findsOneWidget,
+    );
+
+    final middleStageAction = find.byKey(
+      const ValueKey('journey-stage-action-1'),
+    );
+    await tester.ensureVisible(middleStageAction);
+    await tester.tap(middleStageAction);
+    await tester.pumpAndSettle();
+
+    expect(router.state.uri.path, '/route-history/164/200');
+    expect(
+      find.byKey(const ValueKey('route-pit-stop-marker')),
+      findsNWidgets(2),
+    );
+    expect(find.byKey(const ValueKey('route-origin-dock-icon')), findsNothing);
+    expect(
+      find.byKey(const ValueKey('route-destination-checkered-marker')),
+      findsNothing,
     );
   });
 }
@@ -695,6 +1250,15 @@ Future<void> _scrollToLegacySection(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> _scrollToRankingModeSelector(WidgetTester tester) async {
+  await tester.scrollUntilVisible(
+    find.byKey(const ValueKey('route-ranking-mode-selector')),
+    260,
+    scrollable: find.byType(Scrollable),
+  );
+  await tester.pumpAndSettle();
+}
+
 Future<void> _pumpRouteHistory(
   WidgetTester tester, {
   required LegacyRouteModel? model,
@@ -702,6 +1266,10 @@ Future<void> _pumpRouteHistory(
   List<Trip>? allTrips,
   List<Trip>? stages,
   bool showOverview = false,
+  CommunityRouteRanking communityRanking = const CommunityRouteRanking(
+    entries: [],
+  ),
+  SocialProfile? currentProfile,
 }) async {
   const routeKey = RouteKey(originStationId: '34', destinationStationId: '164');
   await tester.pumpWidget(
@@ -709,8 +1277,13 @@ Future<void> _pumpRouteHistory(
       overrides: [
         routeTripsProvider.overrideWith((ref, routeKey) async => trips),
         legacyRouteModelProvider.overrideWith((ref, routeKey) async => model),
+        routeCommunityRankingProvider.overrideWith(
+          (ref, routeKey) async => communityRanking,
+        ),
         myTripsProvider.overrideWith((ref) async => allTrips ?? trips),
         myTripStagesProvider.overrideWith((ref) async => stages ?? trips),
+        if (currentProfile != null)
+          currentSocialProfileProvider.overrideWith((ref) => currentProfile),
       ],
       child: MaterialApp(
         home: RouteHistoryScreen(
@@ -778,6 +1351,7 @@ Trip _trip(
   int durationSeconds = 120,
   double? distanceMeters,
   List<PitStop> pitStops = const [],
+  List<JourneyStageDetails> stageDetails = const [],
   String? bikeId,
   String? tripCost,
 }) {
@@ -796,6 +1370,7 @@ Trip _trip(
     bikeId: bikeId,
     tripCost: tripCost,
     pitStops: pitStops,
+    stageDetails: stageDetails,
   );
 }
 

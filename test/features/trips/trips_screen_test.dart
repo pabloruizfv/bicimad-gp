@@ -156,11 +156,14 @@ void main() {
     await tester.tap(find.text('Continuar'));
     await tester.pumpAndSettle();
 
-    expect(find.text('General'), findsWidgets);
+    expect(find.text('Mi Perfil'), findsWidgets);
     await tester.tap(find.text('Viajes').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Mis viajes'), findsOneWidget);
+    expect(
+      find.textContaining(RegExp(r'^Mis viajes \(\d+\)$')),
+      findsOneWidget,
+    );
     expect(find.textContaining('Manuel Becerra'), findsWidgets);
     expect(find.textContaining('Felipe II'), findsWidgets);
     expect(find.byKey(const ValueKey('personal-record-medal')), findsWidgets);

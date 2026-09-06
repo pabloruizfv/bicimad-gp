@@ -34,4 +34,13 @@ void main() {
       );
     },
   );
+
+  test('permite seleccionar el avatar 12', () async {
+    final store = InMemorySecureKeyValueStore();
+    final repository = LocalAvatarRepository(store: store);
+
+    await repository.saveSelectedAvatar('assets/avatar/12.png');
+
+    expect(await repository.readSelectedAvatar(), 'assets/avatar/12.png');
+  });
 }

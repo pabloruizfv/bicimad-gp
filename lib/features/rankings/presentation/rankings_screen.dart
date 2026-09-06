@@ -210,7 +210,12 @@ class _RouteSummaryText extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(summary.originStationName, style: titleStyle, maxLines: 2),
+        Text(
+          summary.originStationName,
+          style: titleStyle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
           child: Row(
@@ -231,7 +236,12 @@ class _RouteSummaryText extends StatelessWidget {
             ],
           ),
         ),
-        Text(summary.destinationStationName, style: titleStyle, maxLines: 2),
+        Text(
+          summary.destinationStationName,
+          style: titleStyle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         const SizedBox(height: 8),
         Row(
           children: [

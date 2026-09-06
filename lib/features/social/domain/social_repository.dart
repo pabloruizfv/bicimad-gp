@@ -1,4 +1,8 @@
 import '../../trips/domain/trip.dart';
+import '../../achievements/domain/achievement.dart';
+import '../../achievements/domain/achievement_ranking.dart';
+import '../../rankings/domain/community_route_ranking.dart';
+import '../../rankings/domain/head_to_head.dart';
 import 'follow_connection.dart';
 import 'profile_statistics.dart';
 import 'social_profile.dart';
@@ -62,6 +66,19 @@ abstract interface class SocialRepository {
   Future<List<Trip>> getOwnTrips({required String localUserId});
 
   Future<void> upsertOwnTrips(List<Trip> trips);
+
+  Future<List<UserAchievement>> getUserAchievements(String userId);
+
+  Future<AchievementCommunityRanking> getAchievementRanking(String categoryId);
+
+  Future<CommunityRouteRanking> getCommunityRouteRanking({
+    required String originStationId,
+    required String destinationStationId,
+  });
+
+  Future<HeadToHeadSummary> getHeadToHead(String otherUserId);
+
+  Future<void> refreshOwnAchievements();
 }
 
 enum SocialAuthFailureKind {
