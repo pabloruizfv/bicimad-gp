@@ -6,9 +6,13 @@ void main() {
   final migration = File(
     'supabase/migrations/20260906120000_harden_api_privileges.sql',
   ).readAsStringSync();
-  final revoked = migration
-      .split('revoke all on function')[1]
-      .split('from public, anon, authenticated;')[0];
+  // The migration builds the revoke statements dynamically from the signature
+  // array, so inspect that array instead of splitting on the generated SQL
+  // template itself.
+  final revoked = RegExp(r"'(?<signature>public\.\w+\([^']*\))',?")
+      .allMatches(migration)
+      .map((match) => match.namedGroup('signature')!)
+      .join('\n');
   final granted = migration.split('grant execute on function')[1];
 
   test('covers every existing function, including renamed helpers', () {

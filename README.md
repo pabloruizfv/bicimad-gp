@@ -85,6 +85,14 @@ El resultado queda en
 `build/app/outputs/flutter-apk/app-release.apk`. No compartas `key.properties`
 ni el keystore; solo distribuye la APK.
 
+Las versiones futuras consultan `update_policy.json` y la GitHub Release mas
+reciente. `minimumSupportedVersion` solo debe aumentarse cuando una version
+antigua deje de ser compatible con el backend o el esquema; las versiones
+compatibles no se bloquean aunque exista una release nueva.
+
+El procedimiento completo para generar y publicar una APK esta en
+[`docs/publishing_github_release.md`](docs/publishing_github_release.md).
+
 Los importes de BiciMAD se conservan como valores decimales, sin convertirlos a
 centimos. En un viaje formado por varias etapas, el precio solo se suma cuando
 todas las etapas lo incluyen; las bicicletas distintas se mantienen por etapa.

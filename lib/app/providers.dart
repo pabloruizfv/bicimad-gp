@@ -19,6 +19,9 @@ import '../features/authentication/domain/bicimad_session.dart';
 import '../features/achievements/domain/achievement.dart';
 import '../features/achievements/domain/achievement_ranking.dart';
 import '../features/achievements/domain/achievement_service.dart';
+import '../features/app_update/application/app_update_controller.dart';
+import '../features/app_update/data/github_update_repository.dart';
+import '../features/app_update/domain/app_update.dart';
 import '../features/general/domain/station_usage.dart';
 import '../features/profile/data/avatar_repository.dart';
 import '../features/rankings/domain/ranking_service.dart';
@@ -51,6 +54,11 @@ import '../features/trips/domain/trip_metrics.dart';
 final secureKeyValueStoreProvider = Provider<SecureKeyValueStore>((ref) {
   return const FlutterSecureKeyValueStore();
 });
+
+final appUpdateControllerProvider =
+    StateNotifierProvider<AppUpdateController, AppUpdateState>((ref) {
+      return AppUpdateController(GithubUpdateRepository());
+    });
 
 final bicimadBuildConfigProvider = Provider<BicimadBuildConfig>((ref) {
   return BicimadBuildConfig.fromEnvironment();
