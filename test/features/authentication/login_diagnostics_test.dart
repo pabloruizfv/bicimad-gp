@@ -19,6 +19,30 @@ import '../../helpers/fakes.dart';
 void main() {
   tearDown(BicimadDiagnostics.resetOutput);
 
+  test('does not log server text masquerading as an API code', () async {
+    final lines = <String>[];
+    BicimadDiagnostics.output = (message, {wrapWidth}) {
+      if (message != null) lines.add(message);
+    };
+    final api = MpassApiClient(
+      transport: QueuedHttpTransport([
+        _jsonResponse({'code': 'fake-private-value@example.com'}),
+      ]),
+    );
+    await expectLater(
+      api.login(
+        email: 'fake@example.com',
+        password: 'fake-password',
+        passKey: 'fake-key',
+        xClientId: 'fake-client',
+        deviceId: 'fake-device',
+      ),
+      throwsA(isA<AuthenticationException>()),
+    );
+    expect(lines.join('\n'), contains('apiCode=unexpected_code'));
+    expect(lines.join('\n'), isNot(contains('fake-private-value')));
+  });
+
   test(
     'continua desde config build resuelta hasta deviceId y login request',
     () async {

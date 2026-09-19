@@ -365,7 +365,12 @@ class MpassApiClient {
     try {
       final decoded = jsonDecode(response.body);
       if (decoded is Map) {
-        return decoded['code']?.toString() ?? 'none';
+        final code = decoded['code'];
+        if (code == null) return 'none';
+        // Only log the documented short numeric code, never arbitrary body text.
+        return code is String && RegExp(r'^[0-9]{2}$').hasMatch(code)
+            ? code
+            : 'unexpected_code';
       }
     } on FormatException {
       return 'invalid_json';

@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from normalize import normalize_response
+from safe_output import safe_api_code
 
 LOGIN_ENDPOINT = "https://api.mpass.mobi/v1/core/identity/login/integrator"
 USERDATA_ENDPOINT = "https://apiemtpay.emtmadrid.es/v2/bicimad/userdata/"
@@ -70,8 +71,10 @@ class ProbeRequestError(Exception):
         super().__init__(error_type)
         self.stage = stage
         self.status = status
-        self.api_code = api_code
-        self.api_description = api_description
+        self.api_code = safe_api_code(api_code)
+        # A backend description can echo credentials or personal information.
+        # Keep the attribute for existing diagnostic clients, but not its content.
+        self.api_description = None
         self.error_type = error_type
 
 
@@ -317,7 +320,7 @@ def run_login_trip_flow(
     return FlowResult(
         token_sec_expiration=login_result.token_sec_expiration,
         trips_status=trips_response.status,
-        trips_api_code=_safe_str(trips_response.payload.get("code")),
+        trips_api_code=safe_api_code(trips_response.payload.get("code")),
         received_count=len(data) if isinstance(data, list) else 0,
         normalized_count=len(normalized),
         output_path=output_path,

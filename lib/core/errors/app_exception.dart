@@ -7,6 +7,12 @@ class AppException implements Exception {
   String toString() => message;
 }
 
+// Only app-owned messages are suitable for the UI. SDK exceptions can contain
+// request URLs, SQL details, paths or private response values.
+String safeErrorMessage(Object? error) => error is AppException
+    ? error.message
+    : 'No se han podido cargar los datos. Inténtalo de nuevo.';
+
 class AuthenticationException extends AppException {
   const AuthenticationException(super.message);
 }

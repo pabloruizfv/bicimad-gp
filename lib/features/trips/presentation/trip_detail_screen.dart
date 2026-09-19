@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../app/providers.dart';
+import '../../../core/errors/app_exception.dart';
 import '../../../core/utils/date_formatters.dart';
 import '../../../core/utils/duration_formatters.dart';
 import '../../../core/utils/metric_formatters.dart';
@@ -26,7 +27,8 @@ class TripDetailScreen extends ConsumerWidget {
       body: SafeArea(
         child: tripAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) => Center(child: Text(error.toString())),
+          error: (error, stackTrace) =>
+              Center(child: Text(safeErrorMessage(error))),
           data: (trip) {
             if (trip == null) {
               return const Center(child: Text('Viaje no encontrado.'));
@@ -60,13 +62,13 @@ class _TripDetailContent extends ConsumerWidget {
       return const Center(child: CircularProgressIndicator());
     }
     if (myTripsAsync.hasError) {
-      return Center(child: Text(myTripsAsync.error.toString()));
+      return Center(child: Text(safeErrorMessage(myTripsAsync.error)));
     }
     if (sharedTripsAsync.hasError) {
-      return Center(child: Text(sharedTripsAsync.error.toString()));
+      return Center(child: Text(safeErrorMessage(sharedTripsAsync.error)));
     }
     if (rankingAsync.hasError) {
-      return Center(child: Text(rankingAsync.error.toString()));
+      return Center(child: Text(safeErrorMessage(rankingAsync.error)));
     }
 
     final myTrips = myTripsAsync.requireValue;

@@ -122,8 +122,6 @@ def _print_safe_error(error: ProbeRequestError) -> None:
     print(f"HTTP {error.status if error.status is not None else '-'}")
     if error.api_code is not None:
         print(f"Codigo de API: {error.api_code}")
-    if error.api_description is not None:
-        print(f"Descripcion: {error.api_description}")
     print(f"Tipo de excepcion: {error.error_type}")
 
 

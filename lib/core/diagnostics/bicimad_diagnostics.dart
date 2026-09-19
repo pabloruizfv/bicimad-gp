@@ -10,6 +10,9 @@ class BicimadDiagnostics {
     String event, [
     Map<String, Object?> fields = const {},
   ]) {
+    if (!kDebugMode) {
+      return;
+    }
     final buffer = StringBuffer('[BICIMAD_DIAG] stage=$stage event=$event');
     for (final entry in fields.entries) {
       final value = entry.value;

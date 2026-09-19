@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from normalize import normalize_response
+from safe_output import safe_api_code
 
 ENDPOINT = "https://apiemtpay.emtmadrid.es/v2/bicimad/trips/"
 TIMEOUT_SECONDS = 20
@@ -114,31 +115,12 @@ def _print_success_summary(
     normalized: list[dict[str, Any]],
 ) -> None:
     print(f"HTTP {status}")
-    print(f"Codigo de API: {payload.get('code', '-')}")
+    print(f"Codigo de API: {safe_api_code(payload.get('code')) or '-'}")
     received_count = len(payload.get("data", [])) if isinstance(payload.get("data"), list) else 0
     print(f"Viajes recibidos: {received_count}")
     print(f"Viajes normalizados: {len(normalized)}")
 
-    latest = _latest_trip(normalized)
-    if latest is None:
-        print("Viaje mas reciente: -")
-    else:
-        origin = latest.get("origin_station_name") or latest.get("origin_station_number") or "-"
-        destination = (
-            latest.get("destination_station_name")
-            or latest.get("destination_station_number")
-            or "-"
-        )
-        print(f"Viaje mas reciente: {latest.get('started_at')}, {origin} -> {destination}")
-
     print(f"Archivo generado: {OUTPUT_PATH.as_posix()}")
-
-
-def _latest_trip(normalized: list[dict[str, Any]]) -> dict[str, Any] | None:
-    dated = [trip for trip in normalized if trip.get("started_at")]
-    if not dated:
-        return normalized[0] if normalized else None
-    return max(dated, key=lambda trip: str(trip.get("started_at")))
 
 
 def _safe_error_payload(error: urllib.error.HTTPError) -> dict[str, Any] | None:
@@ -159,8 +141,7 @@ def _print_error_summary(
     print(f"HTTP {status if status is not None else '-'}")
     print(f"Tipo de error: {error_type}")
     if payload is not None:
-        print(f"Codigo de API: {payload.get('code', '-')}")
-        print(f"Descripcion: {payload.get('description', '-')}")
+        print(f"Codigo de API: {safe_api_code(payload.get('code')) or '-'}")
 
 
 if __name__ == "__main__":

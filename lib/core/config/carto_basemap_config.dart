@@ -16,7 +16,7 @@ abstract final class CartoBasemapConfig {
     }
     throw StateError(
       'Falta CARTO_API_KEY. Ejecuta la aplicacion con: '
-      'flutter run -d DEVICE_ID '
+      'flutter run '
       '--dart-define-from-file=local_secrets.json',
     );
   }

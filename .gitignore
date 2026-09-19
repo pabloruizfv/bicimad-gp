@@ -65,3 +65,29 @@ bicimad_probe_report.json
 bicimad_probe_report.txt
 trips_raw.json
 trips_normalized.json
+
+# Local builds, signing material and personal databases, wherever generated.
+*.apk
+*.aab
+*.ipa
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.key
+*.pem
+key.properties
+*.db
+*.sqlite
+*.sqlite3
+*-wal
+*-shm
+*-journal
+!/assets/data/legacy_route_models.sqlite
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+
+# Empty examples are safe to version; real environment files remain private.
+!.env.example

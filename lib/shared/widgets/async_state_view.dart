@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/errors/app_exception.dart';
+
 class AsyncStateView<T> extends StatelessWidget {
   const AsyncStateView({required this.value, required this.data, super.key});
 
@@ -14,7 +16,7 @@ class AsyncStateView<T> extends StatelessWidget {
       error: (error, stackTrace) => Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Text(error.toString(), textAlign: TextAlign.center),
+          child: Text(safeErrorMessage(error), textAlign: TextAlign.center),
         ),
       ),
       loading: () => const Center(child: CircularProgressIndicator()),

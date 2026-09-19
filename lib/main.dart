@@ -11,6 +11,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   CartoBasemapConfig.ensureConfigured();
   final supabaseConfig = SupabaseBuildConfig.fromEnvironment();
+  supabaseConfig.ensureClientKey();
   if (supabaseConfig.isComplete) {
     await Supabase.initialize(
       url: supabaseConfig.url,

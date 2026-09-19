@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../../../app/providers.dart';
-import '../../../core/config/carto_basemap_config.dart';
+import '../../../shared/widgets/carto_tile_layer.dart';
 import '../../../shared/widgets/async_state_view.dart';
 import '../../../shared/widgets/arcade_user_stats_card.dart';
 import '../../../shared/widgets/docking_station_icon.dart';
@@ -345,11 +345,7 @@ class _StreetTileMapState extends State<_StreetTileMap> {
       ),
       children: [
         if (widget.showTiles)
-          TileLayer(
-            urlTemplate: CartoBasemapConfig.rasterTileUrlTemplate,
-            subdomains: const ['a', 'b', 'c', 'd'],
-            userAgentPackageName: 'bicimad_social',
-          )
+          CartoTileLayer()
         else
           const _FallbackMapLayer(),
         MarkerLayer(

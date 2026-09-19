@@ -4,6 +4,17 @@ Prototipo Flutter para importar viajes propios de BiciMAD, conservar el
 historico local y participar en una comunidad identificada mediante Supabase
 Auth.
 
+## Licencia
+
+El código propio de este repositorio se distribuye bajo
+[PolyForm Noncommercial 1.0.0](LICENSE). Permite uso, estudio, modificación y
+redistribución con fines no comerciales. Los usos comerciales requieren una
+autorización o licencia adicional del titular de los derechos.
+
+Esta licencia no concede derechos sobre logos, avatares, iconos, mapas, datos,
+servicios externos ni otros recursos de terceros incluidos o utilizados por la
+aplicación. Consulta sus licencias y condiciones por separado.
+
 ## Funcionalidades
 
 - Login MPass y descarga de viajes de la cuenta propia.
@@ -15,7 +26,8 @@ Auth.
 - Busqueda, follows, solicitudes y listas de seguidores y seguidos.
 - Copia privada del historico en Supabase y estadisticas sociales agregadas.
 - Bicicleta y precio de cada etapa, con agregacion segura en viajes con pit stops.
-- Pantallas General, Viajes, Rankings, Comunidad y Ajustes.
+- Pantallas Mi Perfil, Viajes, Rankings, Comunidad y Ajustes.
+- Insignias, rankings de Comunidad y comparaciones Cara a cara.
 - Historico Open Data agregado por ruta y catalogo local de estaciones.
 
 ## Arquitectura
@@ -55,6 +67,24 @@ Los cambios en `--dart-define-from-file` requieren detener y recompilar; hot
 reload no es suficiente. La pantalla de Configuracion experimental sigue siendo
 el fallback local para `passKey` y `X-ClientId`.
 
+### Firma de produccion Android
+
+Las compilaciones `release` requieren una firma de produccion y fallan de forma
+intencionada si falta `android/key.properties`. Ese archivo y el keystore
+`android/app/bicimad-gp-release.jks` estan ignorados por Git. Deben conservarse
+fuera del repositorio y respaldarse juntos: perder el keystore impide publicar
+actualizaciones sobre la misma instalacion de Android.
+
+Para generar una APK firmada localmente:
+
+```powershell
+flutter build apk --release --dart-define-from-file=local_secrets.json
+```
+
+El resultado queda en
+`build/app/outputs/flutter-apk/app-release.apk`. No compartas `key.properties`
+ni el keystore; solo distribuye la APK.
+
 Los importes de BiciMAD se conservan como valores decimales, sin convertirlos a
 centimos. En un viaje formado por varias etapas, el precio solo se suma cuando
 todas las etapas lo incluyen; las bicicletas distintas se mantienen por etapa.
@@ -88,6 +118,7 @@ app usa primero el catalogo local de estaciones y lo actualiza en segundo plano.
 dart format .
 flutter analyze
 flutter test
+python tools/security/check_publication.py --history
 ```
 
 ## Seguridad y limitaciones
@@ -96,6 +127,12 @@ No incluyas credenciales, tokens ni datos personales en Git o logs. Flutter usa
 solo la clave publicable de Supabase; nunca `service_role`. Los viajes detallados
 son privados.
 
-No se incluyen feed, logros, comentarios, likes, recomendaciones,
+Consulta [SECURITY.md](SECURITY.md) y la
+[revision previa a publicacion](docs/publication_security_review.md) antes de
+abrir el repositorio o distribuir compilados. Las claves de integracion no se
+distribuyen con el codigo: cada instalacion de desarrollo necesita configuracion
+legitima propia. Publicar el codigo no autoriza el uso de servicios de terceros.
+
+No se incluyen feed, comentarios, likes, recomendaciones,
 notificaciones push, reservas, desbloqueos ni pagos. El Open Data se mantiene
 separado de la comunidad.

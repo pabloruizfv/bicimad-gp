@@ -35,7 +35,7 @@ void main() {
     () {
       final ordered = orderHeadToHeadEntries([
         entry('a', 'b', 600000, 660000),
-      entry('b', 'a', 605000, 600000),
+        entry('b', 'a', 605000, 600000),
         entry('c', 'd', 700000, 700000),
         entry('e', 'f', 700000, 650000),
         entry('g', 'h', 800000, 850000),

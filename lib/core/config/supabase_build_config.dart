@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class SupabaseBuildConfig {
   const SupabaseBuildConfig({
     required this.url,
@@ -16,6 +18,27 @@ class SupabaseBuildConfig {
   final String url;
   final String publishableKey;
   final String projectRef;
+
+  void ensureClientKey() {
+    final key = publishableKey.trim();
+    var unsafe = key.startsWith('sb_secret_');
+    if (key.split('.').length == 3) {
+      try {
+        final claims = jsonDecode(
+          utf8.decode(base64Url.decode(base64Url.normalize(key.split('.')[1]))),
+        );
+        unsafe = claims is! Map || claims['role'] != 'anon';
+      } on FormatException {
+        unsafe = true;
+      }
+    }
+    if (unsafe) {
+      throw StateError(
+        'SUPABASE_PUBLISHABLE_KEY debe ser una clave publicable o anon. '
+        'Nunca uses claves secretas, service_role ni tokens de usuario en Flutter.',
+      );
+    }
+  }
 
   bool get isComplete =>
       url.trim().isNotEmpty &&

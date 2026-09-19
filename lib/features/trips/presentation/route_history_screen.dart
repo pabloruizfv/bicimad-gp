@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart' show LatLng;
 
 import '../../../app/providers.dart';
-import '../../../core/config/carto_basemap_config.dart';
+import '../../../shared/widgets/carto_tile_layer.dart';
 import '../../../core/utils/decimal_amount.dart';
 import '../../../core/utils/date_formatters.dart';
 import '../../../core/utils/duration_axis_ticks.dart';
@@ -958,11 +958,7 @@ class _RouteMap extends StatelessWidget {
         ),
       ),
       children: [
-        TileLayer(
-          urlTemplate: CartoBasemapConfig.rasterTileUrlTemplate,
-          subdomains: const ['a', 'b', 'c', 'd'],
-          userAgentPackageName: 'bicimad_social',
-        ),
+        CartoTileLayer(),
         _DirectionalRouteLayer(segments: segments),
         MarkerLayer(
           markers: [
