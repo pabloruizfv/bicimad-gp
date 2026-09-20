@@ -57,7 +57,7 @@ begin
     eligible_trip.route_key, eligible_trip.started_at
   from (
     select trip.*,
-      concat_ws(chr(0),
+      concat_ws('||',
         coalesce(nullif(public.bicimad_public_station_code(
           trip.origin_station_id, trip.origin_station_name), ''),
           'id:' || nullif(btrim(trip.origin_station_id), '')),
@@ -211,7 +211,7 @@ begin
         insert into pg_temp.achievement_progress_route_usage (
           route_key, first_seen_at
         ) values (
-          origin_key || chr(0) || destination_key, current_started_at
+          origin_key || '||' || destination_key, current_started_at
         ) on conflict (route_key) do update set
           first_seen_at = least(
             achievement_progress_route_usage.first_seen_at,
@@ -328,7 +328,7 @@ begin
       insert into pg_temp.achievement_progress_route_usage (
         route_key, first_seen_at
       ) values (
-        origin_key || chr(0) || destination_key, current_started_at
+          origin_key || '||' || destination_key, current_started_at
       ) on conflict (route_key) do update set
         first_seen_at = least(
           achievement_progress_route_usage.first_seen_at,
