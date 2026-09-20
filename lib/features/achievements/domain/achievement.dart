@@ -41,6 +41,8 @@ enum AchievementProgressRule {
   longTrips,
   stationUsage,
   bikeUsage,
+  nightTrips,
+  exploredRoutes,
 }
 
 const fastTripSpeedThresholdKmh = 14.0;
@@ -247,12 +249,83 @@ const favoriteBikeAchievement = AchievementCategoryDefinition(
   ],
 );
 
+const nightTripsAchievement = AchievementCategoryDefinition(
+  id: 'night_trips',
+  name: 'Ave nocturna',
+  description: 'Empieza viajes entre las 00:00 y las 05:59.',
+  requirementUnitSingular: 'viaje nocturno',
+  requirementUnit: 'viajes nocturnos',
+  lockedAssetPath: 'assets/badges/night_trips/badge_night_trip_locked.svg',
+  rule: AchievementProgressRule.nightTrips,
+  levels: [
+    AchievementLevelDefinition(
+      id: AchievementLevelId.graphite,
+      threshold: 1,
+      assetPath: 'assets/badges/night_trips/badge_night_trip_1_graphite.svg',
+    ),
+    AchievementLevelDefinition(
+      id: AchievementLevelId.bronze,
+      threshold: 10,
+      assetPath: 'assets/badges/night_trips/badge_night_trip_10_bronze.svg',
+    ),
+    AchievementLevelDefinition(
+      id: AchievementLevelId.silver,
+      threshold: 50,
+      assetPath: 'assets/badges/night_trips/badge_night_trip_50_silver.svg',
+    ),
+    AchievementLevelDefinition(
+      id: AchievementLevelId.gold,
+      threshold: 100,
+      assetPath: 'assets/badges/night_trips/badge_night_trip_100_gold.svg',
+    ),
+  ],
+);
+
+const exploredRoutesAchievement = AchievementCategoryDefinition(
+  id: 'explored_routes',
+  name: 'Rutas exploradas',
+  description: 'Recorre pares de estaciones diferentes.',
+  requirementUnitSingular: 'ruta explorada',
+  requirementUnit: 'rutas exploradas',
+  lockedAssetPath:
+      'assets/badges/explored_routes/badge_explored_route_locked.svg',
+  rule: AchievementProgressRule.exploredRoutes,
+  levels: [
+    AchievementLevelDefinition(
+      id: AchievementLevelId.graphite,
+      threshold: 10,
+      assetPath:
+          'assets/badges/explored_routes/badge_explored_route_10_graphite.svg',
+    ),
+    AchievementLevelDefinition(
+      id: AchievementLevelId.bronze,
+      threshold: 50,
+      assetPath:
+          'assets/badges/explored_routes/badge_explored_route_50_bronze.svg',
+    ),
+    AchievementLevelDefinition(
+      id: AchievementLevelId.silver,
+      threshold: 200,
+      assetPath:
+          'assets/badges/explored_routes/badge_explored_route_200_silver.svg',
+    ),
+    AchievementLevelDefinition(
+      id: AchievementLevelId.gold,
+      threshold: 500,
+      assetPath:
+          'assets/badges/explored_routes/badge_explored_route_500_gold.svg',
+    ),
+  ],
+);
+
 const achievementCatalog = [
   pitStopsAchievement,
   fastTripsAchievement,
   longTripsAchievement,
   favoriteStationAchievement,
   favoriteBikeAchievement,
+  nightTripsAchievement,
+  exploredRoutesAchievement,
 ];
 
 class UserAchievement {

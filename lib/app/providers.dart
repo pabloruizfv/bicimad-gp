@@ -267,6 +267,7 @@ final achievementServiceProvider = Provider<AchievementService>((ref) {
 final ownAchievementProgressProvider = FutureProvider<List<AchievementProgress>>(
   (ref) async {
     final journeys = await ref.watch(myTripsProvider.future);
+    final stages = await ref.watch(myTripStagesProvider.future);
     final repository = ref.watch(socialRepositoryProvider);
     var persisted = const <UserAchievement>[];
     final userId = repository.currentUserId;
@@ -279,7 +280,11 @@ final ownAchievementProgressProvider = FutureProvider<List<AchievementProgress>>
     }
     return ref
         .watch(achievementServiceProvider)
-        .evaluate(journeys: journeys, persisted: persisted);
+        .evaluate(
+          journeys: journeys,
+          routeJourneys: [...journeys, ...stages],
+          persisted: persisted,
+        );
   },
 );
 

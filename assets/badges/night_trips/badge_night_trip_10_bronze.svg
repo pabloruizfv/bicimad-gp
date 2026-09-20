@@ -1,0 +1,41 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="metalOuter" x1="80" y1="80" x2="432" y2="432" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E4B487"/>
+      <stop offset="35%" stop-color="#C3834D"/>
+      <stop offset="70%" stop-color="#A25D31"/>
+      <stop offset="100%" stop-color="#67351E"/>
+    </linearGradient>
+
+    <linearGradient id="metalInner" x1="140" y1="120" x2="372" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#EDC59B"/>
+      <stop offset="50%" stop-color="#C18358"/>
+      <stop offset="100%" stop-color="#98522E"/>
+    </linearGradient>
+
+    <linearGradient id="ribbonRed" x1="140" y1="390" x2="372" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E44848"/>
+      <stop offset="100%" stop-color="#A91E1E"/>
+    </linearGradient>
+
+    <filter id="shadow" x="0" y="0" width="512" height="512" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <g id="badge-root" filter="url(#shadow)">
+    <circle id="badge-outer-ring" cx="256" cy="220" r="170" fill="url(#metalOuter)"/>
+    <circle id="badge-mid-ring" cx="256" cy="220" r="148" fill="#92502C"/>
+    <circle id="badge-inner-ring" cx="256" cy="220" r="136" fill="url(#metalInner)"/>
+    <circle id="badge-content-border" cx="256" cy="220" r="118"
+            fill="none" stroke="#713B20" stroke-opacity="0.35" stroke-width="8"/>
+
+    <g id="badge-ribbon">
+      <path d="M170 370H342L320 450L256 422L192 450L170 370Z" fill="url(#ribbonRed)"/>
+      <path d="M188 370H324L309 428L256 405L203 428L188 370Z" fill="#7D1414" opacity="0.22"/>
+    </g>
+
+    <!-- Zona reservada para el icono de cada emblema -->
+    <g id="badge-content"><g transform="translate(0 0)"><path fill="#244E78" d="M151 268c0-51 39-91 105-91s105 40 105 91c0 53-43 91-105 91s-105-38-105-91Z"/><path fill="#244E78" d="M157 207 130 159l62 25m163 23 27-48-62 25"/><circle cx="211" cy="250" r="30" fill="#FFFFFF"/><circle cx="301" cy="250" r="30" fill="#FFFFFF"/><circle cx="211" cy="250" r="12" fill="#244E78"/><circle cx="301" cy="250" r="12" fill="#244E78"/><path fill="#FFFFFF" d="m256 267 22 31h-44l22-31Z"/></g></g>
+  </g>
+</svg>

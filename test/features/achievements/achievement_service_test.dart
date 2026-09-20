@@ -120,6 +120,7 @@ void main() {
       overrides: [
         socialRepositoryProvider.overrideWithValue(repository),
         myTripsProvider.overrideWith((ref) async => const []),
+        myTripStagesProvider.overrideWith((ref) async => const []),
       ],
     );
     addTearDown(container.dispose);
@@ -267,6 +268,99 @@ void main() {
     expect(longTripsAchievement.formatProgress(1), '1 viaje largo');
     expect(longTripsAchievement.formatProgress(2), '2 viajes largos');
   });
+
+  for (final testCase in <(int, AchievementLevelId?)>[
+    (0, null),
+    (1, AchievementLevelId.graphite),
+    (9, AchievementLevelId.graphite),
+    (10, AchievementLevelId.bronze),
+    (49, AchievementLevelId.bronze),
+    (50, AchievementLevelId.silver),
+    (99, AchievementLevelId.silver),
+    (100, AchievementLevelId.gold),
+  ]) {
+    test('${testCase.$1} viajes nocturnos resuelve ${testCase.$2}', () {
+      final journeys = [
+        for (var index = 0; index < testCase.$1; index++)
+          _journey(
+            'night-$index',
+            pitStops: 0,
+            day: 1,
+          ).copyWith(startedAt: DateTime(2026, 1, 1, index % 6)),
+      ];
+      final daytime = _journey(
+        'daytime',
+        pitStops: 0,
+        day: 2,
+      ).copyWith(startedAt: DateTime(2026, 1, 2, 6));
+      final progress = _progressFor(
+        service.evaluate(journeys: [...journeys, daytime]),
+        nightTripsAchievement.id,
+      );
+
+      expect(progress.progress, testCase.$1);
+      expect(progress.currentLevel?.id, testCase.$2);
+      expect(progress.relatedJourneys, hasLength(testCase.$1));
+    });
+  }
+
+  for (final testCase in <(int, AchievementLevelId?)>[
+    (0, null),
+    (9, null),
+    (10, AchievementLevelId.graphite),
+    (49, AchievementLevelId.graphite),
+    (50, AchievementLevelId.bronze),
+    (199, AchievementLevelId.bronze),
+    (200, AchievementLevelId.silver),
+    (499, AchievementLevelId.silver),
+    (500, AchievementLevelId.gold),
+  ]) {
+    test('${testCase.$1} rutas exploradas resuelve ${testCase.$2}', () {
+      final routes = [
+        for (var index = 0; index < testCase.$1; index++)
+          _journey('route-$index', pitStops: 0, day: 1).copyWith(
+            originStationId: 'O$index',
+            originStationName: 'O$index - Origen',
+            destinationStationId: 'D$index',
+            destinationStationName: 'D$index - Destino',
+          ),
+      ];
+      final progress = _progressFor(
+        service.evaluate(journeys: routes),
+        exploredRoutesAchievement.id,
+      );
+
+      expect(progress.progress, testCase.$1);
+      expect(progress.currentLevel?.id, testCase.$2);
+    });
+  }
+
+  test(
+    'rutas exploradas conserva el sentido y puede usar los viajes de ranking',
+    () {
+      final journeys = [
+        _journey('ab', pitStops: 0, day: 1),
+        _journey('ab-duplicate', pitStops: 0, day: 2),
+      ];
+      final reverse = journeys.first.copyWith(
+        id: 'ba',
+        originStationId: 'B',
+        originStationName: 'B - Destino',
+        destinationStationId: 'A',
+        destinationStationName: 'A - Origen',
+      );
+
+      final progress = _progressFor(
+        service.evaluate(
+          journeys: journeys,
+          routeJourneys: [...journeys, reverse],
+        ),
+        exploredRoutesAchievement.id,
+      );
+
+      expect(progress.progress, 2);
+    },
+  );
 
   for (final testCase in <(int, AchievementLevelId?)>[
     (0, null),

@@ -197,7 +197,7 @@ void main() {
     );
     expect(tester.getCenter(firstBadge).dy, tester.getCenter(lastBadge).dy);
 
-    await tester.drag(scrollFinder, const Offset(-180, 0));
+    await tester.drag(scrollFinder, const Offset(-500, 0));
     await tester.pumpAndSettle();
     expect(tester.getCenter(lastBadge).dx, lessThan(260));
   });

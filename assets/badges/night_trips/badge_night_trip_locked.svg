@@ -1,0 +1,31 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="metalOuter" x1="80" y1="80" x2="432" y2="432" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E3E6E8"/>
+      <stop offset="35%" stop-color="#CDD1D4"/>
+      <stop offset="70%" stop-color="#B7BDC1"/>
+      <stop offset="100%" stop-color="#9FA6AB"/>
+    </linearGradient>
+    <linearGradient id="metalInner" x1="140" y1="120" x2="372" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F1F3F4"/>
+      <stop offset="50%" stop-color="#D9DDE0"/>
+      <stop offset="100%" stop-color="#C2C8CC"/>
+    </linearGradient>
+    <linearGradient id="ribbonRed" x1="140" y1="390" x2="372" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#CDD1D4"/>
+      <stop offset="100%" stop-color="#AEB5BA"/>
+    </linearGradient>
+  </defs>
+  <g id="badge-root">
+    <circle id="badge-outer-ring" cx="256" cy="220" r="170" fill="url(#metalOuter)"/>
+    <circle id="badge-mid-ring" cx="256" cy="220" r="148" fill="#B3B9BD"/>
+    <circle id="badge-inner-ring" cx="256" cy="220" r="136" fill="url(#metalInner)"/>
+    <circle id="badge-content-border" cx="256" cy="220" r="118"
+            fill="none" stroke="#929A9F" stroke-opacity="0.55" stroke-width="8"/>
+    <g id="badge-ribbon">
+      <path d="M170 370H342L320 450L256 422L192 450L170 370Z" fill="url(#ribbonRed)"/>
+      <path d="M188 370H324L309 428L256 405L203 428L188 370Z" fill="#8F979C" opacity="0.22"/>
+    </g>
+    <g id="badge-content"><g transform="translate(0 0)"><path fill="#8F979C" d="M151 268c0-51 39-91 105-91s105 40 105 91c0 53-43 91-105 91s-105-38-105-91Z"/><path fill="#8F979C" d="M157 207 130 159l62 25m163 23 27-48-62 25"/><circle cx="211" cy="250" r="30" fill="#E3E6E8"/><circle cx="301" cy="250" r="30" fill="#E3E6E8"/><circle cx="211" cy="250" r="12" fill="#8F979C"/><circle cx="301" cy="250" r="12" fill="#8F979C"/><path fill="#E3E6E8" d="m256 267 22 31h-44l22-31Z"/></g></g>
+  </g>
+</svg>

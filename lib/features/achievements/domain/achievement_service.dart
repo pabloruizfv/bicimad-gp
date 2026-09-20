@@ -7,11 +7,13 @@ class AchievementService {
 
   List<AchievementProgress> evaluate({
     required List<Trip> journeys,
+    List<Trip>? routeJourneys,
     Iterable<UserAchievement> persisted = const [],
   }) {
+    final routes = routeJourneys ?? journeys;
     return [
       for (final definition in achievementCatalog)
-        _evaluateCategory(definition, journeys, persisted),
+        _evaluateCategory(definition, journeys, routes, persisted),
     ];
   }
 
@@ -46,6 +48,7 @@ class AchievementService {
   AchievementProgress _evaluateCategory(
     AchievementCategoryDefinition definition,
     List<Trip> journeys,
+    List<Trip> routeJourneys,
     Iterable<UserAchievement> persisted,
   ) {
     return switch (definition.rule) {
@@ -74,7 +77,66 @@ class AchievementService {
         journeys,
         persisted,
       ),
+      AchievementProgressRule.nightTrips => _evaluateJourneyContributions(
+        definition,
+        journeys,
+        persisted,
+        contribution: (journey) => journey.startedAt.toLocal().hour < 6 ? 1 : 0,
+      ),
+      AchievementProgressRule.exploredRoutes => _evaluateExploredRoutes(
+        definition,
+        routeJourneys,
+        persisted,
+      ),
     };
+  }
+
+  AchievementProgress _evaluateExploredRoutes(
+    AchievementCategoryDefinition definition,
+    List<Trip> journeys,
+    Iterable<UserAchievement> persisted,
+  ) {
+    final chronological = [...journeys]
+      ..sort((left, right) => left.startedAt.compareTo(right.startedAt));
+    final seen = <String>{};
+    final unlocks = <AchievementLevelId, DateTime>{};
+    var progress = 0;
+    for (final journey in chronological) {
+      final origin = _stationKey(
+        journey.originStationId,
+        journey.originStationName,
+      );
+      final destination = _stationKey(
+        journey.destinationStationId,
+        journey.destinationStationName,
+      );
+      if (origin == null || destination == null || origin == destination) {
+        continue;
+      }
+      if (!seen.add('$origin\u0000$destination')) {
+        continue;
+      }
+      final previous = progress++;
+      for (final level in definition.levels) {
+        if (previous < level.threshold && progress >= level.threshold) {
+          unlocks[level.id] = journey.endedAt;
+        }
+      }
+    }
+    _mergePersisted(
+      definition: definition,
+      persisted: persisted,
+      unlocks: unlocks,
+      onHigherProgress: (value) => progress = value,
+      currentProgress: () => progress,
+    );
+    return AchievementProgress(
+      definition: definition,
+      progress: progress,
+      unlocks: Map.unmodifiable(unlocks),
+      relatedJourneys: List.unmodifiable(journeys),
+      allJourneys: List.unmodifiable(journeys),
+    );
   }
 
   AchievementProgress _evaluatePitStops(

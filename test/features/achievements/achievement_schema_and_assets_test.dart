@@ -14,7 +14,7 @@ void main() {
           'badge_base_bronze.svg',
     ];
 
-    expect(paths, hasLength(8));
+    expect(paths, hasLength(10));
     for (final path in paths) {
       final svg = File(path).readAsStringSync();
       expect(svg, contains('#E4B487'), reason: path);
@@ -133,6 +133,69 @@ void main() {
     for (final content in badgeContents.skip(1)) {
       expect(content, badgeContents.first);
     }
+  });
+
+  test('las nuevas insignias conservan un pictograma por categoria', () {
+    const families = <List<String>>[
+      [
+        'assets/badges/night_trips/badge_night_trip_1_graphite.svg',
+        'assets/badges/night_trips/badge_night_trip_10_bronze.svg',
+        'assets/badges/night_trips/badge_night_trip_50_silver.svg',
+        'assets/badges/night_trips/badge_night_trip_100_gold.svg',
+        'assets/badges/night_trips/badge_night_trip_locked.svg',
+      ],
+      [
+        'assets/badges/explored_routes/badge_explored_route_10_graphite.svg',
+        'assets/badges/explored_routes/badge_explored_route_50_bronze.svg',
+        'assets/badges/explored_routes/badge_explored_route_200_silver.svg',
+        'assets/badges/explored_routes/badge_explored_route_500_gold.svg',
+        'assets/badges/explored_routes/badge_explored_route_locked.svg',
+      ],
+    ];
+    for (final family in families) {
+      final svgs = [for (final path in family) File(path).readAsStringSync()];
+      for (final svg in svgs) {
+        expect(svg, contains('viewBox="0 0 512 512"'));
+        expect(svg, contains('id="badge-content"'));
+        expect(svg, isNot(contains('<image')));
+        expect(svg, isNot(contains('base64')));
+        expect(svg, isNot(contains('<text')));
+        expect(svg, isNot(contains('href="http')));
+      }
+      final content = _badgeContent(svgs.first);
+      for (final svg in svgs.take(4).skip(1)) {
+        expect(_badgeContent(svg), content);
+      }
+      expect(svgs.last, contains('#8F979C'));
+      expect(svgs.last, contains('#E3E6E8'));
+    }
+  });
+
+  test('la migracion registra ave nocturna y rutas exploradas', () {
+    final sql = File(
+      'supabase/migrations/20260920150000_night_and_explored_route_achievements.sql',
+    ).readAsStringSync();
+
+    expect(sql, contains("'night_trips'"));
+    expect(sql, contains("'explored_routes'"));
+    expect(
+      sql,
+      contains(
+        "extract(hour from current_started_at at time zone 'Europe/Madrid') between 0 and 5",
+      ),
+    );
+    expect(
+      sql,
+      contains(
+        "('graphite', 10), ('bronze', 50), ('silver', 200), ('gold', 500)",
+      ),
+    );
+    expect(sql, contains('achievement_progress_route_usage'));
+    expect(sql, contains('on conflict (user_id, category_id, level_id)'));
+    expect(
+      sql,
+      isNot(contains('grant update on table public.user_achievements')),
+    );
   });
 
   test('emblema bloqueado es neutral y no reutiliza grafito', () {

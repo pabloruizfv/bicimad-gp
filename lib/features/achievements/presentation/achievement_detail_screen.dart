@@ -445,6 +445,9 @@ String _emptyRelatedMessage(AchievementProgressRule rule) => switch (rule) {
     'Aún no hay usos suficientes de una misma estación.',
   AchievementProgressRule.bikeUsage =>
     'Aún no hay viajes asociados a una bicicleta.',
+  AchievementProgressRule.nightTrips =>
+    'Aún no hay viajes iniciados de madrugada.',
+  AchievementProgressRule.exploredRoutes => 'Aún no hay rutas exploradas.',
 };
 
 String _routeKey(Trip trip) =>
