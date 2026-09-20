@@ -48,9 +48,16 @@
             <path fill="#FFFFFF" d="M652 320 L886 246 L886 779 L652 853 Z"/>
         
             <!-- Dashed route kept clear of both docking-station icons -->
-            <path d="M348 630 C420 585 473 607 526 642 C583 680 637 661 699 605"
-                  fill="none" stroke="#244E78" stroke-width="24" stroke-linecap="round"
-                  stroke-dasharray="28 34"/>
+            <!-- Fixed filled route segments keep their count at badge scale. -->
+            <g fill="#244E78">
+              <rect x="306" y="630" width="38" height="24" rx="12" transform="rotate(-20 325 642)"/>
+              <rect x="350" y="615" width="62" height="24" rx="12" transform="rotate(-21 381 627)"/>
+              <rect x="414" y="599" width="62" height="24" rx="12" transform="rotate(8 445 611)"/>
+              <rect x="478" y="616" width="62" height="24" rx="12" transform="rotate(24 509 628)"/>
+              <rect x="542" y="645" width="62" height="24" rx="12" transform="rotate(18 573 657)"/>
+              <rect x="606" y="646" width="62" height="24" rx="12" transform="rotate(-15 637 658)"/>
+              <rect x="665" y="610" width="48" height="24" rx="12" transform="rotate(-28 689 622)"/>
+            </g>
         
             <!-- Origin docking station -->
             <g transform="translate(155 590) scale(1.9)">
