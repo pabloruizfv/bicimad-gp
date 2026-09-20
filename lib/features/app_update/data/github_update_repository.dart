@@ -27,7 +27,10 @@ class GithubUpdateRepository {
     final policyResponse = await _client.get(_policyUri);
     final releaseResponse = await _client.get(
       _releaseUri,
-      headers: const {'Accept': 'application/vnd.github+json'},
+      headers: const {
+        'Accept': 'application/vnd.github+json',
+        'User-Agent': 'bicimad-gp-app',
+      },
     );
     if (policyResponse.statusCode != 200 || releaseResponse.statusCode != 200) {
       throw const HttpException('No se ha podido comprobar la versión.');

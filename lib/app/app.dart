@@ -20,19 +20,11 @@ class _BicimadSocialAppState extends ConsumerState<BicimadSocialApp> {
   @override
   Widget build(BuildContext context) {
     ref.listen<AppUpdateState>(appUpdateControllerProvider, (previous, next) {
-      if (next.status != AppUpdateStatus.available ||
-          _optionalUpdatePromptShown) {
-        return;
-      }
-      _optionalUpdatePromptShown = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        showDialog<void>(
-          context: context,
-          builder: (_) => const OptionalUpdateDialog(),
-        );
-      });
+      _showOptionalUpdateIfAvailable(next.status);
     });
+    _showOptionalUpdateIfAvailable(
+      ref.read(appUpdateControllerProvider).status,
+    );
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
@@ -41,6 +33,20 @@ class _BicimadSocialAppState extends ConsumerState<BicimadSocialApp> {
       routerConfig: router,
       debugShowCheckedModeBanner: false,
     );
+  }
+
+  void _showOptionalUpdateIfAvailable(AppUpdateStatus status) {
+    if (status != AppUpdateStatus.available || _optionalUpdatePromptShown) {
+      return;
+    }
+    _optionalUpdatePromptShown = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      showDialog<void>(
+        context: context,
+        builder: (_) => const OptionalUpdateDialog(),
+      );
+    });
   }
 }
 
