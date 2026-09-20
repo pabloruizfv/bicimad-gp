@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers.dart';
 import '../../../core/config/app_identity.dart';
 import '../../../core/utils/date_formatters.dart';
+import '../../app_update/domain/app_update.dart';
 import '../../../shared/widgets/checkered_flag_strip.dart';
 import '../../../shared/widgets/menu_app_bar.dart';
 import '../../../shared/widgets/profile_avatar.dart';
@@ -17,6 +18,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authControllerProvider);
     final socialState = ref.watch(socialAuthControllerProvider);
+    final updateState = ref.watch(appUpdateControllerProvider);
     final socialProfile = socialState.profile;
     final avatarAsync = ref.watch(selectedAvatarProvider);
     final user = authState.user;
@@ -182,6 +184,15 @@ class ProfileScreen extends ConsumerWidget {
               ),
               icon: const Icon(Icons.delete_forever_outlined),
               label: const Text('Eliminar mi cuenta'),
+            ),
+            const SizedBox(height: 16),
+            _AppUpdateSettingsCard(
+              state: updateState,
+              onCheck: () =>
+                  ref.read(appUpdateControllerProvider.notifier).check(),
+              onUpdate: () => ref
+                  .read(appUpdateControllerProvider.notifier)
+                  .downloadAndInstall(),
             ),
           ],
         ),
@@ -365,6 +376,127 @@ class ProfileScreen extends ConsumerWidget {
           },
         );
       },
+    );
+  }
+}
+
+class _AppUpdateSettingsCard extends StatelessWidget {
+  const _AppUpdateSettingsCard({
+    required this.state,
+    required this.onCheck,
+    required this.onUpdate,
+  });
+
+  final AppUpdateState state;
+  final VoidCallback onCheck;
+  final VoidCallback onUpdate;
+
+  @override
+  Widget build(BuildContext context) {
+    final info = state.info;
+    final downloading = state.status == AppUpdateStatus.downloading;
+    final available = state.status == AppUpdateStatus.available;
+    final checking = state.status == AppUpdateStatus.checking;
+    final title = switch (state.status) {
+      AppUpdateStatus.checking => 'Comprobando actualizaciones...',
+      AppUpdateStatus.current => 'BiciMAD GP está actualizado',
+      AppUpdateStatus.available =>
+        'Nueva versión ${info?.latestVersion ?? ''} detectada',
+      AppUpdateStatus.required => 'Actualización necesaria',
+      AppUpdateStatus.downloading => 'Descargando actualización...',
+      AppUpdateStatus.ready => 'Descarga preparada',
+      AppUpdateStatus.error => 'No se ha podido comprobar la actualización',
+    };
+    final subtitle = switch (state.status) {
+      AppUpdateStatus.checking =>
+        'Consultando la última release publicada en GitHub.',
+      AppUpdateStatus.current =>
+        'Versión instalada: ${info?.currentVersion ?? 'actual'}.',
+      AppUpdateStatus.available =>
+        'Versión instalada: ${info?.currentVersion ?? ''}. Disponible: ${info?.latestVersion ?? ''}.',
+      AppUpdateStatus.required =>
+        'Esta versión ya no es compatible con los servicios actuales.',
+      AppUpdateStatus.downloading =>
+        '${((state.progress ?? 0) * 100).round()}% descargado.',
+      AppUpdateStatus.ready =>
+        'Android debería solicitar la confirmación de instalación.',
+      AppUpdateStatus.error => 'Revisa la conexión e inténtalo de nuevo.',
+    };
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Actualizaciones',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Icon(
+                  state.status == AppUpdateStatus.error
+                      ? Icons.error_outline
+                      : state.status == AppUpdateStatus.available ||
+                            state.status == AppUpdateStatus.required
+                      ? Icons.system_update_alt
+                      : Icons.update_outlined,
+                  color: state.status == AppUpdateStatus.error
+                      ? Theme.of(context).colorScheme.error
+                      : null,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
+            if (downloading) ...[
+              const SizedBox(height: 12),
+              LinearProgressIndicator(value: state.progress),
+            ],
+            const SizedBox(height: 14),
+            FilledButton.icon(
+              onPressed: checking || downloading
+                  ? null
+                  : available || state.status == AppUpdateStatus.required
+                  ? onUpdate
+                  : onCheck,
+              icon: downloading
+                  ? const SizedBox.square(
+                      dimension: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Icon(
+                      checking
+                          ? Icons.hourglass_top_outlined
+                          : available ||
+                                state.status == AppUpdateStatus.required
+                          ? Icons.download
+                          : Icons.refresh,
+                    ),
+              label: Text(
+                checking || downloading
+                    ? 'Comprobando...'
+                    : available || state.status == AppUpdateStatus.required
+                    ? 'Actualizar'
+                    : 'Comprobar ahora',
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

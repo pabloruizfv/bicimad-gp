@@ -24,14 +24,16 @@ class GithubUpdateRepository {
 
   Future<AppUpdateInfo> checkForUpdate() async {
     final package = await PackageInfo.fromPlatform();
-    final policyResponse = await _client.get(_policyUri);
-    final releaseResponse = await _client.get(
-      _releaseUri,
-      headers: const {
-        'Accept': 'application/vnd.github+json',
-        'User-Agent': 'bicimad-gp-app',
-      },
-    );
+    const headers = {
+      'Accept': 'application/vnd.github+json',
+      'User-Agent': 'bicimad-gp-app',
+    };
+    final responses = await Future.wait([
+      _client.get(_policyUri, headers: headers),
+      _client.get(_releaseUri, headers: headers),
+    ]);
+    final policyResponse = responses[0];
+    final releaseResponse = responses[1];
     if (policyResponse.statusCode != 200 || releaseResponse.statusCode != 200) {
       throw const HttpException('No se ha podido comprobar la versión.');
     }

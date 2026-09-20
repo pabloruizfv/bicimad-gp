@@ -24,7 +24,7 @@ import '../features/trips/presentation/trip_detail_screen.dart';
 import '../features/trips/presentation/trips_screen.dart';
 import 'providers.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
   final (authGateStatus, needsDisplayName) = ref.watch(
@@ -40,7 +40,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/',
     redirect: (context, state) => resolveAppRedirect(
       location: state.uri.path,
@@ -111,27 +111,27 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         path: '/social-profile/:userId',
         builder: (context, state) {
           return SocialProfileScreen(userId: state.pathParameters['userId']!);
         },
       ),
       GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         path: '/head-to-head/:otherUserId',
         builder: (context, state) =>
             HeadToHeadScreen(otherUserId: state.pathParameters['otherUserId']!),
       ),
       GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         path: '/trip/:tripId',
         builder: (context, state) {
           return TripDetailScreen(tripId: state.pathParameters['tripId']!);
         },
       ),
       GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         path: '/route-history/:originStationId/:destinationStationId',
         builder: (context, state) {
           final isRankingsView =
@@ -150,7 +150,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
+        parentNavigatorKey: rootNavigatorKey,
         path: '/ranking/:originStationId/:destinationStationId',
         builder: (context, state) {
           return RankingDetailScreen(

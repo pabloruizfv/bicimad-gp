@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,8 +16,28 @@ class BicimadSocialApp extends ConsumerStatefulWidget {
   ConsumerState<BicimadSocialApp> createState() => _BicimadSocialAppState();
 }
 
-class _BicimadSocialAppState extends ConsumerState<BicimadSocialApp> {
+class _BicimadSocialAppState extends ConsumerState<BicimadSocialApp>
+    with WidgetsBindingObserver {
   bool _optionalUpdatePromptShown = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(ref.read(appUpdateControllerProvider.notifier).check());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +64,14 @@ class _BicimadSocialAppState extends ConsumerState<BicimadSocialApp> {
     _optionalUpdatePromptShown = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      final navigator = rootNavigatorKey.currentState;
+      if (navigator == null || !navigator.mounted) {
+        _optionalUpdatePromptShown = false;
+        return;
+      }
       showDialog<void>(
-        context: context,
+        context: navigator.context,
+        useRootNavigator: false,
         builder: (_) => const OptionalUpdateDialog(),
       );
     });
