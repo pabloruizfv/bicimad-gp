@@ -4,6 +4,8 @@ enum AppUpdateStatus {
   available,
   required,
   downloading,
+  awaitingPermission,
+  installing,
   ready,
   error,
 }
@@ -30,6 +32,7 @@ class AppUpdateState {
     this.info,
     this.progress,
     this.errorMessage,
+    this.isRequired = false,
   });
 
   const AppUpdateState.checking() : this(status: AppUpdateStatus.checking);
@@ -38,6 +41,13 @@ class AppUpdateState {
   final AppUpdateInfo? info;
   final double? progress;
   final String? errorMessage;
+  final bool isRequired;
+
+  bool get blocksApp => isRequired;
+  bool get isBusy =>
+      status == AppUpdateStatus.downloading ||
+      status == AppUpdateStatus.awaitingPermission ||
+      status == AppUpdateStatus.installing;
 }
 
 int compareVersions(String left, String right) {

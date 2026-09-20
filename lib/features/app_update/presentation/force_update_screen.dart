@@ -11,6 +11,10 @@ class ForceUpdateScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(appUpdateControllerProvider);
     final downloading = state.status == AppUpdateStatus.downloading;
+    final installing = state.status == AppUpdateStatus.installing;
+    final awaitingPermission =
+        state.status == AppUpdateStatus.awaitingPermission;
+    final ready = state.status == AppUpdateStatus.ready;
     final progress = state.progress;
     return Scaffold(
       body: SafeArea(
@@ -45,21 +49,54 @@ class ForceUpdateScreen extends ConsumerWidget {
                   ),
                 ],
                 const SizedBox(height: 24),
-                if (downloading && progress != null) ...[
+                if (downloading) ...[
+                  const Text('Descargando actualización...'),
+                  const SizedBox(height: 10),
                   LinearProgressIndicator(value: progress),
                   const SizedBox(height: 10),
-                  Text('${(progress * 100).round()}%'),
+                  if (progress != null) Text('${(progress * 100).round()}%'),
                   const SizedBox(height: 12),
                 ],
+                if (awaitingPermission)
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      'Activa el permiso para esta app en Android y vuelve aquí.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                if (ready)
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      'Descarga completa. Confirma la instalación en Android.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 FilledButton.icon(
-                  onPressed: downloading
+                  onPressed: downloading || installing
                       ? null
-                      : () => ref
-                            .read(appUpdateControllerProvider.notifier)
-                            .downloadAndInstall(),
+                      : () {
+                          final controller = ref.read(
+                            appUpdateControllerProvider.notifier,
+                          );
+                          if (ready || awaitingPermission) {
+                            controller.installDownloaded();
+                          } else {
+                            controller.downloadAndInstall();
+                          }
+                        },
                   icon: const Icon(Icons.download),
                   label: Text(
-                    downloading ? 'Descargando…' : 'Actualizar ahora',
+                    downloading
+                        ? 'Descargando...'
+                        : installing
+                        ? 'Abriendo...'
+                        : awaitingPermission
+                        ? 'Abrir permisos'
+                        : ready
+                        ? 'Instalar'
+                        : 'Actualizar ahora',
                   ),
                 ),
               ],

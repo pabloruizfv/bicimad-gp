@@ -25,6 +25,8 @@ version: 1.1.0+2
 - Incrementa la version tras cambios funcionales.
 - Incrementa tambien el numero posterior a `+` en cada APK publicada.
 - No reutilices el mismo numero de version para otra APK.
+- Las APK hasta la 1.3.6 se generaron con `versionCode=1`. La siguiente
+  comienza en `+2`; comprueba el valor antes de publicarla.
 
 ## 3. Ajustar la compatibilidad, si procede
 
@@ -86,6 +88,11 @@ instalar aplicaciones desconocidas y siempre requiere confirmacion del usuario.
 Comprueba:
 
 - que la APK se instala sobre la version anterior;
+- que `Actualizar` muestra el progreso sin cerrar la ventana de la app;
+- que, al completar la descarga, Android abre su instalador y solicita
+  confirmacion; si pide permiso para esta fuente, activalo y vuelve a la app;
+- que al cancelar la instalacion aparece `Instalar` para reintentar sin
+  descargar de nuevo;
 - que el login y la sincronizacion siguen funcionando;
 - que la release es publica y el asset se puede descargar;
 - que `update_policy.json` se puede consultar desde `main`.

@@ -35,8 +35,8 @@ final routerProvider = Provider<GoRouter>((ref) {
   final socialStatus = ref.watch(
     socialAuthControllerProvider.select((state) => state.status),
   );
-  final updateStatus = ref.watch(
-    appUpdateControllerProvider.select((state) => state.status),
+  final updateRequired = ref.watch(
+    appUpdateControllerProvider.select((state) => state.blocksApp),
   );
 
   return GoRouter(
@@ -47,7 +47,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       authGateStatus: authGateStatus,
       needsDisplayName: needsDisplayName,
       socialStatus: socialStatus,
-      updateStatus: updateStatus,
+      updateStatus: updateRequired
+          ? AppUpdateStatus.required
+          : AppUpdateStatus.current,
     ),
     routes: [
       GoRoute(

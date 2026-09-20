@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bicimad_social/app/app.dart';
 import 'package:bicimad_social/app/providers.dart';
 import 'package:bicimad_social/core/errors/app_exception.dart';
+import 'package:bicimad_social/features/app_update/application/app_update_controller.dart';
+import 'package:bicimad_social/features/app_update/data/github_update_repository.dart';
+import 'package:bicimad_social/features/app_update/domain/app_update.dart';
 import 'package:bicimad_social/features/authentication/domain/bicimad_repository.dart';
 import 'package:bicimad_social/features/authentication/domain/mpass_session.dart';
 import 'package:bicimad_social/features/trips/data/local_community_repository.dart';
@@ -12,6 +16,57 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('la descarga permanece visible si cambia la ruta de login', (
+    tester,
+  ) async {
+    final restore = Completer<MpassSession?>();
+    final bicimad = _GateRepository(restoreCompleter: restore);
+    final updateRepository = _UpdateRepository();
+    final installer = Completer<String?>();
+    final controller = AppUpdateController(
+      updateRepository,
+      autoCheck: false,
+      launchInstaller: (_, _) => installer.future,
+    );
+    final directory = (await tester.runAsync(
+      () => Directory.systemTemp.createTemp('update_overlay_test_'),
+    ))!;
+    addTearDown(() => directory.delete(recursive: true));
+    final apk = File('${directory.path}/update.apk')..writeAsBytesSync([1]);
+    await controller.check();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          bicimadRepositoryProvider.overrideWithValue(bicimad),
+          communityRepositoryProvider.overrideWithValue(
+            LocalCommunityRepository(),
+          ),
+          appUpdateControllerProvider.overrideWith((ref) => controller),
+        ],
+        child: const BicimadSocialApp(),
+      ),
+    );
+    await tester.pump();
+    expect(find.byType(OptionalUpdateDialog), findsOneWidget);
+    await tester.tap(find.text('Actualizar'));
+    await tester.pump();
+    expect(find.text('Descargando actualización...'), findsOneWidget);
+
+    restore.complete(null);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Email'), findsOneWidget);
+    expect(find.byType(OptionalUpdateDialog), findsOneWidget);
+    expect(find.text('Descargando actualización...'), findsOneWidget);
+
+    updateRepository.download.complete(apk);
+    await tester.pump();
+    installer.complete('cancelled');
+    await tester.pump();
+    expect(find.text('Instalar'), findsOneWidget);
+  });
+
   testWidgets('no construye login mientras inicializa la recuperacion', (
     tester,
   ) async {
@@ -101,6 +156,24 @@ void main() {
     expect(find.text('Email'), findsOneWidget);
     expect(find.text('No se ha podido recuperar tu sesión'), findsNothing);
   });
+}
+
+class _UpdateRepository extends GithubUpdateRepository {
+  final download = Completer<File>();
+
+  @override
+  Future<AppUpdateInfo> checkForUpdate() async => AppUpdateInfo(
+    currentVersion: '1.3.5',
+    latestVersion: '1.3.7',
+    minimumSupportedVersion: '1.0.0',
+    apkUrl: Uri.parse('https://github.com/example/update.apk'),
+  );
+
+  @override
+  Future<File> downloadApk(
+    AppUpdateInfo info,
+    void Function(double progress) onProgress,
+  ) => download.future;
 }
 
 MpassSession _session() {

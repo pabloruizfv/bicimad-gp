@@ -190,9 +190,17 @@ class ProfileScreen extends ConsumerWidget {
               state: updateState,
               onCheck: () =>
                   ref.read(appUpdateControllerProvider.notifier).check(),
-              onUpdate: () => ref
-                  .read(appUpdateControllerProvider.notifier)
-                  .downloadAndInstall(),
+              onUpdate: () {
+                final controller = ref.read(
+                  appUpdateControllerProvider.notifier,
+                );
+                if (updateState.status == AppUpdateStatus.ready ||
+                    updateState.status == AppUpdateStatus.awaitingPermission) {
+                  controller.installDownloaded();
+                } else {
+                  controller.downloadAndInstall();
+                }
+              },
             ),
           ],
         ),
@@ -395,6 +403,10 @@ class _AppUpdateSettingsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final info = state.info;
     final downloading = state.status == AppUpdateStatus.downloading;
+    final installing = state.status == AppUpdateStatus.installing;
+    final awaitingPermission =
+        state.status == AppUpdateStatus.awaitingPermission;
+    final ready = state.status == AppUpdateStatus.ready;
     final available = state.status == AppUpdateStatus.available;
     final checking = state.status == AppUpdateStatus.checking;
     final title = switch (state.status) {
@@ -404,6 +416,8 @@ class _AppUpdateSettingsCard extends StatelessWidget {
         'Nueva versión ${info?.latestVersion ?? ''} detectada',
       AppUpdateStatus.required => 'Actualización necesaria',
       AppUpdateStatus.downloading => 'Descargando actualización...',
+      AppUpdateStatus.awaitingPermission => 'Permiso de instalación pendiente',
+      AppUpdateStatus.installing => 'Abriendo el instalador...',
       AppUpdateStatus.ready => 'Descarga preparada',
       AppUpdateStatus.error => 'No se ha podido comprobar la actualización',
     };
@@ -418,8 +432,11 @@ class _AppUpdateSettingsCard extends StatelessWidget {
         'Esta versión ya no es compatible con los servicios actuales.',
       AppUpdateStatus.downloading =>
         '${((state.progress ?? 0) * 100).round()}% descargado.',
+      AppUpdateStatus.awaitingPermission =>
+        'Activa el permiso para esta app en Android y vuelve aquí.',
+      AppUpdateStatus.installing => 'Confirma la instalación en Android.',
       AppUpdateStatus.ready =>
-        'Android debería solicitar la confirmación de instalación.',
+        'Pulsa Instalar y confirma la actualización en Android.',
       AppUpdateStatus.error => 'Revisa la conexión e inténtalo de nuevo.',
     };
 
@@ -468,9 +485,12 @@ class _AppUpdateSettingsCard extends StatelessWidget {
             ],
             const SizedBox(height: 14),
             FilledButton.icon(
-              onPressed: checking || downloading
+              onPressed: checking || downloading || installing
                   ? null
-                  : available || state.status == AppUpdateStatus.required
+                  : available ||
+                        state.status == AppUpdateStatus.required ||
+                        ready ||
+                        awaitingPermission
                   ? onUpdate
                   : onCheck,
               icon: downloading
@@ -487,8 +507,16 @@ class _AppUpdateSettingsCard extends StatelessWidget {
                           : Icons.refresh,
                     ),
               label: Text(
-                checking || downloading
-                    ? 'Comprobando...'
+                checking || downloading || installing
+                    ? checking
+                          ? 'Comprobando...'
+                          : downloading
+                          ? 'Descargando...'
+                          : 'Abriendo...'
+                    : awaitingPermission
+                    ? 'Abrir permisos'
+                    : ready
+                    ? 'Instalar'
                     : available || state.status == AppUpdateStatus.required
                     ? 'Actualizar'
                     : 'Comprobar ahora',
