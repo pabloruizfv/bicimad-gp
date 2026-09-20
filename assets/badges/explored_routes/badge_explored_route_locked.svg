@@ -26,6 +26,34 @@
       <path d="M170 370H342L320 450L256 422L192 450L170 370Z" fill="url(#ribbonRed)"/>
       <path d="M188 370H324L309 428L256 405L203 428L188 370Z" fill="#8F979C" opacity="0.22"/>
     </g>
-    <g id="badge-content"><g><path d="M170 310c28-95 67-126 102-82 32 40 61 23 76-29" fill="none" stroke="#8F979C" stroke-width="26" stroke-linecap="round"/><circle cx="170" cy="310" r="35" fill="#8F979C"/><circle cx="272" cy="228" r="35" fill="#8F979C"/><circle cx="348" cy="199" r="35" fill="#8F979C"/><circle cx="170" cy="310" r="13" fill="#E3E6E8"/><circle cx="272" cy="228" r="13" fill="#E3E6E8"/><circle cx="348" cy="199" r="13" fill="#E3E6E8"/></g></g>
+<g id="badge-content">
+      <!-- Map and docks pictogram adapted from assets/bases/map_docks.svg -->
+      <g transform="translate(134.8 92.3) scale(0.24)">
+            <!-- Flatter folded-map silhouette: three panels with identical horizontal width -->
+            <path fill="#8F979C" d="M100 300 L370 215 L640 300 L910 215 L910 810 L640 895 L370 810 L100 895 Z"/>
+        
+            <!-- Equal white faces; fold gaps reduced to the same visual weight as the outer border -->
+            <path fill="#E3E6E8" d="M124 316 L358 242 L358 783 L124 849 Z"/>
+            <path fill="#E3E6E8" d="M382 242 L628 320 L628 853 L382 775 Z"/>
+            <path fill="#E3E6E8" d="M652 320 L886 246 L886 779 L652 853 Z"/>
+        
+            <!-- Dashed route kept clear of both docking-station icons -->
+            <path d="M348 630 C420 585 473 607 526 642 C583 680 637 661 699 605"
+                  fill="none" stroke="#8F979C" stroke-width="24" stroke-linecap="round"
+                  stroke-dasharray="28 34"/>
+        
+            <!-- Origin docking station -->
+            <g transform="translate(155 590) scale(1.9)">
+              <path fill="#8F979C" fill-rule="evenodd" clip-rule="evenodd"
+                    d="M13 94C10 94 10 92 10 90V80C10 77 10 76 13 76H27C31 75 31 73 31 67V24C31 11 39 4 50 4S69 11 69 24V67C69 73 69 75 73 76H87C90 76 90 77 90 80V90C90 92 90 94 87 94H13ZM44 70V31C44 26 46 23 50 23S56 26 56 31V70H44Z"/>
+            </g>
+        
+            <!-- Destination docking station: identical size -->
+            <g transform="translate(700 410) scale(1.9)">
+              <path fill="#8F979C" fill-rule="evenodd" clip-rule="evenodd"
+                    d="M13 94C10 94 10 92 10 90V80C10 77 10 76 13 76H27C31 75 31 73 31 67V24C31 11 39 4 50 4S69 11 69 24V67C69 73 69 75 73 76H87C90 76 90 77 90 80V90C90 92 90 94 87 94H13ZM44 70V31C44 26 46 23 50 23S56 26 56 31V70H44Z"/>
+            </g>
+      </g>
+    </g>
   </g>
 </svg>
