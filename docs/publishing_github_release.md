@@ -19,14 +19,15 @@ No publiques `local_secrets.json`, `android/key.properties` ni el keystore.
 Edita `pubspec.yaml` y cambia `version` siguiendo versionado semantico:
 
 ```yaml
-version: 1.1.0+2
+version: 1.0.2+2
 ```
 
 - Incrementa la version tras cambios funcionales.
 - Incrementa tambien el numero posterior a `+` en cada APK publicada.
 - No reutilices el mismo numero de version para otra APK.
-- Las APK hasta la 1.3.6 se generaron con `versionCode=1`. La siguiente
-  comienza en `+2`; comprueba el valor antes de publicarla.
+- La APK publicada como v1.0.1 tenia `versionCode=1`, igual que la anterior;
+  el actualizador la rechaza. La version 1.0.2 debe tener `versionCode=2`.
+  Para cada release posterior, incrementa el numero tras `+` sin excepciones.
 
 ## 3. Ajustar la compatibilidad, si procede
 
@@ -57,6 +58,11 @@ La APK resultante es:
 ```text
 build/app/outputs/flutter-apk/app-release.apk
 ```
+
+Antes de publicarla, comprueba el `versionCode` y el `versionName` reales del
+APK con `aapt dump badging` (Android SDK Build Tools). El `versionCode` debe
+ser **mayor** que el de la ultima APK publicada. Cambiar solo el tag de GitHub
+o el `versionName` no permite instalar una actualizacion.
 
 Opcionalmente, calcula su hash para conservar una referencia local:
 

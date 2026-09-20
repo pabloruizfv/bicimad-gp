@@ -30,7 +30,7 @@ aplicación. Consulta sus licencias y condiciones por separado.
 - Insignias, rankings de Comunidad y comparaciones Cara a cara.
 - Historico Open Data agregado por ruta y catalogo local de estaciones.
 - Cotas de terreno precalculadas por estacion y malla local para resolver
-  estaciones nuevas sin conexion; los desniveles aun no se muestran en la UI.
+  estaciones nuevas sin conexion; los desniveles se muestran en viajes y rankings.
 
 ## Arquitectura
 

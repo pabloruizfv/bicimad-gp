@@ -1,0 +1,18 @@
+{
+  "format_version": 1,
+  "source": "IGN/CNIG PNOA MDT05 first coverage",
+  "source_url": "https://centrodedescargas.cnig.es/CentroDescargas/modelo-digital-terreno-mdt05-primera-cobertura",
+  "source_coverage": "Elevacion25830_5",
+  "license": "CC BY 4.0; attribution: IGN/CNIG",
+  "west": -3.83,
+  "south": 40.32,
+  "east": -3.53,
+  "north": 40.53,
+  "step_degrees": 0.0001,
+  "width": 3000,
+  "height": 2100,
+  "scale_meters": 0.1,
+  "nodata": -32768,
+  "encoding": "gzip-int16-little-endian",
+  "grid_sha256": "ba5fc9033f5b93173e077885a8cc203b0638f65f582e6b8f545e59489596da69"
+}
