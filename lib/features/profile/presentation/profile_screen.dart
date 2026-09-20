@@ -495,59 +495,65 @@ class _AvatarPickerSheet extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const CheckeredFlagStrip(height: 6),
-            const SizedBox(height: 14),
-            Text(
-              'Selecciona tu avatar de piloto',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            const SizedBox(height: 12),
-            FutureBuilder<List<String>>(
-              future: LocalAvatarRepository.loadAvatarAssets(),
-              builder: (context, snapshot) {
-                final assets = snapshot.data ?? const <String>[];
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                return SizedBox(
-                  width: double.infinity,
-                  child: Wrap(
-                    spacing: 14,
-                    runSpacing: 14,
-                    alignment: WrapAlignment.center,
-                    runAlignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      for (final asset in assets)
-                        Semantics(
-                          label: 'Avatar ${asset.split('/').last}',
-                          selected: selectedAsset == asset,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(40),
-                            onTap: () => onSelected(asset),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: ProfileAvatar(
-                                assetPath: asset,
-                                radius: 30,
-                                isSelected: selectedAsset == asset,
-                                emphasizeSelection: true,
+        child: SizedBox(
+          height: MediaQuery.sizeOf(context).height * .75,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const CheckeredFlagStrip(height: 6),
+              const SizedBox(height: 14),
+              Text(
+                'Selecciona tu avatar de piloto',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: FutureBuilder<List<String>>(
+                  future: LocalAvatarRepository.loadAvatarAssets(),
+                  builder: (context, snapshot) {
+                    final assets = snapshot.data ?? const <String>[];
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return SingleChildScrollView(
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Wrap(
+                          spacing: 14,
+                          runSpacing: 14,
+                          alignment: WrapAlignment.center,
+                          runAlignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            for (final asset in assets)
+                              Semantics(
+                                label: 'Avatar ${asset.split('/').last}',
+                                selected: selectedAsset == asset,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(40),
+                                  onTap: () => onSelected(asset),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4),
+                                    child: ProfileAvatar(
+                                      assetPath: asset,
+                                      radius: 30,
+                                      isSelected: selectedAsset == asset,
+                                      emphasizeSelection: true,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                          ],
                         ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

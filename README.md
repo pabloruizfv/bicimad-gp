@@ -86,9 +86,10 @@ El resultado queda en
 ni el keystore; solo distribuye la APK.
 
 Las versiones futuras consultan `update_policy.json` y la GitHub Release mas
-reciente. `minimumSupportedVersion` solo debe aumentarse cuando una version
-antigua deje de ser compatible con el backend o el esquema; las versiones
-compatibles no se bloquean aunque exista una release nueva.
+reciente. Si existe una version nueva compatible, la app ofrece actualizar de
+forma opcional. `minimumSupportedVersion` solo debe aumentarse cuando una
+version antigua deje de ser compatible con el backend o el esquema; en ese
+caso la actualizacion pasa a ser obligatoria.
 
 El procedimiento completo para generar y publicar una APK esta en
 [`docs/publishing_github_release.md`](docs/publishing_github_release.md).

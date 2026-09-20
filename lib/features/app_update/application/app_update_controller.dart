@@ -23,8 +23,14 @@ class AppUpdateController extends StateNotifier<AppUpdateState> {
       final required =
           compareVersions(info.currentVersion, info.minimumSupportedVersion) <
           0;
+      final newerVersion =
+          compareVersions(info.latestVersion, info.currentVersion) > 0;
       state = AppUpdateState(
-        status: required ? AppUpdateStatus.required : AppUpdateStatus.current,
+        status: required
+            ? AppUpdateStatus.required
+            : newerVersion
+            ? AppUpdateStatus.available
+            : AppUpdateStatus.current,
         info: info,
       );
     } on Object catch (error) {
@@ -37,7 +43,9 @@ class AppUpdateController extends StateNotifier<AppUpdateState> {
 
   Future<void> downloadAndInstall() async {
     final info = state.info;
-    if (info == null || state.status != AppUpdateStatus.required) return;
+    final isRequired = state.status == AppUpdateStatus.required;
+    final isAvailable = state.status == AppUpdateStatus.available;
+    if (info == null || (!isRequired && !isAvailable)) return;
     state = AppUpdateState(
       status: AppUpdateStatus.downloading,
       info: info,
@@ -59,7 +67,9 @@ class AppUpdateController extends StateNotifier<AppUpdateState> {
       await _installerChannel.invokeMethod<void>('installApk', file.path);
     } on Object catch (error) {
       state = AppUpdateState(
-        status: AppUpdateStatus.required,
+        status: isRequired
+            ? AppUpdateStatus.required
+            : AppUpdateStatus.available,
         info: info,
         errorMessage: error.toString(),
       );

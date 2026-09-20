@@ -95,7 +95,8 @@ void main() {
     expect(find.text('@usuario'), findsOneWidget);
     expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.byType(SwitchListTile), findsOneWidget);
-    expect(find.byType(Image), findsNWidgets(12));
+    final avatarAssets = await LocalAvatarRepository.loadAvatarAssets();
+    expect(find.byType(Image), findsNWidgets(avatarAssets.length));
   });
 }
 

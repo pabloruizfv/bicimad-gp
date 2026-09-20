@@ -38,7 +38,8 @@ con el backend, la base de datos o el formato de datos:
 ```
 
 No aumentes este valor solo porque exista una release nueva. Las versiones
-compatibles se actualizaran de forma voluntaria y no quedaran bloqueadas.
+compatibles reciben un aviso opcional y el usuario puede posponer la descarga.
+Solo las versiones inferiores a este valor quedan bloqueadas.
 
 ## 4. Generar la APK firmada
 

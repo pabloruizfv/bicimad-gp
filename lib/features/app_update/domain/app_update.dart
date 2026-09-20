@@ -1,4 +1,12 @@
-enum AppUpdateStatus { checking, current, required, downloading, ready, error }
+enum AppUpdateStatus {
+  checking,
+  current,
+  available,
+  required,
+  downloading,
+  ready,
+  error,
+}
 
 class AppUpdateInfo {
   const AppUpdateInfo({
