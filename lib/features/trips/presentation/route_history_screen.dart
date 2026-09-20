@@ -24,6 +24,7 @@ import '../../rankings/domain/route_key.dart';
 import '../domain/legacy_route_model.dart';
 import '../domain/route_statistics.dart';
 import '../domain/trip.dart';
+import '../domain/trip_elevation.dart';
 import 'trips_screen.dart';
 
 class RouteHistoryScreen extends ConsumerWidget {
@@ -54,6 +55,9 @@ class RouteHistoryScreen extends ConsumerWidget {
     final AsyncValue<List<Trip>> stagesAsync = showOverview
         ? ref.watch(myTripStagesProvider)
         : const AsyncData<List<Trip>>(<Trip>[]);
+    final elevationCalculator = ref
+        .watch(tripElevationCalculatorProvider)
+        .valueOrNull;
 
     return Scaffold(
       appBar: AppBar(
@@ -97,6 +101,7 @@ class RouteHistoryScreen extends ConsumerWidget {
                 if (showOverview) ...[
                   _RouteOverviewCard(
                     trip: selectedTrip,
+                    elevationCalculator: elevationCalculator,
                     stages: selectedStages,
                     stageNavigationTargets: stageNavigationTargets,
                     onOpenTrip: (trip) =>
@@ -118,7 +123,10 @@ class RouteHistoryScreen extends ConsumerWidget {
                     ),
                   ),
                 ] else ...[
-                  _GenericRouteOverviewCard(trip: selectedTrip),
+                  _GenericRouteOverviewCard(
+                    trip: selectedTrip,
+                    elevationCalculator: elevationCalculator,
+                  ),
                   const SizedBox(height: 16),
                   _LegacyHistorySection(
                     routeKey: routeKey,
@@ -142,9 +150,13 @@ class RouteHistoryScreen extends ConsumerWidget {
 }
 
 class _GenericRouteOverviewCard extends StatelessWidget {
-  const _GenericRouteOverviewCard({required this.trip});
+  const _GenericRouteOverviewCard({
+    required this.trip,
+    required this.elevationCalculator,
+  });
 
   final Trip trip;
+  final TripElevationCalculator? elevationCalculator;
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +187,12 @@ class _GenericRouteOverviewCard extends StatelessWidget {
                 _RouteStopRow(stop: stops.first),
                 _GenericRouteConnectionRow(
                   distanceMeters: distance,
+                  elevationMeters: elevationCalculator?.netMetersBetween(
+                    originLatitude: stops.first.latitude,
+                    originLongitude: stops.first.longitude,
+                    destinationLatitude: stops.last.latitude,
+                    destinationLongitude: stops.last.longitude,
+                  ),
                   color: colorScheme.primary,
                 ),
                 _RouteStopRow(stop: stops.last),
@@ -201,6 +219,7 @@ class _GenericRouteOverviewCard extends StatelessWidget {
 class _RouteOverviewCard extends StatelessWidget {
   const _RouteOverviewCard({
     required this.trip,
+    required this.elevationCalculator,
     required this.stages,
     required this.stageNavigationTargets,
     required this.onOpenTrip,
@@ -209,6 +228,7 @@ class _RouteOverviewCard extends StatelessWidget {
   });
 
   final Trip trip;
+  final TripElevationCalculator? elevationCalculator;
   final List<Trip> stages;
   final List<Trip?> stageNavigationTargets;
   final ValueChanged<Trip> onOpenTrip;
@@ -219,7 +239,12 @@ class _RouteOverviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final stops = _routeStops(trip, colorScheme);
-    final segments = _routeSegmentMetrics(trip, stops, stages);
+    final segments = _routeSegmentMetrics(
+      trip,
+      stops,
+      stages,
+      elevationCalculator,
+    );
     final hasCoordinates =
         stops
             .where((stop) => stop.latitude != null && stop.longitude != null)
@@ -744,7 +769,7 @@ class _RouteConnectionRow extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                '${formatDistanceMeters(metrics.distanceMeters)} · '
+                '${formatDistanceWithElevation(metrics.distanceMeters, metrics.elevationMeters)} · '
                 '${_formatSegmentDuration(metrics.durationSeconds)} · '
                 '${formatSpeedKmh(metrics.speedKmh)} · '
                 '${formatDecimalEuros(metrics.tripCost)}',
@@ -772,10 +797,12 @@ class _RouteConnectionRow extends StatelessWidget {
 class _GenericRouteConnectionRow extends StatelessWidget {
   const _GenericRouteConnectionRow({
     required this.distanceMeters,
+    required this.elevationMeters,
     required this.color,
   });
 
   final double? distanceMeters;
+  final double? elevationMeters;
   final Color color;
 
   @override
@@ -790,7 +817,7 @@ class _GenericRouteConnectionRow extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              formatDistanceMeters(distanceMeters),
+              formatDistanceWithElevation(distanceMeters, elevationMeters),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
@@ -808,11 +835,13 @@ class _GenericRouteConnectionRow extends StatelessWidget {
 class _RouteSegmentMetrics {
   const _RouteSegmentMetrics({
     this.distanceMeters,
+    this.elevationMeters,
     this.durationSeconds,
     this.tripCost,
   });
 
   final double? distanceMeters;
+  final double? elevationMeters;
   final int? durationSeconds;
   final String? tripCost;
 
@@ -889,6 +918,7 @@ List<_RouteSegmentMetrics> _routeSegmentMetrics(
   Trip trip,
   List<_RouteStop> stops,
   List<Trip> stages,
+  TripElevationCalculator? elevationCalculator,
 ) {
   return [
     for (var index = 0; index < stops.length - 1; index++)
@@ -905,6 +935,12 @@ List<_RouteSegmentMetrics> _routeSegmentMetrics(
           distanceMeters:
               stage?.directDistanceMeters ??
               _distanceBetween(stops[index], stops[index + 1]),
+          elevationMeters: elevationCalculator?.netMetersBetween(
+            originLatitude: stops[index].latitude,
+            originLongitude: stops[index].longitude,
+            destinationLatitude: stops[index + 1].latitude,
+            destinationLongitude: stops[index + 1].longitude,
+          ),
           durationSeconds: stage?.durationSeconds,
           tripCost: stage?.tripCost ?? stageDetails?.tripCost,
         );

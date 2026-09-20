@@ -7,4767 +7,5449 @@
       "public_code": "1",
       "name": "1 - Metro Sol",
       "latitude": 40.416465,
-      "longitude": -3.7054098
+      "longitude": -3.7054098,
+      "elevation_meters": 647.4
     },
     {
       "id": "1406",
       "public_code": "2",
       "name": "2 - Metro Callao",
       "latitude": 40.4204,
-      "longitude": -3.7056899999999997
+      "longitude": -3.7056899999999997,
+      "elevation_meters": 657.2
     },
     {
       "id": "1407",
       "public_code": "3",
       "name": "3 - Plaza Conde Suchil",
       "latitude": 40.4303223,
-      "longitude": -3.7072537000000003
+      "longitude": -3.7072537000000003,
+      "elevation_meters": 669.0
     },
     {
       "id": "1408",
       "public_code": "4",
       "name": "4 - Malasaña",
       "latitude": 40.4286259,
-      "longitude": -3.7025
+      "longitude": -3.7025,
+      "elevation_meters": 670.3
     },
     {
       "id": "1409",
       "public_code": "5",
       "name": "5 - Fuencarral",
       "latitude": 40.4285212,
-      "longitude": -3.7021354
+      "longitude": -3.7021354,
+      "elevation_meters": 670.9
     },
     {
       "id": "1410",
       "public_code": "6",
       "name": "6 - Colegio de Arquitectos",
       "latitude": 40.423178,
-      "longitude": -3.699023
+      "longitude": -3.699023,
+      "elevation_meters": 663.9
     },
     {
       "id": "1411",
       "public_code": "7",
       "name": "7 - Hortaleza, 75",
       "latitude": 40.4251906,
-      "longitude": -3.6977715000000004
+      "longitude": -3.6977715000000004,
+      "elevation_meters": 659.9
     },
     {
       "id": "1412",
       "public_code": "8",
       "name": "8 - Metro Alonso Martínez",
       "latitude": 40.4278682,
-      "longitude": -3.6954403000000005
+      "longitude": -3.6954403000000005,
+      "elevation_meters": 669.0
     },
     {
       "id": "1413",
       "public_code": "9",
       "name": "9 - Plaza de San Miguel",
       "latitude": 40.4156057,
-      "longitude": -3.7095084
+      "longitude": -3.7095084,
+      "elevation_meters": 649.3
     },
     {
       "id": "1414",
       "public_code": "10",
       "name": "10 - Marqués de la Ensenada",
       "latitude": 40.425403,
-      "longitude": -3.6921040000000005
+      "longitude": -3.6921040000000005,
+      "elevation_meters": 657.8
     },
     {
       "id": "1415",
       "public_code": "11",
       "name": "11 - Plaza del Dos de Mayo",
       "latitude": 40.427,
-      "longitude": -3.7036
+      "longitude": -3.7036,
+      "elevation_meters": 659.3
     },
     {
       "id": "1416",
       "public_code": "12",
       "name": "12 - San Hermenegildo",
       "latitude": 40.4284667,
-      "longitude": -3.7061405999999995
+      "longitude": -3.7061405999999995,
+      "elevation_meters": 662.9
     },
     {
       "id": "1417",
       "public_code": "13",
       "name": "13 - Conde Duque",
       "latitude": 40.4273,
-      "longitude": -3.7104999999999997
+      "longitude": -3.7104999999999997,
+      "elevation_meters": 660.0
     },
     {
       "id": "1418",
       "public_code": "14",
       "name": "14 - Ventura Rodríguez",
       "latitude": 40.4260425,
-      "longitude": -3.7133069
+      "longitude": -3.7133069,
+      "elevation_meters": 643.0
     },
     {
       "id": "1419",
       "public_code": "15",
       "name": "15 - Norte",
       "latitude": 40.4262383,
-      "longitude": -3.7074453
+      "longitude": -3.7074453,
+      "elevation_meters": 649.4
     },
     {
       "id": "1420",
       "public_code": "16",
       "name": "16 - San Bernardo",
       "latitude": 40.4229374,
-      "longitude": -3.7074808485065
+      "longitude": -3.7074808485065,
+      "elevation_meters": 651.0
     },
     {
       "id": "1421",
       "public_code": "17",
       "name": "17 - Plaza de Carlos Cambronero",
       "latitude": 40.4228028680601,
-      "longitude": -3.7050511289749055
+      "longitude": -3.7050511289749055,
+      "elevation_meters": 653.8
     },
     {
       "id": "1422",
       "public_code": "18",
       "name": "18 - Plaza de Pedro Zerolo",
       "latitude": 40.4209251,
-      "longitude": -3.6996776
+      "longitude": -3.6996776,
+      "elevation_meters": 656.2
     },
     {
       "id": "1423",
       "public_code": "19",
       "name": "19 - Prim",
       "latitude": 40.4218616,
-      "longitude": -3.6954982999999997
+      "longitude": -3.6954982999999997,
+      "elevation_meters": 650.0
     },
     {
       "id": "1424",
       "public_code": "20",
       "name": "20 - Banco de España",
       "latitude": 40.4188076,
-      "longitude": -3.6952465
+      "longitude": -3.6952465,
+      "elevation_meters": 642.9
     },
     {
       "id": "2403",
       "public_code": "22",
       "name": "22 - Jacometrezo 3",
       "latitude": 40.420172,
-      "longitude": -3.706494
+      "longitude": -3.706494,
+      "elevation_meters": 656.0
     },
     {
       "id": "1426",
       "public_code": "23",
       "name": "23 - Santo Domingo",
       "latitude": 40.4202595,
-      "longitude": -3.708249
+      "longitude": -3.708249,
+      "elevation_meters": 653.0
     },
     {
       "id": "1427",
       "public_code": "24",
       "name": "24 - Palacio de Oriente",
       "latitude": 40.417343,
-      "longitude": -3.710864
+      "longitude": -3.710864,
+      "elevation_meters": 644.0
     },
     {
       "id": "1428",
       "public_code": "25",
       "name": "25A - Plaza de Celenque A",
       "latitude": 40.4173703,
-      "longitude": -3.7057791
+      "longitude": -3.7057791,
+      "elevation_meters": 644.1
     },
     {
       "id": "1429",
       "public_code": "25",
       "name": "25B - Plaza de Celenque B",
       "latitude": 40.4173687,
-      "longitude": -3.7058976
+      "longitude": -3.7058976,
+      "elevation_meters": 644.0
     },
     {
       "id": "1430",
       "public_code": "26",
       "name": "26 - Plaza de las Salesas",
       "latitude": 40.4239,
-      "longitude": -3.6945
+      "longitude": -3.6945,
+      "elevation_meters": 656.0
     },
     {
       "id": "1431",
       "public_code": "27",
       "name": "27 - Huertas",
       "latitude": 40.4133,
-      "longitude": -3.6957000000000004
+      "longitude": -3.6957000000000004,
+      "elevation_meters": 639.0
     },
     {
       "id": "1433",
       "public_code": "29",
       "name": "29 - Marqués de Cubas",
       "latitude": 40.4163838,
-      "longitude": -3.6957434000000005
+      "longitude": -3.6957434000000005,
+      "elevation_meters": 640.8
     },
     {
       "id": "1434",
       "public_code": "30",
       "name": "30 - San Quintín",
       "latitude": 40.419622,
-      "longitude": -3.710967
+      "longitude": -3.710967,
+      "elevation_meters": 639.9
     },
     {
       "id": "1435",
       "public_code": "31",
       "name": "31 - Mayor",
       "latitude": 40.416346,
-      "longitude": -3.7065869999999994
+      "longitude": -3.7065869999999994,
+      "elevation_meters": 648.0
     },
     {
       "id": "1436",
       "public_code": "32",
       "name": "32 - Plaza de la Provincia",
       "latitude": 40.41466783910054,
-      "longitude": -3.7066362890417137
+      "longitude": -3.7066362890417137,
+      "elevation_meters": 651.2
     },
     {
       "id": "1437",
       "public_code": "33",
       "name": "33 - Puerta del Sol",
       "latitude": 40.4165363,
-      "longitude": -3.7032264
+      "longitude": -3.7032264,
+      "elevation_meters": 649.0
     },
     {
       "id": "1439",
       "public_code": "35",
       "name": "35 - Doctor Letamendi, 3",
       "latitude": 40.41369072326586,
-      "longitude": -3.710062961307532
+      "longitude": -3.710062961307532,
+      "elevation_meters": 634.4
     },
     {
       "id": "1440",
       "public_code": "36",
       "name": "36 - Plaza Ramales",
       "latitude": 40.416876,
-      "longitude": -3.7121509999999995
+      "longitude": -3.7121509999999995,
+      "elevation_meters": 646.0
     },
     {
       "id": "1441",
       "public_code": "37",
       "name": "37 - Calatrava, 38",
       "latitude": 40.41022,
-      "longitude": -3.7134820000000004
+      "longitude": -3.7134820000000004,
+      "elevation_meters": 636.8
     },
     {
       "id": "1442",
       "public_code": "38",
       "name": "38 - Plaza de los Carros",
       "latitude": 40.4113586,
-      "longitude": -3.7115898000000005
+      "longitude": -3.7115898000000005,
+      "elevation_meters": 640.6
     },
     {
       "id": "1443",
       "public_code": "39",
       "name": "39 - Plaza de la Cebada",
       "latitude": 40.4112744,
-      "longitude": -3.7088337
+      "longitude": -3.7088337,
+      "elevation_meters": 646.9
     },
     {
       "id": "1444",
       "public_code": "40",
       "name": "40 - Conde de Romanones",
       "latitude": 40.413148899341536,
-      "longitude": -3.704953887500373
+      "longitude": -3.704953887500373,
+      "elevation_meters": 653.4
     },
     {
       "id": "1445",
       "public_code": "41",
       "name": "41 - Metro Antón Martín",
       "latitude": 40.4122047,
-      "longitude": -3.6991147000000004
+      "longitude": -3.6991147000000004,
+      "elevation_meters": 653.2
     },
     {
       "id": "1446",
       "public_code": "42",
       "name": "42 - Santa Isabel",
       "latitude": 40.4108488,
-      "longitude": -3.6982922
+      "longitude": -3.6982922,
+      "elevation_meters": 651.0
     },
     {
       "id": "1447",
       "public_code": "43",
       "name": "43 - Jesús y María",
       "latitude": 40.4100387,
-      "longitude": -3.7024709999999996
+      "longitude": -3.7024709999999996,
+      "elevation_meters": 634.7
     },
     {
       "id": "1448",
       "public_code": "44",
       "name": "44 - Plaza de Nelson Mandela",
       "latitude": 40.40979071254635,
-      "longitude": -3.7038640533106597
+      "longitude": -3.7038640533106597,
+      "elevation_meters": 643.3
     },
     {
       "id": "1449",
       "public_code": "45",
       "name": "45 - Metro Puerta de Toledo",
       "latitude": 40.4068659,
-      "longitude": -3.7111033999999994
+      "longitude": -3.7111033999999994,
+      "elevation_meters": 626.5
     },
     {
       "id": "1450",
       "public_code": "46",
       "name": "46 - Ribera de Curtidores",
       "latitude": 40.4053153,
-      "longitude": -3.7071258999999994
+      "longitude": -3.7071258999999994,
+      "elevation_meters": 609.8
     },
     {
       "id": "1451",
       "public_code": "47",
       "name": "47 - Renfe/Cercanías Embajadores",
       "latitude": 40.4045772,
-      "longitude": -3.7027998
+      "longitude": -3.7027998,
+      "elevation_meters": 610.6
     },
     {
       "id": "1452",
       "public_code": "48",
       "name": "48 - Juan Sebastián Elcano",
       "latitude": 40.4040433,
-      "longitude": -3.701321
+      "longitude": -3.701321,
+      "elevation_meters": 608.5
     },
     {
       "id": "1453",
       "public_code": "49",
       "name": "49 - Casa Encendida",
       "latitude": 40.4060533,
-      "longitude": -3.6992774
+      "longitude": -3.6992774,
+      "elevation_meters": 617.0
     },
     {
       "id": "1454",
       "public_code": "50",
       "name": "50 - Museo Reina Sofía",
       "latitude": 40.4073541,
-      "longitude": -3.6960397999999994
+      "longitude": -3.6960397999999994,
+      "elevation_meters": 625.0
     },
     {
       "id": "1455",
       "public_code": "51",
       "name": "51 - Ronda de Atocha",
       "latitude": 40.40775564657782,
-      "longitude": -3.6934856312828
+      "longitude": -3.6934856312828,
+      "elevation_meters": 624.0
     },
     {
       "id": "1456",
       "public_code": "52",
       "name": "52 - Plaza de Santa Ana",
       "latitude": 40.4144689,
-      "longitude": -3.7008558000000003
+      "longitude": -3.7008558000000003,
+      "elevation_meters": 656.0
     },
     {
       "id": "1457",
       "public_code": "53",
       "name": "53 - Plaza de Lavapiés",
       "latitude": 40.40830870823806,
-      "longitude": -3.700754126389314
+      "longitude": -3.700754126389314,
+      "elevation_meters": 622.0
     },
     {
       "id": "1458",
       "public_code": "54",
       "name": "54 - Metro Tribunal",
       "latitude": 40.426599101766264,
-      "longitude": -3.700392997553259
+      "longitude": -3.700392997553259,
+      "elevation_meters": 665.6
     },
     {
       "id": "1459",
       "public_code": "55",
       "name": "55 - Plaza de San Ildefonso",
       "latitude": 40.4239757,
-      "longitude": -3.7020842
+      "longitude": -3.7020842,
+      "elevation_meters": 669.0
     },
     {
       "id": "1460",
       "public_code": "56",
       "name": "56 - Plaza del Carmen",
       "latitude": 40.4190322,
-      "longitude": -3.7039032999999995
+      "longitude": -3.7039032999999995,
+      "elevation_meters": 656.6
     },
     {
       "id": "1461",
       "public_code": "57",
       "name": "57 - Santa Cruz de Marcenado",
       "latitude": 40.4295658,
-      "longitude": -3.7126299
+      "longitude": -3.7126299,
+      "elevation_meters": 658.1
     },
     {
       "id": "1462",
       "public_code": "58",
       "name": "58 - Metro Chueca",
       "latitude": 40.4222783,
-      "longitude": -3.6978583000000005
+      "longitude": -3.6978583000000005,
+      "elevation_meters": 657.1
     },
     {
       "id": "1463",
       "public_code": "59",
       "name": "59 - Plaza de Juan Pujol",
       "latitude": 40.4255495,
-      "longitude": -3.7043418
+      "longitude": -3.7043418,
+      "elevation_meters": 663.5
     },
     {
       "id": "1464",
       "public_code": "60",
       "name": "60 - Puerta de Alcalá",
       "latitude": 40.418852490562614,
-      "longitude": -3.689098056552884
+      "longitude": -3.689098056552884,
+      "elevation_meters": 654.9
     },
     {
       "id": "1465",
       "public_code": "61",
       "name": "61 - O'Donnell - Narváez",
       "latitude": 40.4214551,
-      "longitude": -3.6753139
+      "longitude": -3.6753139,
+      "elevation_meters": 679.0
     },
     {
       "id": "1466",
       "public_code": "62",
       "name": "62 - Hospital M. Infantil Gregorio Marañón",
       "latitude": 40.4213148,
-      "longitude": -3.6724968
+      "longitude": -3.6724968,
+      "elevation_meters": 676.6
     },
     {
       "id": "1467",
       "public_code": "63",
       "name": "63 - Hospital Gral. Uni. Gregorio Marañón",
       "latitude": 40.4179237,
-      "longitude": -3.6708958999999997
+      "longitude": -3.6708958999999997,
+      "elevation_meters": 673.2
     },
     {
       "id": "1468",
       "public_code": "65",
       "name": "65 - Parque del Retiro - Calle Antonio Maura",
       "latitude": 40.4167014469994,
-      "longitude": -3.6894247979427686
+      "longitude": -3.6894247979427686,
+      "elevation_meters": 653.0
     },
     {
       "id": "2444",
       "public_code": "66",
       "name": "66 - Ronda de las flores",
       "latitude": 40.449332,
-      "longitude": -3.76433
+      "longitude": -3.76433,
+      "elevation_meters": 632.2
     },
     {
       "id": "1469",
       "public_code": "67",
       "name": "67 - CaixaForum Madrid",
       "latitude": 40.4108472,
-      "longitude": -3.693225
+      "longitude": -3.693225,
+      "elevation_meters": 628.9
     },
     {
       "id": "1470",
       "public_code": "68",
       "name": "68 - Espalter - Ruiz de Alarcón",
       "latitude": 40.4127692,
-      "longitude": -3.6913231999999994
+      "longitude": -3.6913231999999994,
+      "elevation_meters": 634.1
     },
     {
       "id": "1471",
       "public_code": "69",
       "name": "69 - Parque del Retiro - Puerta Ángel Caído",
       "latitude": 40.409808,
-      "longitude": -3.688822
+      "longitude": -3.688822,
+      "elevation_meters": 642.1
     },
     {
       "id": "1472",
       "public_code": "70",
       "name": "70 - Hospital Uni. Infantil Niño Jesús",
       "latitude": 40.415382385574716,
-      "longitude": -3.677872542327878
+      "longitude": -3.677872542327878,
+      "elevation_meters": 667.8
     },
     {
       "id": "1473",
       "public_code": "71",
       "name": "71 - Plaza del Doctor Laguna",
       "latitude": 40.4161,
-      "longitude": -3.6739
+      "longitude": -3.6739,
+      "elevation_meters": 670.0
     },
     {
       "id": "1474",
       "public_code": "72",
       "name": "72 - Metro Sáinz de Baranda",
       "latitude": 40.415749,
-      "longitude": -3.669601
+      "longitude": -3.669601,
+      "elevation_meters": 663.4
     },
     {
       "id": "1475",
       "public_code": "73",
       "name": "73 - Plaza de los Astros",
       "latitude": 40.4115,
-      "longitude": -3.6687
+      "longitude": -3.6687,
+      "elevation_meters": 638.3
     },
     {
       "id": "1476",
       "public_code": "74",
       "name": "74 - Parque Retiro - Jardines Cecilio Rguez",
       "latitude": 40.41206290978386,
-      "longitude": -3.6765887637889834
+      "longitude": -3.6765887637889834,
+      "elevation_meters": 660.9
     },
     {
       "id": "1477",
       "public_code": "75",
       "name": "75 - Parque del Retiro - Plaza Mariano Cavia",
       "latitude": 40.4082717,
-      "longitude": -3.6784749
+      "longitude": -3.6784749,
+      "elevation_meters": 643.1
     },
     {
       "id": "1478",
       "public_code": "76",
       "name": "76 - Avenida del Mediterráneo, 19",
       "latitude": 40.407271,
-      "longitude": -3.6751020000000003
+      "longitude": -3.6751020000000003,
+      "elevation_meters": 626.2
     },
     {
       "id": "1479",
       "public_code": "77",
       "name": "77 - Plaza del Conde de Casal",
       "latitude": 40.4064784,
-      "longitude": -3.6707132
+      "longitude": -3.6707132,
+      "elevation_meters": 614.0
     },
     {
       "id": "1480",
       "public_code": "78",
       "name": "78 - Metro Pacífico",
       "latitude": 40.40063747422422,
-      "longitude": -3.674524060049444
+      "longitude": -3.674524060049444,
+      "elevation_meters": 608.9
     },
     {
       "id": "1481",
       "public_code": "79",
       "name": "79 - Metro Menéndez Pelayo",
       "latitude": 40.405110193977585,
-      "longitude": -3.680439824323069
+      "longitude": -3.680439824323069,
+      "elevation_meters": 623.2
     },
     {
       "id": "2274",
       "public_code": "80",
       "name": "80A - Estación de Atocha A",
       "latitude": 40.407573,
-      "longitude": -3.690538
+      "longitude": -3.690538,
+      "elevation_meters": 624.2
     },
     {
       "id": "2275",
       "public_code": "80",
       "name": "80B - Estación de Atocha B",
       "latitude": 40.4075211,
-      "longitude": -3.6904748
+      "longitude": -3.6904748,
+      "elevation_meters": 624.2
     },
     {
       "id": "1484",
       "public_code": "81",
       "name": "81 - Cuesta de Moyano",
       "latitude": 40.40934261188139,
-      "longitude": -3.691833220071059
+      "longitude": -3.691833220071059,
+      "elevation_meters": 626.0
     },
     {
       "id": "1485",
       "public_code": "82",
       "name": "82 - Doctor Esquerdo - Metro Conde de Casal",
       "latitude": 40.4084556,
-      "longitude": -3.6697526
+      "longitude": -3.6697526,
+      "elevation_meters": 622.3
     },
     {
       "id": "1486",
       "public_code": "83",
       "name": "83 - Pío Baroja",
       "latitude": 40.4132995,
-      "longitude": -3.6744795
+      "longitude": -3.6744795,
+      "elevation_meters": 664.8
     },
     {
       "id": "1487",
       "public_code": "84",
       "name": "84 - Biblioteca Pública Elena Fortún",
       "latitude": 40.40357156992851,
-      "longitude": -3.672481575393678
+      "longitude": -3.672481575393678,
+      "elevation_meters": 612.1
     },
     {
       "id": "1488",
       "public_code": "85",
       "name": "85 - Parque del Retiro - Puerta de O´Donnell",
       "latitude": 40.4213143,
-      "longitude": -3.6798909999999996
+      "longitude": -3.6798909999999996,
+      "elevation_meters": 675.0
     },
     {
       "id": "1489",
       "public_code": "86",
       "name": "86 - Cibeles",
       "latitude": 40.4186516,
-      "longitude": -3.6933498
+      "longitude": -3.6933498,
+      "elevation_meters": 642.0
     },
     {
       "id": "1490",
       "public_code": "87",
       "name": "87 - Ayala - Velázquez",
       "latitude": 40.427736,
-      "longitude": -3.6832565999999995
+      "longitude": -3.6832565999999995,
+      "elevation_meters": 672.3
     },
     {
       "id": "1491",
       "public_code": "88",
       "name": "88 - Velázquez-Padilla",
       "latitude": 40.4313576,
-      "longitude": -3.6838303
+      "longitude": -3.6838303,
+      "elevation_meters": 680.0
     },
     {
       "id": "1492",
       "public_code": "89",
       "name": "89 - Ayala - Conde de Peñalver",
       "latitude": 40.4272582,
-      "longitude": -3.6752024
+      "longitude": -3.6752024,
+      "elevation_meters": 679.1
     },
     {
       "id": "1493",
       "public_code": "90",
       "name": "90 - Metro Velázquez",
       "latitude": 40.4251493,
-      "longitude": -3.6838415999999996
+      "longitude": -3.6838415999999996,
+      "elevation_meters": 665.0
     },
     {
       "id": "1494",
       "public_code": "91",
       "name": "91 - Hermosilla - General Pardiñas",
       "latitude": 40.426049,
-      "longitude": -3.6786285
+      "longitude": -3.6786285,
+      "elevation_meters": 673.0
     },
     {
       "id": "1495",
       "public_code": "92",
       "name": "92 - Claudio Coello - Hermosilla",
       "latitude": 40.4262945,
-      "longitude": -3.6865463
+      "longitude": -3.6865463,
+      "elevation_meters": 663.5
     },
     {
       "id": "1496",
       "public_code": "93",
       "name": "93 - Plaza de Margaret Thatcher",
       "latitude": 40.42575853342561,
-      "longitude": -3.6893361690338162
+      "longitude": -3.6893361690338162,
+      "elevation_meters": 655.0
     },
     {
       "id": "1497",
       "public_code": "94",
       "name": "94 - Estación de tren de Recoletos",
       "latitude": 40.42296360115953,
-      "longitude": -3.690421528666805
+      "longitude": -3.690421528666805,
+      "elevation_meters": 651.5
     },
     {
       "id": "1498",
       "public_code": "95",
       "name": "95 - Claudio Coello - Villanueva",
       "latitude": 40.4225428,
-      "longitude": -3.6869293000000005
+      "longitude": -3.6869293000000005,
+      "elevation_meters": 660.9
     },
     {
       "id": "1499",
       "public_code": "96",
       "name": "96 - Alcalá - Castelló",
       "latitude": 40.42201515498424,
-      "longitude": -3.682204798770403
+      "longitude": -3.682204798770403,
+      "elevation_meters": 671.1
     },
     {
       "id": "1500",
       "public_code": "97",
       "name": "97 - Metro Príncipe de Vergara",
       "latitude": 40.4225364,
-      "longitude": -3.6802556
+      "longitude": -3.6802556,
+      "elevation_meters": 673.4
     },
     {
       "id": "1501",
       "public_code": "98",
       "name": "98 - Plaza de Felipe II",
       "latitude": 40.4241325,
-      "longitude": -3.6757676
+      "longitude": -3.6757676,
+      "elevation_meters": 677.0
     },
     {
       "id": "1502",
       "public_code": "99",
       "name": "99 - Alcántara - Hermosilla",
       "latitude": 40.4260391,
-      "longitude": -3.6740178
+      "longitude": -3.6740178,
+      "elevation_meters": 681.0
     },
     {
       "id": "1503",
       "public_code": "100",
       "name": "100 - Movistar Arena",
       "latitude": 40.42478,
-      "longitude": -3.6738400000000007
+      "longitude": -3.6738400000000007,
+      "elevation_meters": 677.2
     },
     {
       "id": "1504",
       "public_code": "101",
       "name": "101 - Metro O'Donnell",
       "latitude": 40.4230771,
-      "longitude": -3.6696803999999994
+      "longitude": -3.6696803999999994,
+      "elevation_meters": 670.0
     },
     {
       "id": "1505",
       "public_code": "102",
       "name": "102 - Metro Retiro",
       "latitude": 40.4211845,
-      "longitude": -3.6842317
+      "longitude": -3.6842317,
+      "elevation_meters": 668.7
     },
     {
       "id": "1506",
       "public_code": "103",
       "name": "103 - Ortega y Gasset - Serrano",
       "latitude": 40.43053,
-      "longitude": -3.6867439999999996
+      "longitude": -3.6867439999999996,
+      "elevation_meters": 669.0
     },
     {
       "id": "1507",
       "public_code": "104",
       "name": "104 - Castellana - Hermosilla",
       "latitude": 40.42677,
-      "longitude": -3.6895799999999994
+      "longitude": -3.6895799999999994,
+      "elevation_meters": 655.0
     },
     {
       "id": "1508",
       "public_code": "105",
       "name": "105 - Serrano, 46",
       "latitude": 40.4270832,
-      "longitude": -3.6875418000000004
+      "longitude": -3.6875418000000004,
+      "elevation_meters": 662.0
     },
     {
       "id": "1510",
       "public_code": "106",
       "name": "106B - Plaza de Colón B",
       "latitude": 40.424776,
-      "longitude": -3.6878899999999994
+      "longitude": -3.6878899999999994,
+      "elevation_meters": 656.4
     },
     {
       "id": "2110",
       "public_code": "106",
       "name": "106A - Plaza de Colón A",
       "latitude": 40.424924,
-      "longitude": -3.687807
+      "longitude": -3.687807,
+      "elevation_meters": 656.8
     },
     {
       "id": "1511",
       "public_code": "107",
       "name": "107 - Serrano - Conde de Aranda",
       "latitude": 40.42156087297841,
-      "longitude": -3.6883841104507464
+      "longitude": -3.6883841104507464,
+      "elevation_meters": 657.0
     },
     {
       "id": "1512",
       "public_code": "108",
       "name": "108 - Mártires Concepcionistas - Alcalá",
       "latitude": 40.427402,
-      "longitude": -3.6706519999999996
+      "longitude": -3.6706519999999996,
+      "elevation_meters": 681.0
     },
     {
       "id": "1513",
       "public_code": "109",
       "name": "109 - Marqués de Salamanca",
       "latitude": 40.4301245,
-      "longitude": -3.6814521000000004
+      "longitude": -3.6814521000000004,
+      "elevation_meters": 679.0
     },
     {
       "id": "1514",
       "public_code": "110",
       "name": "110 - Intercambiador de Moncloa",
       "latitude": 40.434745,
-      "longitude": -3.7201021
+      "longitude": -3.7201021,
+      "elevation_meters": 655.6
     },
     {
       "id": "1515",
       "public_code": "111",
       "name": "111A - Metro Moncloa A",
       "latitude": 40.43363360732276,
-      "longitude": -3.7174782339440355
+      "longitude": -3.7174782339440355,
+      "elevation_meters": 660.0
     },
     {
       "id": "1516",
       "public_code": "111",
       "name": "111B - Metro Moncloa B",
       "latitude": 40.433913,
-      "longitude": -3.7177433999999994
+      "longitude": -3.7177433999999994,
+      "elevation_meters": 659.8
     },
     {
       "id": "1517",
       "public_code": "112",
       "name": "112 - Paseo de Moret - Parque del Oeste",
       "latitude": 40.4326901,
-      "longitude": -3.7247360000000005
+      "longitude": -3.7247360000000005,
+      "elevation_meters": 635.0
     },
     {
       "id": "1518",
       "public_code": "113",
       "name": "113 - Teleférico Madrid - Estación Rosales",
       "latitude": 40.427538,
-      "longitude": -3.7207263
+      "longitude": -3.7207263,
+      "elevation_meters": 638.6
     },
     {
       "id": "1519",
       "public_code": "114",
       "name": "114 - Quintana - Juan Álvarez de Mendizábal",
       "latitude": 40.4278379,
-      "longitude": -3.7174631000000002
+      "longitude": -3.7174631000000002,
+      "elevation_meters": 646.5
     },
     {
       "id": "1520",
       "public_code": "115",
       "name": "115 - Ferraz - Templo de Debod",
       "latitude": 40.42531476841791,
-      "longitude": -3.7170515055225373
+      "longitude": -3.7170515055225373,
+      "elevation_meters": 642.2
     },
     {
       "id": "1521",
       "public_code": "116",
       "name": "116A - Plaza de España - Martín de los Heros",
       "latitude": 40.4236775,
-      "longitude": -3.7130447
+      "longitude": -3.7130447,
+      "elevation_meters": 635.0
     },
     {
       "id": "1522",
       "public_code": "116",
       "name": "116B - Metro Plaza de España",
       "latitude": 40.423684,
-      "longitude": -3.71046
+      "longitude": -3.71046,
+      "elevation_meters": 637.0
     },
     {
       "id": "1523",
       "public_code": "117",
       "name": "117 - Altamirano  - Martín de los Heros",
       "latitude": 40.4309797,
-      "longitude": -3.7188898000000004
+      "longitude": -3.7188898000000004,
+      "elevation_meters": 652.3
     },
     {
       "id": "1524",
       "public_code": "118",
       "name": "118 - OFICINA DEL SER, APR Y BICIREGISTRO",
       "latitude": 40.400781,
-      "longitude": -3.6882407
+      "longitude": -3.6882407,
+      "elevation_meters": 603.4
     },
     {
       "id": "1525",
       "public_code": "119",
       "name": "119 - Méndez Álvaro",
       "latitude": 40.4012905,
-      "longitude": -3.6862652999999996
+      "longitude": -3.6862652999999996,
+      "elevation_meters": 607.2
     },
     {
       "id": "1526",
       "public_code": "120",
       "name": "120 - Metro Palos de la Frontera",
       "latitude": 40.403090451430614,
-      "longitude": -3.6948251018524214
+      "longitude": -3.6948251018524214,
+      "elevation_meters": 607.0
     },
     {
       "id": "1527",
       "public_code": "121",
       "name": "121 - Glorieta de Santa María de la Cabeza",
       "latitude": 40.4017487,
-      "longitude": -3.6986027000000004
+      "longitude": -3.6986027000000004,
+      "elevation_meters": 597.0
     },
     {
       "id": "1528",
       "public_code": "122",
       "name": "122 - Santa Engracia - Zurbarán",
       "latitude": 40.4295362,
-      "longitude": -3.6963659
+      "longitude": -3.6963659,
+      "elevation_meters": 675.4
     },
     {
       "id": "1529",
       "public_code": "123",
       "name": "123 - Metro Argüelles",
       "latitude": 40.4306458,
-      "longitude": -3.7133412
+      "longitude": -3.7133412,
+      "elevation_meters": 660.0
     },
     {
       "id": "1530",
       "public_code": "124",
       "name": "124 - Metro Bilbao",
       "latitude": 40.430969,
-      "longitude": -3.6993695
+      "longitude": -3.6993695,
+      "elevation_meters": 673.0
     },
     {
       "id": "1531",
       "public_code": "125",
       "name": "125 - Fdez. de la Hoz - Gral. Martínez Campos",
       "latitude": 40.4353,
-      "longitude": -3.6948
+      "longitude": -3.6948,
+      "elevation_meters": 675.0
     },
     {
       "id": "1532",
       "public_code": "126",
       "name": "126 - General Álvarez de Castro",
       "latitude": 40.4345976,
-      "longitude": -3.7018044
+      "longitude": -3.7018044,
+      "elevation_meters": 678.9
     },
     {
       "id": "1533",
       "public_code": "127",
       "name": "127 - Mercado Municipal de Vallehermoso",
       "latitude": 40.4338516,
-      "longitude": -3.708439
+      "longitude": -3.708439,
+      "elevation_meters": 677.8
     },
     {
       "id": "1534",
       "public_code": "128",
       "name": "128 - Metro Islas Filipinas",
       "latitude": 40.43898707086967,
-      "longitude": -3.7155501460158344
+      "longitude": -3.7155501460158344,
+      "elevation_meters": 672.8
     },
     {
       "id": "1535",
       "public_code": "129",
       "name": "129 - Metro Alonso Cano",
       "latitude": 40.4383865,
-      "longitude": -3.6982353
+      "longitude": -3.6982353,
+      "elevation_meters": 688.0
     },
     {
       "id": "1536",
       "public_code": "130",
       "name": "130 - Metro Ríos Rosas",
       "latitude": 40.44156,
-      "longitude": -3.7016399999999994
+      "longitude": -3.7016399999999994,
+      "elevation_meters": 696.0
     },
     {
       "id": "1537",
       "public_code": "131",
       "name": "131 - Plaza de Juan Zorrilla",
       "latitude": 40.4417884,
-      "longitude": -3.7040312299999996
+      "longitude": -3.7040312299999996,
+      "elevation_meters": 691.6
     },
     {
       "id": "1538",
       "public_code": "132",
       "name": "132 - Glorieta de Cuatro Caminos",
       "latitude": 40.446377501314885,
-      "longitude": -3.703605250412747
+      "longitude": -3.703605250412747,
+      "elevation_meters": 706.0
     },
     {
       "id": "1539",
       "public_code": "133",
       "name": "133 - Raimundo Fdez. Villaverde - Dulcinea",
       "latitude": 40.447125,
-      "longitude": -3.7001669
+      "longitude": -3.7001669,
+      "elevation_meters": 700.3
     },
     {
       "id": "1540",
       "public_code": "134",
       "name": "134 - María de Guzmán - Agustín de Betancourt",
       "latitude": 40.4441818,
-      "longitude": -3.6955687
+      "longitude": -3.6955687,
+      "elevation_meters": 687.1
     },
     {
       "id": "1541",
       "public_code": "135",
       "name": "135 - Plaza de San Juan de la Cruz",
       "latitude": 40.441481,
-      "longitude": -3.692734
+      "longitude": -3.692734,
+      "elevation_meters": 674.3
     },
     {
       "id": "1542",
       "public_code": "136",
       "name": "136 - Metro Nuevos Ministerios",
       "latitude": 40.4451244,
-      "longitude": -3.690769
+      "longitude": -3.690769,
+      "elevation_meters": 680.9
     },
     {
       "id": "1543",
       "public_code": "137",
       "name": "137 - Plaza de la República Argentina",
       "latitude": 40.4454477,
-      "longitude": -3.6853377000000003
+      "longitude": -3.6853377000000003,
+      "elevation_meters": 697.1
     },
     {
       "id": "1544",
       "public_code": "138",
       "name": "138 - Estación de tren Nuevos Ministerios",
       "latitude": 40.4457414,
-      "longitude": -3.6914063
+      "longitude": -3.6914063,
+      "elevation_meters": 681.8
     },
     {
       "id": "1545",
       "public_code": "139",
       "name": "139 - José Gutiérrez Abascal - Castellana",
       "latitude": 40.43939562033124,
-      "longitude": -3.690419307270818
+      "longitude": -3.690419307270818,
+      "elevation_meters": 673.2
     },
     {
       "id": "1546",
       "public_code": "140",
       "name": "140 - Velázquez - López de Hoyos",
       "latitude": 40.4387566,
-      "longitude": -3.6830583
+      "longitude": -3.6830583,
+      "elevation_meters": 678.0
     },
     {
       "id": "1547",
       "public_code": "141",
       "name": "141 - Plaza de Emilio Castelar",
       "latitude": 40.4354047,
-      "longitude": -3.6893917
+      "longitude": -3.6893917,
+      "elevation_meters": 665.9
     },
     {
       "id": "1548",
       "public_code": "142",
       "name": "142 - Bajo elevado de Eduardo Dato",
       "latitude": 40.4334087,
-      "longitude": -3.6879154
+      "longitude": -3.6879154,
+      "elevation_meters": 663.6
     },
     {
       "id": "1592",
       "public_code": "143",
       "name": "143 - Diego de León - General Pardiñas",
       "latitude": 40.434676,
-      "longitude": -3.6780802000000006
+      "longitude": -3.6780802000000006,
+      "elevation_meters": 689.0
     },
     {
       "id": "1550",
       "public_code": "144",
       "name": "144 - Metro Diego de León",
       "latitude": 40.4324081,
-      "longitude": -3.675556
+      "longitude": -3.675556,
+      "elevation_meters": 686.0
     },
     {
       "id": "1551",
       "public_code": "145",
       "name": "145 - Ortega y Gasset 87",
       "latitude": 40.429887,
-      "longitude": -3.6712823
+      "longitude": -3.6712823,
+      "elevation_meters": 683.9
     },
     {
       "id": "1552",
       "public_code": "146",
       "name": "146 - María Francisca, 3",
       "latitude": 40.4442541,
-      "longitude": -3.6788499
+      "longitude": -3.6788499,
+      "elevation_meters": 700.4
     },
     {
       "id": "1553",
       "public_code": "147",
       "name": "147 - Doctor Arce 45",
       "latitude": 40.4484,
-      "longitude": -3.6794000000000002
+      "longitude": -3.6794000000000002,
+      "elevation_meters": 710.0
     },
     {
       "id": "1554",
       "public_code": "148",
       "name": "148 - Serrano 210",
       "latitude": 40.451117,
-      "longitude": -3.6813971
+      "longitude": -3.6813971,
+      "elevation_meters": 708.1
     },
     {
       "id": "1555",
       "public_code": "149",
       "name": "149 - Plaza de Quito",
       "latitude": 40.4498515,
-      "longitude": -3.6879303
+      "longitude": -3.6879303,
+      "elevation_meters": 689.0
     },
     {
       "id": "2224",
       "public_code": "150",
       "name": "150 - Castellana - Hermanos Pinzón",
       "latitude": 40.4491,
-      "longitude": -3.6908
+      "longitude": -3.6908,
+      "elevation_meters": 688.0
     },
     {
       "id": "1557",
       "public_code": "151",
       "name": "151 - Orense 12",
       "latitude": 40.44881224951987,
-      "longitude": -3.695359265012366
+      "longitude": -3.695359265012366,
+      "elevation_meters": 693.0
     },
     {
       "id": "1558",
       "public_code": "152",
       "name": "152 - General Perón, 4",
       "latitude": 40.4525,
-      "longitude": -3.6989
+      "longitude": -3.6989,
+      "elevation_meters": 700.7
     },
     {
       "id": "1559",
       "public_code": "153",
       "name": "153 - General Perón - Poeta Joan Maragall",
       "latitude": 40.4523,
-      "longitude": -3.6935999999999996
+      "longitude": -3.6935999999999996,
+      "elevation_meters": 694.0
     },
     {
       "id": "1560",
       "public_code": "154",
       "name": "154 - Orense 36",
       "latitude": 40.4548456,
-      "longitude": -3.6946218
+      "longitude": -3.6946218,
+      "elevation_meters": 699.8
     },
     {
       "id": "1561",
       "public_code": "155",
       "name": "155 - San Germán 57",
       "latitude": 40.4573342300643,
-      "longitude": -3.700930190178302
+      "longitude": -3.700930190178302,
+      "elevation_meters": 719.0
     },
     {
       "id": "1562",
       "public_code": "156",
       "name": "156 - Sor Ángela de la Cruz-Paseo Castellana",
       "latitude": 40.4592351,
-      "longitude": -3.691533
+      "longitude": -3.691533,
+      "elevation_meters": 712.7
     },
     {
       "id": "2225",
       "public_code": "157",
       "name": "157 - Plaza de Cuzco",
       "latitude": 40.4591366,
-      "longitude": -3.6894151
+      "longitude": -3.6894151,
+      "elevation_meters": 713.0
     },
     {
       "id": "1564",
       "public_code": "158",
       "name": "158 - Alberto Alcocer - Padre Damián",
       "latitude": 40.4585318,
-      "longitude": -3.684715
+      "longitude": -3.684715,
+      "elevation_meters": 710.7
     },
     {
       "id": "1565",
       "public_code": "159",
       "name": "159 - Paseo de la Habana 63",
       "latitude": 40.4543852,
-      "longitude": -3.6835925999999994
+      "longitude": -3.6835925999999994,
+      "elevation_meters": 702.3
     },
     {
       "id": "1566",
       "public_code": "160",
       "name": "160 - Metro Colombia",
       "latitude": 40.4572466,
-      "longitude": -3.6763439
+      "longitude": -3.6763439,
+      "elevation_meters": 707.9
     },
     {
       "id": "1567",
       "public_code": "161",
       "name": "161 - Intercambiador de Príncipe Pío A",
       "latitude": 40.422192474165534,
-      "longitude": -3.7220993214090403
+      "longitude": -3.7220993214090403,
+      "elevation_meters": 588.0
     },
     {
       "id": "1568",
       "public_code": "162",
       "name": "162 - Metro Pirámides",
       "latitude": 40.4034968,
-      "longitude": -3.7105765
+      "longitude": -3.7105765,
+      "elevation_meters": 602.8
     },
     {
       "id": "1569",
       "public_code": "163",
       "name": "163 - Metro Acacias",
       "latitude": 40.4037586,
-      "longitude": -3.7064450000000004
+      "longitude": -3.7064450000000004,
+      "elevation_meters": 604.6
     },
     {
       "id": "1570",
       "public_code": "164",
       "name": "164 - Paseo de las Delicias - Tomás Bretón",
       "latitude": 40.39723,
-      "longitude": -3.69461
+      "longitude": -3.69461,
+      "elevation_meters": 584.9
     },
     {
       "id": "1571",
       "public_code": "165",
       "name": "165 - Entrada Matadero - Paseo de la Chopera",
       "latitude": 40.392888,
-      "longitude": -3.697596
+      "longitude": -3.697596,
+      "elevation_meters": 571.0
     },
     {
       "id": "1572",
       "public_code": "166",
       "name": "166 - Viaducto de Segovia",
       "latitude": 40.41390473235381,
-      "longitude": -3.713377023313513
+      "longitude": -3.713377023313513,
+      "elevation_meters": 616.2
     },
     {
       "id": "1573",
       "public_code": "167",
       "name": "167 - Segovia 45",
       "latitude": 40.41374770742206,
-      "longitude": -3.7174891703237303
+      "longitude": -3.7174891703237303,
+      "elevation_meters": 594.9
     },
     {
       "id": "1574",
       "public_code": "168",
       "name": "168 - Santa María Cabeza - Batalla del Salado",
       "latitude": 40.4046,
-      "longitude": -3.6959
+      "longitude": -3.6959,
+      "elevation_meters": 610.7
     },
     {
       "id": "1575",
       "public_code": "169",
       "name": "169 - Glorieta de Pirámides",
       "latitude": 40.401589,
-      "longitude": -3.713823
+      "longitude": -3.713823,
+      "elevation_meters": 589.4
     },
     {
       "id": "1576",
       "public_code": "170",
       "name": "170 - Paseo de la Esperanza, 21",
       "latitude": 40.4010554,
-      "longitude": -3.7043956
+      "longitude": -3.7043956,
+      "elevation_meters": 588.0
     },
     {
       "id": "1577",
       "public_code": "171",
       "name": "171 - Embajadores-Cáceres",
       "latitude": 40.3997013,
-      "longitude": -3.6984023000000006
+      "longitude": -3.6984023000000006,
+      "elevation_meters": 588.4
     },
     {
       "id": "1578",
       "public_code": "172",
       "name": "172 - Estación de tren de Delicias",
       "latitude": 40.4008279,
-      "longitude": -3.6934925999999995
+      "longitude": -3.6934925999999995,
+      "elevation_meters": 599.4
     },
     {
       "id": "1579",
       "public_code": "173",
       "name": "173 - Paseo Esperanza - Santa María Cabeza",
       "latitude": 40.3983467,
-      "longitude": -3.7024839
+      "longitude": -3.7024839,
+      "elevation_meters": 579.0
     },
     {
       "id": "1580",
       "public_code": "174",
       "name": "174 - Paseo de las Yeserías, 45",
       "latitude": 40.39742958306358,
-      "longitude": -3.7065258846557603
+      "longitude": -3.7065258846557603,
+      "elevation_meters": 574.0
     },
     {
       "id": "1581",
       "public_code": "175",
       "name": "175 - Jaime el Conquistador - Divino Vallés",
       "latitude": 40.3962264,
-      "longitude": -3.6983445200000005
+      "longitude": -3.6983445200000005,
+      "elevation_meters": 576.0
     },
     {
       "id": "2368",
       "public_code": "176",
       "name": "176 - Plaza de la Beata María Ana de Jesús",
       "latitude": 40.3941856,
-      "longitude": -3.6939412
+      "longitude": -3.6939412,
+      "elevation_meters": 576.7
     },
     {
       "id": "1583",
       "public_code": "177",
       "name": "177 - Metro Legazpi",
       "latitude": 40.391447085678806,
-      "longitude": -3.6941876374343896
+      "longitude": -3.6941876374343896,
+      "elevation_meters": 571.1
     },
     {
       "id": "1584",
       "public_code": "178",
       "name": "178 - Junta Municipal Distrito de Retiro",
       "latitude": 40.4029202,
-      "longitude": -3.6788343
+      "longitude": -3.6788343,
+      "elevation_meters": 610.0
     },
     {
       "id": "1585",
       "public_code": "179",
       "name": "179 - Metro Puente de Vallecas",
       "latitude": 40.3979273,
-      "longitude": -3.6692724000000005
+      "longitude": -3.6692724000000005,
+      "elevation_meters": 599.1
     },
     {
       "id": "1586",
       "public_code": "180",
       "name": "180 - Estación Sur Méndez Álvaro B",
       "latitude": 40.3940423,
-      "longitude": -3.67589
+      "longitude": -3.67589,
+      "elevation_meters": 591.0
     },
     {
       "id": "1587",
       "public_code": "181",
       "name": "181 - Ibiza - Narváez",
       "latitude": 40.41816932665331,
-      "longitude": -3.6764435404754696
+      "longitude": -3.6764435404754696,
+      "elevation_meters": 673.5
     },
     {
       "id": "1588",
       "public_code": "182",
       "name": "182 - Parque Roma",
       "latitude": 40.4186666,
-      "longitude": -3.6657776999999996
+      "longitude": -3.6657776999999996,
+      "elevation_meters": 662.9
     },
     {
       "id": "1589",
       "public_code": "183",
       "name": "183 - Hermosilla - Doctor Esquerdo",
       "latitude": 40.425635,
-      "longitude": -3.6693389999999995
+      "longitude": -3.6693389999999995,
+      "elevation_meters": 676.0
     },
     {
       "id": "1590",
       "public_code": "184",
       "name": "184 - Marqués de Zafra, 24",
       "latitude": 40.426,
-      "longitude": -3.6653055
+      "longitude": -3.6653055,
+      "elevation_meters": 671.2
     },
     {
       "id": "1591",
       "public_code": "185",
       "name": "185 - Parque Quinta de la Fuente del Berro",
       "latitude": 40.4250833,
-      "longitude": -3.6615277000000006
+      "longitude": -3.6615277000000006,
+      "elevation_meters": 659.9
     },
     {
       "id": "1549",
       "public_code": "186",
       "name": "186 - General Pardiñas - Don Ramón de la Cruz",
       "latitude": 40.4289804,
-      "longitude": -3.6783015999999997
+      "longitude": -3.6783015999999997,
+      "elevation_meters": 677.0
     },
     {
       "id": "1593",
       "public_code": "187",
       "name": "187 - Alejandro González - Alcalá",
       "latitude": 40.4301326,
-      "longitude": -3.6638249
+      "longitude": -3.6638249,
+      "elevation_meters": 662.0
     },
     {
       "id": "1594",
       "public_code": "188",
       "name": "188 - Puente de Ventas",
       "latitude": 40.4312562,
-      "longitude": -3.6590286000000005
+      "longitude": -3.6590286000000005,
+      "elevation_meters": 657.7
     },
     {
       "id": "1595",
       "public_code": "189",
       "name": "189 - Virgen de la Alegría",
       "latitude": 40.4351256,
-      "longitude": -3.6554918000000005
+      "longitude": -3.6554918000000005,
+      "elevation_meters": 671.0
     },
     {
       "id": "1596",
       "public_code": "190",
       "name": "190 - Velázquez - Diego de León",
       "latitude": 40.4343053,
-      "longitude": -3.6833753
+      "longitude": -3.6833753,
+      "elevation_meters": 686.4
     },
     {
       "id": "1597",
       "public_code": "191",
       "name": "191 - Metro Diego de León",
       "latitude": 40.434569387142616,
-      "longitude": -3.6740777840614403
+      "longitude": -3.6740777840614403,
+      "elevation_meters": 692.0
     },
     {
       "id": "1598",
       "public_code": "192",
       "name": "192 - Avda. de los Toreros - Fco. Silvela",
       "latitude": 40.431826464468664,
-      "longitude": -3.6714677183853106
+      "longitude": -3.6714677183853106,
+      "elevation_meters": 686.0
     },
     {
       "id": "1599",
       "public_code": "193",
       "name": "193 - Plaza de las Ventas",
       "latitude": 40.4324722,
-      "longitude": -3.6655555
+      "longitude": -3.6655555,
+      "elevation_meters": 673.9
     },
     {
       "id": "1600",
       "public_code": "194",
       "name": "194 - Intercambiador de Avenida de América",
       "latitude": 40.4372638,
-      "longitude": -3.6771534999999997
+      "longitude": -3.6771534999999997,
+      "elevation_meters": 692.6
     },
     {
       "id": "1601",
       "public_code": "195",
       "name": "195 - Indalecio Hernández - Mataelpino",
       "latitude": 40.4392222,
-      "longitude": -3.6754444
+      "longitude": -3.6754444,
+      "elevation_meters": 699.5
     },
     {
       "id": "1602",
       "public_code": "196",
       "name": "196 - Metro Prosperidad",
       "latitude": 40.4442237,
-      "longitude": -3.6752218
+      "longitude": -3.6752218,
+      "elevation_meters": 703.0
     },
     {
       "id": "1603",
       "public_code": "197",
       "name": "197 - Parque de Berlín",
       "latitude": 40.4516059,
-      "longitude": -3.677916
+      "longitude": -3.677916,
+      "elevation_meters": 709.0
     },
     {
       "id": "1604",
       "public_code": "198",
       "name": "198 - Metro Rubén Darío",
       "latitude": 40.432,
-      "longitude": -3.6890999999999994
+      "longitude": -3.6890999999999994,
+      "elevation_meters": 661.3
     },
     {
       "id": "1605",
       "public_code": "199",
       "name": "199 - Fernando el Católico, 61",
       "latitude": 40.4343611,
-      "longitude": -3.7149166
+      "longitude": -3.7149166,
+      "elevation_meters": 668.2
     },
     {
       "id": "1606",
       "public_code": "200",
       "name": "200 - Metro Quevedo",
       "latitude": 40.43375360585919,
-      "longitude": -3.7045789811585412
+      "longitude": -3.7045789811585412,
+      "elevation_meters": 679.0
     },
     {
       "id": "1607",
       "public_code": "201",
       "name": "201 - Metro Canal",
       "latitude": 40.4386944,
-      "longitude": -3.7038332999999994
+      "longitude": -3.7038332999999994,
+      "elevation_meters": 684.1
     },
     {
       "id": "1608",
       "public_code": "202",
       "name": "202 - Parque de Santander",
       "latitude": 40.4413,
-      "longitude": -3.7083
+      "longitude": -3.7083,
+      "elevation_meters": 693.9
     },
     {
       "id": "1609",
       "public_code": "203",
       "name": "203 - General Ampudia - San Francisco Sales",
       "latitude": 40.44175,
-      "longitude": -3.7144722
+      "longitude": -3.7144722,
+      "elevation_meters": 683.0
     },
     {
       "id": "1610",
       "public_code": "204",
       "name": "204 - Doctor Santero - Bravo Murillo",
       "latitude": 40.4476488,
-      "longitude": -3.7040397
+      "longitude": -3.7040397,
+      "elevation_meters": 707.0
     },
     {
       "id": "1611",
       "public_code": "205",
       "name": "205 - Metro Estrecho",
       "latitude": 40.4535,
-      "longitude": -3.7032776999999997
+      "longitude": -3.7032776999999997,
+      "elevation_meters": 711.1
     },
     {
       "id": "1612",
       "public_code": "206",
       "name": "206 - Metro Tetuán",
       "latitude": 40.46088,
-      "longitude": -3.69895
+      "longitude": -3.69895,
+      "elevation_meters": 715.0
     },
     {
       "id": "1613",
       "public_code": "207",
       "name": "207 - Plaza de la Remonta",
       "latitude": 40.4630443,
-      "longitude": -3.6973352000000004
+      "longitude": -3.6973352000000004,
+      "elevation_meters": 723.0
     },
     {
       "id": "1614",
       "public_code": "208",
       "name": "208 - Intercambiador de Plaza de Castilla",
       "latitude": 40.4662811,
-      "longitude": -3.6890611
+      "longitude": -3.6890611,
+      "elevation_meters": 729.1
     },
     {
       "id": "1615",
       "public_code": "209",
       "name": "209 - Plaza de Castilla - Fundación Canal",
       "latitude": 40.4657,
-      "longitude": -3.6887000000000003
+      "longitude": -3.6887000000000003,
+      "elevation_meters": 729.0
     },
     {
       "id": "1616",
       "public_code": "210",
       "name": "210 - Calle de las Tres Cruces - Gran Vía",
       "latitude": 40.4196518,
-      "longitude": -3.7027164000000004
+      "longitude": -3.7027164000000004,
+      "elevation_meters": 662.0
     },
     {
       "id": "1617",
       "public_code": "211",
       "name": "211 - Desengaño - Valverde",
       "latitude": 40.42059,
-      "longitude": -3.70239
+      "longitude": -3.70239,
+      "elevation_meters": 663.3
     },
     {
       "id": "1618",
       "public_code": "212",
       "name": "212 - Metro Marqués de Vadillo",
       "latitude": 40.398247,
-      "longitude": -3.7165910000000006
+      "longitude": -3.7165910000000006,
+      "elevation_meters": 580.5
     },
     {
       "id": "1619",
       "public_code": "213",
       "name": "213 - Glorieta de Cádiz",
       "latitude": 40.3889918,
-      "longitude": -3.7002247
+      "longitude": -3.7002247,
+      "elevation_meters": 576.0
     },
     {
       "id": "1621",
       "public_code": "215",
       "name": "215 - Gutierre de Cetina - Ascao",
       "latitude": 40.429588,
-      "longitude": -3.6408092999999995
+      "longitude": -3.6408092999999995,
+      "elevation_meters": 686.2
     },
     {
       "id": "1622",
       "public_code": "216",
       "name": "216 - Plaza de Puerta del Ángel",
       "latitude": 40.4141,
-      "longitude": -3.72897
+      "longitude": -3.72897,
+      "elevation_meters": 602.8
     },
     {
       "id": "1623",
       "public_code": "217",
       "name": "217 - Hospital Universitario La Paz",
       "latitude": 40.480884,
-      "longitude": -3.6890757999999995
+      "longitude": -3.6890757999999995,
+      "elevation_meters": 728.1
     },
     {
       "id": "1624",
       "public_code": "218",
       "name": "218 - Camino de los Vinateros A",
       "latitude": 40.4105478,
-      "longitude": -3.6572967
+      "longitude": -3.6572967,
+      "elevation_meters": 626.7
     },
     {
       "id": "1625",
       "public_code": "219",
       "name": "219 - Camino de los Vinateros B",
       "latitude": 40.4083593,
-      "longitude": -3.6467337999999994
+      "longitude": -3.6467337999999994,
+      "elevation_meters": 665.9
     },
     {
       "id": "1626",
       "public_code": "220",
       "name": "220 - Plaza del Encuentro",
       "latitude": 40.406156,
-      "longitude": -3.651384
+      "longitude": -3.651384,
+      "elevation_meters": 661.0
     },
     {
       "id": "1627",
       "public_code": "221",
       "name": "221 - Metro Pavones",
       "latitude": 40.400492026660594,
-      "longitude": -3.6347444787322485
+      "longitude": -3.6347444787322485,
+      "elevation_meters": 681.3
     },
     {
       "id": "1628",
       "public_code": "222",
       "name": "222 - Eugenio Caxes - Antonio López",
       "latitude": 40.3917871,
-      "longitude": -3.7026789
+      "longitude": -3.7026789,
+      "elevation_meters": 575.2
     },
     {
       "id": "1629",
       "public_code": "223",
       "name": "223 - Ermita del Santo",
       "latitude": 40.406448,
-      "longitude": -3.724576
+      "longitude": -3.724576,
+      "elevation_meters": 579.6
     },
     {
       "id": "1630",
       "public_code": "224",
       "name": "224 - Parque de Caramuel",
       "latitude": 40.409,
-      "longitude": -3.7287000000000003
+      "longitude": -3.7287000000000003,
+      "elevation_meters": 603.3
     },
     {
       "id": "1631",
       "public_code": "225",
       "name": "225 - Sierra Toledana - Doctor Lozano",
       "latitude": 40.402506,
-      "longitude": -3.660345
+      "longitude": -3.660345,
+      "elevation_meters": 629.4
     },
     {
       "id": "1632",
       "public_code": "226",
       "name": "226 - Sierra Toledana - Camino de Valderribas",
       "latitude": 40.39901531507069,
-      "longitude": -3.6607768678037744
+      "longitude": -3.6607768678037744,
+      "elevation_meters": 629.2
     },
     {
       "id": "1633",
       "public_code": "227",
       "name": "227 - Arroyo del Olivar",
       "latitude": 40.39382977920336,
-      "longitude": -3.665936242935637
+      "longitude": -3.665936242935637,
+      "elevation_meters": 609.9
     },
     {
       "id": "1634",
       "public_code": "228",
       "name": "228 - San Delfín - Antonio López",
       "latitude": 40.39440607959559,
-      "longitude": -3.7080429728445568
+      "longitude": -3.7080429728445568,
+      "elevation_meters": 577.4
     },
     {
       "id": "1635",
       "public_code": "229",
       "name": "229 - Centro Deportivo Municipal Concepción",
       "latitude": 40.4369378,
-      "longitude": -3.6486508
+      "longitude": -3.6486508,
+      "elevation_meters": 681.0
     },
     {
       "id": "1636",
       "public_code": "230",
       "name": "230 - Carlota O´Neill - Agastia",
       "latitude": 40.4436792,
-      "longitude": -3.6488254
+      "longitude": -3.6488254,
+      "elevation_meters": 697.7
     },
     {
       "id": "1637",
       "public_code": "231",
       "name": "231 - Derechos Humanos - Verdaguer y García",
       "latitude": 40.4398283,
-      "longitude": -3.6557193
+      "longitude": -3.6557193,
+      "elevation_meters": 679.8
     },
     {
       "id": "1638",
       "public_code": "232",
       "name": "232 - José María de Pereda - Alcalá",
       "latitude": 40.4327663,
-      "longitude": -3.6486169000000004
+      "longitude": -3.6486169000000004,
+      "elevation_meters": 687.0
     },
     {
       "id": "1639",
       "public_code": "233",
       "name": "233 - El dragón de La Elipa",
       "latitude": 40.4229522,
-      "longitude": -3.6555789000000005
+      "longitude": -3.6555789000000005,
+      "elevation_meters": 642.0
     },
     {
       "id": "1640",
       "public_code": "234",
       "name": "234 - Metro La Elipa",
       "latitude": 40.4261278,
-      "longitude": -3.6510917000000003
+      "longitude": -3.6510917000000003,
+      "elevation_meters": 658.5
     },
     {
       "id": "1641",
       "public_code": "235",
       "name": "235 - Sodio - Embajadores",
       "latitude": 40.389041,
-      "longitude": -3.691076
+      "longitude": -3.691076,
+      "elevation_meters": 572.6
     },
     {
       "id": "1642",
       "public_code": "236",
       "name": "236 - Paseo Imperial",
       "latitude": 40.4075794,
-      "longitude": -3.7170785
+      "longitude": -3.7170785,
+      "elevation_meters": 597.0
     },
     {
       "id": "2362",
       "public_code": "237",
       "name": "237 - Acueducto de Amaniel",
       "latitude": 40.4516819,
-      "longitude": -3.7102736
+      "longitude": -3.7102736,
+      "elevation_meters": 686.7
     },
     {
       "id": "1644",
       "public_code": "238",
       "name": "238 - San Germán, 5",
       "latitude": 40.4561825,
-      "longitude": -3.6932611
+      "longitude": -3.6932611,
+      "elevation_meters": 702.0
     },
     {
       "id": "1645",
       "public_code": "239",
       "name": "239 - Francos Rodríguez - José Calvo",
       "latitude": 40.4567132,
-      "longitude": -3.7078331000000007
+      "longitude": -3.7078331000000007,
+      "elevation_meters": 716.0
     },
     {
       "id": "1646",
       "public_code": "240",
       "name": "240 - Brasilia - Parque Breogán",
       "latitude": 40.43666,
-      "longitude": -3.66096
+      "longitude": -3.66096,
+      "elevation_meters": 666.0
     },
     {
       "id": "1647",
       "public_code": "241",
       "name": "241 - Camilo José Cela",
       "latitude": 40.4378,
-      "longitude": -3.6677899999999997
+      "longitude": -3.6677899999999997,
+      "elevation_meters": 689.0
     },
     {
       "id": "1648",
       "public_code": "242",
       "name": "242 - Metro Parque de las Avenidas",
       "latitude": 40.439513,
-      "longitude": -3.6629280000000004
+      "longitude": -3.6629280000000004,
+      "elevation_meters": 673.0
     },
     {
       "id": "1649",
       "public_code": "243",
       "name": "243 - Cartagena",
       "latitude": 40.43503,
-      "longitude": -3.6701200000000003
+      "longitude": -3.6701200000000003,
+      "elevation_meters": 689.9
     },
     {
       "id": "1650",
       "public_code": "244",
       "name": "244 - Hospital Clínico San Carlos",
       "latitude": 40.44003,
-      "longitude": -3.71757
+      "longitude": -3.71757,
+      "elevation_meters": 670.4
     },
     {
       "id": "1651",
       "public_code": "245",
       "name": "245 - Galileo - Donoso Cortés",
       "latitude": 40.4363637,
-      "longitude": -3.7101381
+      "longitude": -3.7101381,
+      "elevation_meters": 683.0
     },
     {
       "id": "1652",
       "public_code": "246",
       "name": "246 - Metro Iglesia",
       "latitude": 40.43595788149785,
-      "longitude": -3.699248472404664
+      "longitude": -3.699248472404664,
+      "elevation_meters": 685.0
     },
     {
       "id": "1653",
       "public_code": "247",
       "name": "247 - Zurbano - José Abascal",
       "latitude": 40.43837,
-      "longitude": -3.69281
+      "longitude": -3.69281,
+      "elevation_meters": 674.0
     },
     {
       "id": "1654",
       "public_code": "248",
       "name": "248 - Sinesio Delgado - Cuatro Torres",
       "latitude": 40.4743209,
-      "longitude": -3.6879973
+      "longitude": -3.6879973,
+      "elevation_meters": 730.0
     },
     {
       "id": "1655",
       "public_code": "249",
       "name": "249 - Castellana - Cuatro Torres",
       "latitude": 40.47645878644506,
-      "longitude": -3.685419182838061
+      "longitude": -3.685419182838061,
+      "elevation_meters": 730.4
     },
     {
       "id": "1656",
       "public_code": "250",
       "name": "250 - Serrano - CSIC",
       "latitude": 40.4406491,
-      "longitude": -3.6858096
+      "longitude": -3.6858096,
+      "elevation_meters": 692.0
     },
     {
       "id": "1657",
       "public_code": "251",
       "name": "251 - Santa Hortensia - Corazón de María",
       "latitude": 40.44421,
-      "longitude": -3.66683
+      "longitude": -3.66683,
+      "elevation_meters": 680.0
     },
     {
       "id": "1658",
       "public_code": "252",
       "name": "252 - Est. tren Chamartín - Clara Campoamor",
       "latitude": 40.4717403,
-      "longitude": -3.6839695
+      "longitude": -3.6839695,
+      "elevation_meters": 728.8
     },
     {
       "id": "1659",
       "public_code": "253",
       "name": "253 - Doctor Fleming - Estadio S. Bernabéu",
       "latitude": 40.45546,
-      "longitude": -3.6884400000000004
+      "longitude": -3.6884400000000004,
+      "elevation_meters": 703.0
     },
     {
       "id": "1660",
       "public_code": "254",
       "name": "254 - Plaza del Perú",
       "latitude": 40.461,
-      "longitude": -3.6765599999999994
+      "longitude": -3.6765599999999994,
+      "elevation_meters": 713.0
     },
     {
       "id": "1661",
       "public_code": "255",
       "name": "255 - General López Pozas - Apolonio Morales",
       "latitude": 40.46361,
-      "longitude": -3.685292
+      "longitude": -3.685292,
+      "elevation_meters": 724.4
     },
     {
       "id": "1662",
       "public_code": "256",
       "name": "256 - Reina Victoria - Beatriz de Bobadilla",
       "latitude": 40.44635,
-      "longitude": -3.7138299999999997
+      "longitude": -3.7138299999999997,
+      "elevation_meters": 687.9
     },
     {
       "id": "1663",
       "public_code": "257",
       "name": "257 - Ciudad Universitaria - INEF",
       "latitude": 40.438873,
-      "longitude": -3.7305269999999995
+      "longitude": -3.7305269999999995,
+      "elevation_meters": 623.3
     },
     {
       "id": "1664",
       "public_code": "258",
       "name": "258 - Metro Ciudad Universitaria A",
       "latitude": 40.444311,
-      "longitude": -3.7269389999999993
+      "longitude": -3.7269389999999993,
+      "elevation_meters": 636.4
     },
     {
       "id": "1665",
       "public_code": "259",
       "name": "259 - Metro Ciudad Universitaria B",
       "latitude": 40.44270528449462,
-      "longitude": -3.726752004160312
+      "longitude": -3.726752004160312,
+      "elevation_meters": 637.0
     },
     {
       "id": "1666",
       "public_code": "260",
       "name": "260 - Ciudad Universitaria - Fac. de Biología",
       "latitude": 40.4483322,
-      "longitude": -3.7272945
+      "longitude": -3.7272945,
+      "elevation_meters": 640.0
     },
     {
       "id": "1667",
       "public_code": "261",
       "name": "261 - Ciudad Universitaria - Facultad Derecho",
       "latitude": 40.4505516,
-      "longitude": -3.7296756
+      "longitude": -3.7296756,
+      "elevation_meters": 646.0
     },
     {
       "id": "2365",
       "public_code": "262",
       "name": "262 - María de las Mercedes de Borbón B",
       "latitude": 40.4928683,
-      "longitude": -3.620114
+      "longitude": -3.620114,
+      "elevation_meters": 666.0
     },
     {
       "id": "2308",
       "public_code": "263",
       "name": "263 - Gran Vía de San Francisco",
       "latitude": 40.40833880815136,
-      "longitude": -3.712793282384579
+      "longitude": -3.712793282384579,
+      "elevation_meters": 635.6
     },
     {
       "id": "1986",
       "public_code": "265",
       "name": "265 - Puerto Serrano - Embajadores",
       "latitude": 40.385412,
-      "longitude": -3.6884609999999998
+      "longitude": -3.6884609999999998,
+      "elevation_meters": 571.3
     },
     {
       "id": "2205",
       "public_code": "267",
       "name": "267 - Paseo de la Chopera - Fernando Poo",
       "latitude": 40.39500000000003,
-      "longitude": -3.700399664723874
+      "longitude": -3.700399664723874,
+      "elevation_meters": 573.0
     },
     {
       "id": "2017",
       "public_code": "268",
       "name": "268 - Metro Arganzuela-Planetario",
       "latitude": 40.39338327980599,
-      "longitude": -3.689031463575172
+      "longitude": -3.689031463575172,
+      "elevation_meters": 581.0
     },
     {
       "id": "2064",
       "public_code": "269",
       "name": "269 - Ariel - Parque Enrique Tierno Galván",
       "latitude": 40.393023802369754,
-      "longitude": -3.6797017663398797
+      "longitude": -3.6797017663398797,
+      "elevation_meters": 588.0
     },
     {
       "id": "2071",
       "public_code": "270",
       "name": "270 - Teresa L. Valcárcel - Tte. Cnel. Noreña",
       "latitude": 40.38862908,
-      "longitude": -3.69328771
+      "longitude": -3.69328771,
+      "elevation_meters": 569.7
     },
     {
       "id": "2265",
       "public_code": "271",
       "name": "271 - Amaltea-Meneses",
       "latitude": 40.394706,
-      "longitude": -3.68317
+      "longitude": -3.68317,
+      "elevation_meters": 597.9
     },
     {
       "id": "2305",
       "public_code": "272",
       "name": "272 - Tejo - Parque La Ronda",
       "latitude": 40.39663,
-      "longitude": -3.679186
+      "longitude": -3.679186,
+      "elevation_meters": 594.0
     },
     {
       "id": "2117",
       "public_code": "273",
       "name": "273 - Delicias - General Lacy",
       "latitude": 40.40381914,
-      "longitude": -3.6909183100000003
+      "longitude": -3.6909183100000003,
+      "elevation_meters": 614.2
     },
     {
       "id": "2269",
       "public_code": "274",
       "name": "274 - Estación Sur Méndez Álvaro A",
       "latitude": 40.39636871711454,
-      "longitude": -3.6808529768924263
+      "longitude": -3.6808529768924263,
+      "elevation_meters": 593.2
     },
     {
       "id": "2267",
       "public_code": "275",
       "name": "275 - Juan Antonio Vallejo-Nájera Botas, 25",
       "latitude": 40.4020545,
-      "longitude": -3.7082123
+      "longitude": -3.7082123,
+      "elevation_meters": 594.0
     },
     {
       "id": "2333",
       "public_code": "276",
       "name": "276 - Paseo de las Yeserías, 15",
       "latitude": 40.39900539,
-      "longitude": -3.7099166
+      "longitude": -3.7099166,
+      "elevation_meters": 578.3
     },
     {
       "id": "2304",
       "public_code": "277",
       "name": "277 - Virgen del Puerto",
       "latitude": 40.411622,
-      "longitude": -3.7211780000000005
+      "longitude": -3.7211780000000005,
+      "elevation_meters": 580.0
     },
     {
       "id": "2299",
       "public_code": "278",
       "name": "278 - Paseo los Pontones - Ps. Melancólicos",
       "latitude": 40.4040433,
-      "longitude": -3.7196
+      "longitude": -3.7196,
+      "elevation_meters": 585.3
     },
     {
       "id": "2331",
       "public_code": "279",
       "name": "279 - Paseo de los Melancólicos, 1",
       "latitude": 40.4104448,
-      "longitude": -3.7184815999999996
+      "longitude": -3.7184815999999996,
+      "elevation_meters": 589.0
     },
     {
       "id": "2247",
       "public_code": "280",
       "name": "280 - Ps de los Melancólicos - San Epifanio",
       "latitude": 40.401782,
-      "longitude": -3.7185689999999996
+      "longitude": -3.7185689999999996,
+      "elevation_meters": 579.0
     },
     {
       "id": "2285",
       "public_code": "281",
       "name": "281 - Reina Cristina - Julián Gayarre",
       "latitude": 40.4067247,
-      "longitude": -3.6831862
+      "longitude": -3.6831862,
+      "elevation_meters": 631.8
     },
     {
       "id": "2306",
       "public_code": "282",
       "name": "282 - Parque Retiro - Puerta Reina Mercedes",
       "latitude": 40.4181327,
-      "longitude": -3.6787796
+      "longitude": -3.6787796,
+      "elevation_meters": 671.0
     },
     {
       "id": "2321",
       "public_code": "283",
       "name": "283 - Museo Nacional del Prado",
       "latitude": 40.4152082,
-      "longitude": -3.6919057
+      "longitude": -3.6919057,
+      "elevation_meters": 642.4
     },
     {
       "id": "1964",
       "public_code": "284",
       "name": "284 - Avenida de Burgos, 17",
       "latitude": 40.473593878889254,
-      "longitude": -3.6757900294303902
+      "longitude": -3.6757900294303902,
+      "elevation_meters": 715.0
     },
     {
       "id": "1969",
       "public_code": "285",
       "name": "285 - Santa María Magdalena - La Drácena",
       "latitude": 40.4631,
-      "longitude": -3.6706
+      "longitude": -3.6706,
+      "elevation_meters": 701.0
     },
     {
       "id": "1970",
       "public_code": "286",
       "name": "286 - Plaza Duque de Pastrana",
       "latitude": 40.4679,
-      "longitude": -3.6778999999999997
+      "longitude": -3.6778999999999997,
+      "elevation_meters": 711.0
     },
     {
       "id": "1971",
       "public_code": "287",
       "name": "287 - Metro Bambú",
       "latitude": 40.4765,
-      "longitude": -3.6762
+      "longitude": -3.6762,
+      "elevation_meters": 714.7
     },
     {
       "id": "1972",
       "public_code": "288",
       "name": "288 - Caídos de la División Azul",
       "latitude": 40.4664,
-      "longitude": -3.6723
+      "longitude": -3.6723,
+      "elevation_meters": 706.0
     },
     {
       "id": "2300",
       "public_code": "289",
       "name": "289 - Luis de Salazar - Padre Claret",
       "latitude": 40.4474166,
-      "longitude": -3.6649258000000002
+      "longitude": -3.6649258000000002,
+      "elevation_meters": 679.1
     },
     {
       "id": "2104",
       "public_code": "290",
       "name": "290 - Francisco Suárez - Paseo de La Habana",
       "latitude": 40.46437817,
-      "longitude": -3.6799441599999994
+      "longitude": -3.6799441599999994,
+      "elevation_meters": 719.2
     },
     {
       "id": "2135",
       "public_code": "291",
       "name": "291 - Plaza José María Soler",
       "latitude": 40.45866532,
-      "longitude": -3.66790332
+      "longitude": -3.66790332,
+      "elevation_meters": 694.3
     },
     {
       "id": "2136",
       "public_code": "292",
       "name": "292 - Centro Deportivo Municipal Pradillo",
       "latitude": 40.44904126,
-      "longitude": -3.6717937
+      "longitude": -3.6717937,
+      "elevation_meters": 696.0
     },
     {
       "id": "2234",
       "public_code": "293",
       "name": "293 - Santa Rita - Clara del Rey",
       "latitude": 40.4457928,
-      "longitude": -3.6682881999999997
+      "longitude": -3.6682881999999997,
+      "elevation_meters": 686.8
     },
     {
       "id": "2184",
       "public_code": "294",
       "name": "294 - Edificio Torres Blancas",
       "latitude": 40.440944,
-      "longitude": -3.6723389999999996
+      "longitude": -3.6723389999999996,
+      "elevation_meters": 692.8
     },
     {
       "id": "1995",
       "public_code": "295",
       "name": "295 - Hernani - Edgar Neville",
       "latitude": 40.4481,
-      "longitude": -3.6972000000000005
+      "longitude": -3.6972000000000005,
+      "elevation_meters": 696.3
     },
     {
       "id": "1996",
       "public_code": "296",
       "name": "296 - Costa Verde",
       "latitude": 40.469477,
-      "longitude": -3.696862
+      "longitude": -3.696862,
+      "elevation_meters": 710.0
     },
     {
       "id": "1997",
       "public_code": "297",
       "name": "297 - Simancas - Pinos Alta",
       "latitude": 40.4655,
-      "longitude": -3.6951129800000007
+      "longitude": -3.6951129800000007,
+      "elevation_meters": 726.9
     },
     {
       "id": "2002",
       "public_code": "298",
       "name": "298 - Marques de Viana - Bellver",
       "latitude": 40.4638831,
-      "longitude": -3.705172
+      "longitude": -3.705172,
+      "elevation_meters": 694.0
     },
     {
       "id": "2055",
       "public_code": "299",
       "name": "299 - Rosario Pino - Joan Maragall",
       "latitude": 40.46204955,
-      "longitude": -3.6919324599999994
+      "longitude": -3.6919324599999994,
+      "elevation_meters": 721.0
     },
     {
       "id": "2056",
       "public_code": "300",
       "name": "300 - Capitan Blanco Argibay - Alfalfa",
       "latitude": 40.4667435,
-      "longitude": -3.7031881999999996
+      "longitude": -3.7031881999999996,
+      "elevation_meters": 718.8
     },
     {
       "id": "2057",
       "public_code": "301",
       "name": "301 - Muller - Capitan Blanco Argibay",
       "latitude": 40.46518187,
-      "longitude": -3.69837565
+      "longitude": -3.69837565,
+      "elevation_meters": 723.8
     },
     {
       "id": "2080",
       "public_code": "302",
       "name": "302 - Ps. Dirección B - Pque A. Rguez Sahagún",
       "latitude": 40.4700119631765,
-      "longitude": -3.7043063693809493
+      "longitude": -3.7043063693809493,
+      "elevation_meters": 696.0
     },
     {
       "id": "2085",
       "public_code": "303",
       "name": "303 - Ps. Dirección A - Pque A. Rguez Sahagún",
       "latitude": 40.467339,
-      "longitude": -3.708215
+      "longitude": -3.708215,
+      "elevation_meters": 696.6
     },
     {
       "id": "2015",
       "public_code": "304",
       "name": "304 - Valle de Mena, 5",
       "latitude": 40.46962735,
-      "longitude": -3.7152724500000005
+      "longitude": -3.7152724500000005,
+      "elevation_meters": 656.8
     },
     {
       "id": "2019",
       "public_code": "305",
       "name": "305 - Intercambiador de Príncipe Pío B",
       "latitude": 40.42276114,
-      "longitude": -3.72317757
+      "longitude": -3.72317757,
+      "elevation_meters": 586.1
     },
     {
       "id": "2020",
       "public_code": "306",
       "name": "306 - Centro Deportivo Mpal Fernando Martín",
       "latitude": 40.4617959,
-      "longitude": -3.7121965
+      "longitude": -3.7121965,
+      "elevation_meters": 704.1
     },
     {
       "id": "2084",
       "public_code": "307",
       "name": "307 - Metro Valdezarza",
       "latitude": 40.46588016,
-      "longitude": -3.71693008
+      "longitude": -3.71693008,
+      "elevation_meters": 678.6
     },
     {
       "id": "2089",
       "public_code": "308",
       "name": "308 - María Auxiliadora - Francos Rodríguez",
       "latitude": 40.45772941,
-      "longitude": -3.7134614699999995
+      "longitude": -3.7134614699999995,
+      "elevation_meters": 713.9
     },
     {
       "id": "2088",
       "public_code": "309",
       "name": "309 - Ofelia Nieto - Villaamil",
       "latitude": 40.462051,
-      "longitude": -3.7087339999999998
+      "longitude": -3.7087339999999998,
+      "elevation_meters": 694.2
     },
     {
       "id": "2319",
       "public_code": "310",
       "name": "310 - Estación de tren de Aravaca",
       "latitude": 40.4490509,
-      "longitude": -3.7845536000000006
+      "longitude": -3.7845536000000006,
+      "elevation_meters": 636.6
     },
     {
       "id": "2320",
       "public_code": "311",
       "name": "311 - C. Universitaria - F. Geografía e Histo",
       "latitude": 40.448553,
-      "longitude": -3.7335740000000004
+      "longitude": -3.7335740000000004,
+      "elevation_meters": 628.8
     },
     {
       "id": "2317",
       "public_code": "312",
       "name": "312 - Metro Batán",
       "latitude": 40.4077495,
-      "longitude": -3.7528559
+      "longitude": -3.7528559,
+      "elevation_meters": 642.0
     },
     {
       "id": "2175",
       "public_code": "313",
       "name": "313 - Juan XXIII, 24",
       "latitude": 40.448084,
-      "longitude": -3.7169358999999997
+      "longitude": -3.7169358999999997,
+      "elevation_meters": 666.0
     },
     {
       "id": "2176",
       "public_code": "314",
       "name": "314 - Av. Valladolid - Parque de la Bombilla",
       "latitude": 40.42966,
-      "longitude": -3.73068
+      "longitude": -3.73068,
+      "elevation_meters": 585.3
     },
     {
       "id": "2177",
       "public_code": "315",
       "name": "315 - Caroli",
       "latitude": 40.45862,
-      "longitude": -3.784627
+      "longitude": -3.784627,
+      "elevation_meters": 648.1
     },
     {
       "id": "2178",
       "public_code": "316",
       "name": "316 - C. Deportivo Mpal. Ciudad De Los Poetas",
       "latitude": 40.46439687,
-      "longitude": -3.71995383
+      "longitude": -3.71995383,
+      "elevation_meters": 685.9
     },
     {
       "id": "2179",
       "public_code": "317",
       "name": "317 - Antonio Machado, 30",
       "latitude": 40.46826955,
-      "longitude": -3.7192171199999997
+      "longitude": -3.7192171199999997,
+      "elevation_meters": 669.4
     },
     {
       "id": "2329",
       "public_code": "318",
       "name": "318 - C. Deportivo Mpal. José María Cagigal",
       "latitude": 40.43205131007265,
-      "longitude": -3.7370276473602226
+      "longitude": -3.7370276473602226,
+      "elevation_meters": 588.0
     },
     {
       "id": "2255",
       "public_code": "319",
       "name": "319 - Valdesangil",
       "latitude": 40.4684218,
-      "longitude": -3.7166729
+      "longitude": -3.7166729,
+      "elevation_meters": 661.6
     },
     {
       "id": "2297",
       "public_code": "320",
       "name": "320 - Metro Lago",
       "latitude": 40.4167792,
-      "longitude": -3.7345247000000006
+      "longitude": -3.7345247000000006,
+      "elevation_meters": 604.4
     },
     {
       "id": "2318",
       "public_code": "321",
       "name": "321 - Metro Casa de Campo",
       "latitude": 40.40316,
-      "longitude": -3.7610509999999997
+      "longitude": -3.7610509999999997,
+      "elevation_meters": 653.5
     },
     {
       "id": "2007",
       "public_code": "322",
       "name": "322 - Ps. Jesuitas - Mercado Alto Extremadura",
       "latitude": 40.408,
-      "longitude": -3.7350999999999996
+      "longitude": -3.7350999999999996,
+      "elevation_meters": 619.0
     },
     {
       "id": "1998",
       "public_code": "323",
       "name": "323 - Centro Deportivo Municipal Gallur",
       "latitude": 40.3984,
-      "longitude": -3.7359
+      "longitude": -3.7359,
+      "elevation_meters": 619.9
     },
     {
       "id": "1999",
       "public_code": "324",
       "name": "324 - Metro Lucero",
       "latitude": 40.40457132475174,
-      "longitude": -3.7450961521148636
+      "longitude": -3.7450961521148636,
+      "elevation_meters": 613.5
     },
     {
       "id": "2249",
       "public_code": "325",
       "name": "325 - Ps. Jesuitas - Pza. Cerro Bermejo",
       "latitude": 40.4106918,
-      "longitude": -3.7305543000000005
+      "longitude": -3.7305543000000005,
+      "elevation_meters": 609.6
     },
     {
       "id": "2043",
       "public_code": "326",
       "name": "326 - Metro Alto de Extremadura",
       "latitude": 40.40937950320982,
-      "longitude": -3.739615781020349
+      "longitude": -3.739615781020349,
+      "elevation_meters": 637.0
     },
     {
       "id": "2044",
       "public_code": "327",
       "name": "327 - El Greco, 27 - C. Cultural El Greco",
       "latitude": 40.40741199,
-      "longitude": -3.7472615299999994
+      "longitude": -3.7472615299999994,
+      "elevation_meters": 633.8
     },
     {
       "id": "2122",
       "public_code": "328",
       "name": "328 - Cebreros, 97",
       "latitude": 40.4032379,
-      "longitude": -3.7521916999999996
+      "longitude": -3.7521916999999996,
+      "elevation_meters": 623.9
     },
     {
       "id": "2123",
       "public_code": "329",
       "name": "329 - Metro Laguna",
       "latitude": 40.3988162,
-      "longitude": -3.7444520800000003
+      "longitude": -3.7444520800000003,
+      "elevation_meters": 640.5
     },
     {
       "id": "2124",
       "public_code": "330",
       "name": "330 - Duquesa de Parcent - Marcelino Castillo",
       "latitude": 40.39500224,
-      "longitude": -3.7447281
+      "longitude": -3.7447281,
+      "elevation_meters": 640.0
     },
     {
       "id": "2125",
       "public_code": "331",
       "name": "331 - Valmojado",
       "latitude": 40.39614562368243,
-      "longitude": -3.7575378853388424
+      "longitude": -3.7575378853388424,
+      "elevation_meters": 640.9
     },
     {
       "id": "2126",
       "public_code": "332",
       "name": "332 - Los Yébenes, 159",
       "latitude": 40.39302789,
-      "longitude": -3.75181704
+      "longitude": -3.75181704,
+      "elevation_meters": 654.0
     },
     {
       "id": "2132",
       "public_code": "333",
       "name": "333 - Illescas - Camarena",
       "latitude": 40.392175,
-      "longitude": -3.7562323
+      "longitude": -3.7562323,
+      "elevation_meters": 657.0
     },
     {
       "id": "2155",
       "public_code": "334",
       "name": "334 - Metro Campamento",
       "latitude": 40.39497294,
-      "longitude": -3.76815631
+      "longitude": -3.76815631,
+      "elevation_meters": 670.0
     },
     {
       "id": "2156",
       "public_code": "335",
       "name": "335 - Cardaño, 10",
       "latitude": 40.39659757,
-      "longitude": -3.7705754100000006
+      "longitude": -3.7705754100000006,
+      "elevation_meters": 668.0
     },
     {
       "id": "2166",
       "public_code": "336",
       "name": "336 - Calle Oliva de Plasencia, 1",
       "latitude": 40.37850071,
-      "longitude": -3.7791518300000004
+      "longitude": -3.7791518300000004,
+      "elevation_meters": 682.0
     },
     {
       "id": "2167",
       "public_code": "337",
       "name": "337 - Metro Aluche",
       "latitude": 40.38614104,
-      "longitude": -3.7604892299999997
+      "longitude": -3.7604892299999997,
+      "elevation_meters": 658.2
     },
     {
       "id": "2168",
       "public_code": "338",
       "name": "338 - Guareña - Luis Chamizo",
       "latitude": 40.386362337060476,
-      "longitude": -3.7653391035306
+      "longitude": -3.7653391035306,
+      "elevation_meters": 669.0
     },
     {
       "id": "2169",
       "public_code": "339",
       "name": "339 - Estación de tren Las Águilas",
       "latitude": 40.38132642,
-      "longitude": -3.78061952
+      "longitude": -3.78061952,
+      "elevation_meters": 678.0
     },
     {
       "id": "2334",
       "public_code": "340",
       "name": "340 - Illescas - Seseña",
       "latitude": 40.3970983,
-      "longitude": -3.7656975999999998
+      "longitude": -3.7656975999999998,
+      "elevation_meters": 661.5
     },
     {
       "id": "2313",
       "public_code": "341",
       "name": "341 - Escalona - Seseña",
       "latitude": 40.39834576,
-      "longitude": -3.76182259
+      "longitude": -3.76182259,
+      "elevation_meters": 653.2
     },
     {
       "id": "2335",
       "public_code": "342",
       "name": "342 - Osa de la Vega - Rafael Finat",
       "latitude": 40.374979,
-      "longitude": -3.7733810000000005
+      "longitude": -3.7733810000000005,
+      "elevation_meters": 674.8
     },
     {
       "id": "2173",
       "public_code": "343",
       "name": "343 - Metro Aviación Española",
       "latitude": 40.38358975,
-      "longitude": -3.7833930099999997
+      "longitude": -3.7833930099999997,
+      "elevation_meters": 682.3
     },
     {
       "id": "2174",
       "public_code": "344",
       "name": "344 - Ocaña, 103",
       "latitude": 40.38586273,
-      "longitude": -3.75292035
+      "longitude": -3.75292035,
+      "elevation_meters": 665.7
     },
     {
       "id": "2180",
       "public_code": "345",
       "name": "345 - Fuente del Tiro - Avd. de las Águilas",
       "latitude": 40.38308791,
-      "longitude": -3.7798000999999997
+      "longitude": -3.7798000999999997,
+      "elevation_meters": 680.0
     },
     {
       "id": "2314",
       "public_code": "346",
       "name": "346 - Metro Empalme",
       "latitude": 40.3907438,
-      "longitude": -3.7664844
+      "longitude": -3.7664844,
+      "elevation_meters": 666.7
     },
     {
       "id": "2315",
       "public_code": "347",
       "name": "347 - Est. tren Mtra Justa Freire-Poli Aluche",
       "latitude": 40.383554,
-      "longitude": -3.7686029999999997
+      "longitude": -3.7686029999999997,
+      "elevation_meters": 671.0
     },
     {
       "id": "2186",
       "public_code": "348",
       "name": "348 - José de Cadalso - Rafael Finat",
       "latitude": 40.37959145,
-      "longitude": -3.7702477799999996
+      "longitude": -3.7702477799999996,
+      "elevation_meters": 674.0
     },
     {
       "id": "2290",
       "public_code": "349",
       "name": "349 - Huerta de Castañeda 26",
       "latitude": 40.40622095698234,
-      "longitude": -3.74201882097404
+      "longitude": -3.74201882097404,
+      "elevation_meters": 617.5
     },
     {
       "id": "1988",
       "public_code": "350",
       "name": "350 - Ervigio - Amalarico",
       "latitude": 40.3947,
-      "longitude": -3.7315
+      "longitude": -3.7315,
+      "elevation_meters": 624.1
     },
     {
       "id": "1987",
       "public_code": "351",
       "name": "351 - Comandante Fontanes - General Ricardos",
       "latitude": 40.3951415,
-      "longitude": -3.7211209
+      "longitude": -3.7211209,
+      "elevation_meters": 594.9
     },
     {
       "id": "2005",
       "public_code": "352",
       "name": "352 - Algorta  - General Ricardos",
       "latitude": 40.39162261454714,
-      "longitude": -3.72745169
+      "longitude": -3.72745169,
+      "elevation_meters": 618.0
     },
     {
       "id": "2041",
       "public_code": "353",
       "name": "353 - Mercedes Arteaga, 21",
       "latitude": 40.39251608002938,
-      "longitude": -3.7222175704754585
+      "longitude": -3.7222175704754585,
+      "elevation_meters": 612.0
     },
     {
       "id": "2328",
       "public_code": "354",
       "name": "354 - Jacinto Verdaguer - Lola de Membrives",
       "latitude": 40.39593854704345,
-      "longitude": -3.7160526116262793
+      "longitude": -3.7160526116262793,
+      "elevation_meters": 586.5
     },
     {
       "id": "2042",
       "public_code": "355",
       "name": "355 - Intercambiador de Plaza Elíptica",
       "latitude": 40.3854641,
-      "longitude": -3.7182338
+      "longitude": -3.7182338,
+      "elevation_meters": 604.0
     },
     {
       "id": "2048",
       "public_code": "356",
       "name": "356 - Portalegre - Tinamús",
       "latitude": 40.38937686,
-      "longitude": -3.72364769
+      "longitude": -3.72364769,
+      "elevation_meters": 616.3
     },
     {
       "id": "2070",
       "public_code": "357",
       "name": "357 - Sorbe - Baleares",
       "latitude": 40.3898701,
-      "longitude": -3.7132091699999994
+      "longitude": -3.7132091699999994,
+      "elevation_meters": 593.0
     },
     {
       "id": "2004",
       "public_code": "358",
       "name": "358 - Verdad",
       "latitude": 40.391787,
-      "longitude": -3.7171600000000002
+      "longitude": -3.7171600000000002,
+      "elevation_meters": 603.1
     },
     {
       "id": "2096",
       "public_code": "359",
       "name": "359 - El Toboso - Zaida",
       "latitude": 40.3929901,
-      "longitude": -3.7363397
+      "longitude": -3.7363397,
+      "elevation_meters": 627.0
     },
     {
       "id": "2097",
       "public_code": "360",
       "name": "360 - Ntra. Sra. Fátima - Ntra. Sra. de Luz",
       "latitude": 40.3840155,
-      "longitude": -3.7470882000000003
+      "longitude": -3.7470882000000003,
+      "elevation_meters": 643.0
     },
     {
       "id": "2098",
       "public_code": "361",
       "name": "361 - Metro Pan Bendito",
       "latitude": 40.37734672,
-      "longitude": -3.73266666
+      "longitude": -3.73266666,
+      "elevation_meters": 612.0
     },
     {
       "id": "2102",
       "public_code": "362",
       "name": "362 - Hilario Herranz Establos, 36",
       "latitude": 40.372839,
-      "longitude": -3.7266379999999995
+      "longitude": -3.7266379999999995,
+      "elevation_meters": 604.0
     },
     {
       "id": "2127",
       "public_code": "363",
       "name": "363 - Metro Oporto",
       "latitude": 40.38745087,
-      "longitude": -3.72987333
+      "longitude": -3.72987333,
+      "elevation_meters": 617.2
     },
     {
       "id": "2128",
       "public_code": "364",
       "name": "364 - Metro Opañel",
       "latitude": 40.38550735,
-      "longitude": -3.7237806400000006
+      "longitude": -3.7237806400000006,
+      "elevation_meters": 612.0
     },
     {
       "id": "2133",
       "public_code": "365",
       "name": "365 - Palacio Vistalegre Arena",
       "latitude": 40.38537202,
-      "longitude": -3.7372590799999994
+      "longitude": -3.7372590799999994,
+      "elevation_meters": 630.0
     },
     {
       "id": "2134",
       "public_code": "366",
       "name": "366 - Metro Carabanchel",
       "latitude": 40.387737,
-      "longitude": -3.7445210000000007
+      "longitude": -3.7445210000000007,
+      "elevation_meters": 644.4
     },
     {
       "id": "2248",
       "public_code": "367",
       "name": "367 - Metro San Francisco",
       "latitude": 40.373972,
-      "longitude": -3.7398400000000005
+      "longitude": -3.7398400000000005,
+      "elevation_meters": 627.3
     },
     {
       "id": "2139",
       "public_code": "368",
       "name": "368 - Eugenia de Montijo",
       "latitude": 40.3791024,
-      "longitude": -3.7470606799999997
+      "longitude": -3.7470606799999997,
+      "elevation_meters": 636.4
     },
     {
       "id": "2140",
       "public_code": "369",
       "name": "369 - Junta Municipal Distrito de Carabanchel",
       "latitude": 40.37982574184008,
-      "longitude": -3.7418245988113408
+      "longitude": -3.7418245988113408,
+      "elevation_meters": 627.6
     },
     {
       "id": "2141",
       "public_code": "370",
       "name": "370 - Avefría - Plaza de Tarifa",
       "latitude": 40.38386939,
-      "longitude": -3.7308024999999994
+      "longitude": -3.7308024999999994,
+      "elevation_meters": 618.8
     },
     {
       "id": "2145",
       "public_code": "371",
       "name": "371 - Joaquin Turina, 49",
       "latitude": 40.372458,
-      "longitude": -3.7618199999999997
+      "longitude": -3.7618199999999997,
+      "elevation_meters": 673.0
     },
     {
       "id": "2146",
       "public_code": "372",
       "name": "372 - Lonja de la Seda, 33",
       "latitude": 40.36612215,
-      "longitude": -3.76158263
+      "longitude": -3.76158263,
+      "elevation_meters": 679.0
     },
     {
       "id": "2147",
       "public_code": "373",
       "name": "373 - Metro La Peseta",
       "latitude": 40.36277848,
-      "longitude": -3.75787005
+      "longitude": -3.75787005,
+      "elevation_meters": 668.4
     },
     {
       "id": "2148",
       "public_code": "374",
       "name": "374 - Dinero - La Peseta",
       "latitude": 40.3625707,
-      "longitude": -3.7501466
+      "longitude": -3.7501466,
+      "elevation_meters": 658.1
     },
     {
       "id": "2149",
       "public_code": "375",
       "name": "375 - Calderilla, 4",
       "latitude": 40.36521132,
-      "longitude": -3.7385111400000004
+      "longitude": -3.7385111400000004,
+      "elevation_meters": 624.7
     },
     {
       "id": "2152",
       "public_code": "376",
       "name": "376 - Metro Carpetana",
       "latitude": 40.39229225,
-      "longitude": -3.7405438000000006
+      "longitude": -3.7405438000000006,
+      "elevation_meters": 638.0
     },
     {
       "id": "2153",
       "public_code": "377",
       "name": "377 - Metro Abrantes",
       "latitude": 40.38091762,
-      "longitude": -3.72783615
+      "longitude": -3.72783615,
+      "elevation_meters": 611.0
     },
     {
       "id": "2158",
       "public_code": "378",
       "name": "378 - Eugenia de Montijo, 83",
       "latitude": 40.37562288,
-      "longitude": -3.7509732999999996
+      "longitude": -3.7509732999999996,
+      "elevation_meters": 652.1
     },
     {
       "id": "2159",
       "public_code": "379",
       "name": "379 - Antonia Rodríguez Sacristán - Valeriana",
       "latitude": 40.37313777,
-      "longitude": -3.74765739
+      "longitude": -3.74765739,
+      "elevation_meters": 663.5
     },
     {
       "id": "2326",
       "public_code": "380",
       "name": "380 - Oca",
       "latitude": 40.3894333,
-      "longitude": -3.7335492000000006
+      "longitude": -3.7335492000000006,
+      "elevation_meters": 624.7
     },
     {
       "id": "2337",
       "public_code": "381",
       "name": "381 - Alfredo Aleix - Mercedes Rodríguez",
       "latitude": 40.3684767,
-      "longitude": -3.7553916
+      "longitude": -3.7553916,
+      "elevation_meters": 678.4
     },
     {
       "id": "2252",
       "public_code": "382",
       "name": "382 -Parque Eugenia de Montijo, 2",
       "latitude": 40.3783501,
-      "longitude": -3.7545821999999998
+      "longitude": -3.7545821999999998,
+      "elevation_meters": 656.0
     },
     {
       "id": "1955",
       "public_code": "383",
       "name": "383 - Metro San Fermín-Orcasur",
       "latitude": 40.3700017,
-      "longitude": -3.6939702000000003
+      "longitude": -3.6939702000000003,
+      "elevation_meters": 586.0
     },
     {
       "id": "1951",
       "public_code": "384",
       "name": "384 - Metro Usera",
       "latitude": 40.38707469,
-      "longitude": -3.7061449
+      "longitude": -3.7061449,
+      "elevation_meters": 601.0
     },
     {
       "id": "1953",
       "public_code": "385",
       "name": "385 - Estación de tren Orcasitas",
       "latitude": 40.36721104,
-      "longitude": -3.7038867099999995
+      "longitude": -3.7038867099999995,
+      "elevation_meters": 590.0
     },
     {
       "id": "1956",
       "public_code": "386",
       "name": "386 - Avenida de los Poblados, 130",
       "latitude": 40.37347443,
-      "longitude": -3.7133152099999998
+      "longitude": -3.7133152099999998,
+      "elevation_meters": 591.7
     },
     {
       "id": "1954",
       "public_code": "387",
       "name": "387 - Isabelita Usera, 44",
       "latitude": 40.38272256,
-      "longitude": -3.7077397199999997
+      "longitude": -3.7077397199999997,
+      "elevation_meters": 607.1
     },
     {
       "id": "1952",
       "public_code": "388",
       "name": "388 - Estación tren - Hospital 12 de Octubre",
       "latitude": 40.37837955,
-      "longitude": -3.7004147799999996
+      "longitude": -3.7004147799999996,
+      "elevation_meters": 582.9
     },
     {
       "id": "1989",
       "public_code": "389",
       "name": "389 - Julio Merino - Pilarica",
       "latitude": 40.3831,
-      "longitude": -3.7032
+      "longitude": -3.7032,
+      "elevation_meters": 593.0
     },
     {
       "id": "1990",
       "public_code": "390",
       "name": "390 - Avena - Mijo",
       "latitude": 40.3773,
-      "longitude": -3.7159000000000004
+      "longitude": -3.7159000000000004,
+      "elevation_meters": 606.6
     },
     {
       "id": "2207",
       "public_code": "391",
       "name": "391 - Junta Municipal Distrito de Usera",
       "latitude": 40.3817026328731,
-      "longitude": -3.711296220901499
+      "longitude": -3.711296220901499,
+      "elevation_meters": 601.4
     },
     {
       "id": "2008",
       "public_code": "392",
       "name": "392 - Metro Almendrales",
       "latitude": 40.38268,
-      "longitude": -3.697856
+      "longitude": -3.697856,
+      "elevation_meters": 580.7
     },
     {
       "id": "2033",
       "public_code": "393",
       "name": "393 - Manuel Noya , 29",
       "latitude": 40.3853787,
-      "longitude": -3.7117979
+      "longitude": -3.7117979,
+      "elevation_meters": 611.8
     },
     {
       "id": "2060",
       "public_code": "394",
       "name": "394 - Periana, 24",
       "latitude": 40.36672327,
-      "longitude": -3.6876580500000005
+      "longitude": -3.6876580500000005,
+      "elevation_meters": 571.0
     },
     {
       "id": "2226",
       "public_code": "395",
       "name": "395 - Guetaria, 84B",
       "latitude": 40.36916772,
-      "longitude": -3.71569102
+      "longitude": -3.71569102,
+      "elevation_meters": 604.0
     },
     {
       "id": "2059",
       "public_code": "396",
       "name": "396 - Gran Avenida, 27",
       "latitude": 40.36997711,
-      "longitude": -3.70760649
+      "longitude": -3.70760649,
+      "elevation_meters": 599.0
     },
     {
       "id": "2061",
       "public_code": "397",
       "name": "397 - Centro Deportivo Municipal Orcasur",
       "latitude": 40.36809336,
-      "longitude": -3.6983803799999997
+      "longitude": -3.6983803799999997,
+      "elevation_meters": 594.2
     },
     {
       "id": "2012",
       "public_code": "398",
       "name": "398 - Orovilla - Felicidad",
       "latitude": 40.3587,
-      "longitude": -3.6895
+      "longitude": -3.6895,
+      "elevation_meters": 587.5
     },
     {
       "id": "2062",
       "public_code": "399",
       "name": "399 - Bohemios - Gigantes y Cabezudos",
       "latitude": 40.356536,
-      "longitude": -3.6939009999999994
+      "longitude": -3.6939009999999994,
+      "elevation_meters": 598.0
     },
     {
       "id": "2083",
       "public_code": "400",
       "name": "400 - Metro Ciudad de los Ángeles",
       "latitude": 40.36064659,
-      "longitude": -3.69399661
+      "longitude": -3.69399661,
+      "elevation_meters": 599.0
     },
     {
       "id": "2244",
       "public_code": "401",
       "name": "401 - Estación de tren de Villaverde Bajo",
       "latitude": 40.353285,
-      "longitude": -3.6831269999999994
+      "longitude": -3.6831269999999994,
+      "elevation_meters": 573.8
     },
     {
       "id": "2302",
       "public_code": "402",
       "name": "402 - Berrocal, 9",
       "latitude": 40.344115,
-      "longitude": -3.67615
+      "longitude": -3.67615,
+      "elevation_meters": 577.9
     },
     {
       "id": "2246",
       "public_code": "403",
       "name": "403 - Auñón, 16",
       "latitude": 40.3504944,
-      "longitude": -3.6775241999999997
+      "longitude": -3.6775241999999997,
+      "elevation_meters": 564.8
     },
     {
       "id": "2040",
       "public_code": "404",
       "name": "404 - Junta Municipal Distrito de Villaverde",
       "latitude": 40.349111,
-      "longitude": -3.7109850000000004
+      "longitude": -3.7109850000000004,
+      "elevation_meters": 592.0
     },
     {
       "id": "2243",
       "public_code": "405",
       "name": "405 - Paseo Alberto Palacios, 42",
       "latitude": 40.3449259916087,
-      "longitude": -3.7129039644180377
+      "longitude": -3.7129039644180377,
+      "elevation_meters": 596.0
     },
     {
       "id": "2245",
       "public_code": "406",
       "name": "406 - La Nave de Madrid",
       "latitude": 40.3486,
-      "longitude": -3.6960817
+      "longitude": -3.6960817,
+      "elevation_meters": 584.9
     },
     {
       "id": "2332",
       "public_code": "407",
       "name": "407 - Carmen de Burgos, 4",
       "latitude": 40.3575459,
-      "longitude": -3.6847883
+      "longitude": -3.6847883,
+      "elevation_meters": 575.0
     },
     {
       "id": "2287",
       "public_code": "408",
       "name": "408 - Metro San Cristóbal",
       "latitude": 40.341725,
-      "longitude": -3.692444
+      "longitude": -3.692444,
+      "elevation_meters": 591.1
     },
     {
       "id": "2288",
       "public_code": "409",
       "name": "409 - Eduardo Barreiros, 114",
       "latitude": 40.3553495,
-      "longitude": -3.7046436000000003
+      "longitude": -3.7046436000000003,
+      "elevation_meters": 597.4
     },
     {
       "id": "2254",
       "public_code": "410",
       "name": "410 - Est. de tren de S. Cristóbal Industrial",
       "latitude": 40.3325463,
-      "longitude": -3.6992665
+      "longitude": -3.6992665,
+      "elevation_meters": 603.0
     },
     {
       "id": "2327",
       "public_code": "411",
       "name": "411 - Estación de tren de Villaverde Alto",
       "latitude": 40.3417533,
-      "longitude": -3.7118182999999996
+      "longitude": -3.7118182999999996,
+      "elevation_meters": 602.1
     },
     {
       "id": "2278",
       "public_code": "412",
       "name": "412 - Estación de tren de Puente de Alcocer",
       "latitude": 40.3500291,
-      "longitude": -3.7043083000000006
+      "longitude": -3.7043083000000006,
+      "elevation_meters": 590.0
     },
     {
       "id": "2280",
       "public_code": "413",
       "name": "413 - Doctor Martín Arévalo",
       "latitude": 40.345928,
-      "longitude": -3.707413
+      "longitude": -3.707413,
+      "elevation_meters": 592.0
     },
     {
       "id": "2325",
       "public_code": "414",
       "name": "414 - Metro Villaverde Bajo-Cruce",
       "latitude": 40.350985,
-      "longitude": -3.692163
+      "longitude": -3.692163,
+      "elevation_meters": 589.0
     },
     {
       "id": "2279",
       "public_code": "415",
       "name": "415 - Diamante - Delmira Agustini",
       "latitude": 40.3532609,
-      "longitude": -3.6877534
+      "longitude": -3.6877534,
+      "elevation_meters": 582.0
     },
     {
       "id": "1977",
       "public_code": "416",
       "name": "416 - Ramírez Tomé",
       "latitude": 40.38875618103898,
-      "longitude": -3.645973936176305
+      "longitude": -3.645973936176305,
+      "elevation_meters": 675.1
     },
     {
       "id": "1978",
       "public_code": "417",
       "name": "417 - Romeo y Julieta, 13",
       "latitude": 40.37873799,
-      "longitude": -3.6621756300000006
+      "longitude": -3.6621756300000006,
+      "elevation_meters": 627.0
     },
     {
       "id": "1979",
       "public_code": "418",
       "name": "418 - Puerto de Arlabán - San Diego",
       "latitude": 40.3864,
-      "longitude": -3.6674999999999995
+      "longitude": -3.6674999999999995,
+      "elevation_meters": 613.0
     },
     {
       "id": "2010",
       "public_code": "419",
       "name": "419 - Estación de tren de El Pozo",
       "latitude": 40.3762374,
-      "longitude": -3.655868
+      "longitude": -3.655868,
+      "elevation_meters": 622.7
     },
     {
       "id": "2009",
       "public_code": "420",
       "name": "420 - Candilejas, 5",
       "latitude": 40.38263599,
-      "longitude": -3.6630038299999996
+      "longitude": -3.6630038299999996,
+      "elevation_meters": 628.1
     },
     {
       "id": "2024",
       "public_code": "421",
       "name": "421 - Arroyo del Olivar - Buenos Aires",
       "latitude": 40.388435,
-      "longitude": -3.653269
+      "longitude": -3.653269,
+      "elevation_meters": 670.4
     },
     {
       "id": "2026",
       "public_code": "422",
       "name": "422 - Travesia de Palomeras, 7",
       "latitude": 40.39017003,
-      "longitude": -3.6705179
+      "longitude": -3.6705179,
+      "elevation_meters": 602.7
     },
     {
       "id": "2027",
       "public_code": "423",
       "name": "423 - Estación de tren Asamblea de Madrid",
       "latitude": 40.38138801,
-      "longitude": -3.6685501300000003
+      "longitude": -3.6685501300000003,
+      "elevation_meters": 620.5
     },
     {
       "id": "2028",
       "public_code": "424",
       "name": "424 - Camino de Valderribas, 47",
       "latitude": 40.4002231,
-      "longitude": -3.663958
+      "longitude": -3.663958,
+      "elevation_meters": 615.1
     },
     {
       "id": "2029",
       "public_code": "425",
       "name": "425 - Ramón Perez Ayala - Pque. Cerro Tío Pío",
       "latitude": 40.40003472,
-      "longitude": -3.65381017
+      "longitude": -3.65381017,
+      "elevation_meters": 665.1
     },
     {
       "id": "2030",
       "public_code": "426",
       "name": "426 - Humanes - Benjamín Palencia",
       "latitude": 40.3952121,
-      "longitude": -3.64932678
+      "longitude": -3.64932678,
+      "elevation_meters": 678.0
     },
     {
       "id": "2031",
       "public_code": "427",
       "name": "427 - Andaluces, 2",
       "latitude": 40.3914244,
-      "longitude": -3.64148304
+      "longitude": -3.64148304,
+      "elevation_meters": 676.0
     },
     {
       "id": "2032",
       "public_code": "428",
       "name": "428 - Estadio de Vallecas",
       "latitude": 40.3919,
-      "longitude": -3.6570999999999994
+      "longitude": -3.6570999999999994,
+      "elevation_meters": 646.9
     },
     {
       "id": "2069",
       "public_code": "429",
       "name": "429 - Carlos M. Alvarez - Javier de Miguel",
       "latitude": 40.3895,
-      "longitude": -3.6635
+      "longitude": -3.6635,
+      "elevation_meters": 627.6
     },
     {
       "id": "2063",
       "public_code": "430",
       "name": "430 - Torremolinos - Rafael Alberti",
       "latitude": 40.38500948,
-      "longitude": -3.6417899899999995
+      "longitude": -3.6417899899999995,
+      "elevation_meters": 654.7
     },
     {
       "id": "2068",
       "public_code": "431",
       "name": "431 - Puerto Canfranc, 18",
       "latitude": 40.3969,
-      "longitude": -3.6634
+      "longitude": -3.6634,
+      "elevation_meters": 617.0
     },
     {
       "id": "2001",
       "public_code": "432",
       "name": "432 - Maquinilla - Tranvía Blanco",
       "latitude": 40.38071154157505,
-      "longitude": -3.63660359830116
+      "longitude": -3.63660359830116,
+      "elevation_meters": 641.2
     },
     {
       "id": "2073",
       "public_code": "433",
       "name": "433 - Villalobos, 28",
       "latitude": 40.38161669,
-      "longitude": -3.6507603700000004
+      "longitude": -3.6507603700000004,
+      "elevation_meters": 647.3
     },
     {
       "id": "2075",
       "public_code": "434",
       "name": "434 - Charleroi - Cocherón de la Villa",
       "latitude": 40.38191654,
-      "longitude": -3.6321937200000005
+      "longitude": -3.6321937200000005,
+      "elevation_meters": 639.2
     },
     {
       "id": "2078",
       "public_code": "435",
       "name": "435 - San Claudio",
       "latitude": 40.38902883,
-      "longitude": -3.63953994
+      "longitude": -3.63953994,
+      "elevation_meters": 672.1
     },
     {
       "id": "2074",
       "public_code": "436",
       "name": "436 - Campus Sur UPM",
       "latitude": 40.3901675,
-      "longitude": -3.62713659
+      "longitude": -3.62713659,
+      "elevation_meters": 643.5
     },
     {
       "id": "2003",
       "public_code": "437",
       "name": "437 - Metro Sierra de Guadalupe",
       "latitude": 40.38135158,
-      "longitude": -3.6237645700000005
+      "longitude": -3.6237645700000005,
+      "elevation_meters": 628.0
     },
     {
       "id": "2187",
       "public_code": "438",
       "name": "438 - Biblioteca Pública Luis Martín Santos",
       "latitude": 40.3804482,
-      "longitude": -3.6140607000000005
+      "longitude": -3.6140607000000005,
+      "elevation_meters": 636.7
     },
     {
       "id": "2011",
       "public_code": "439",
       "name": "439 - Cabeza Mesada - Parque de Valdeperdices",
       "latitude": 40.37647902,
-      "longitude": -3.6294129999999996
+      "longitude": -3.6294129999999996,
+      "elevation_meters": 622.7
     },
     {
       "id": "2053",
       "public_code": "440",
       "name": "440 - Metro Villa de Vallecas",
       "latitude": 40.3795035,
-      "longitude": -3.62144691
+      "longitude": -3.62144691,
+      "elevation_meters": 625.0
     },
     {
       "id": "2099",
       "public_code": "441",
       "name": "441 - Estación de tren de Santa Eugenia",
       "latitude": 40.38600753,
-      "longitude": -3.6094815299999996
+      "longitude": -3.6094815299999996,
+      "elevation_meters": 648.0
     },
     {
       "id": "2100",
       "public_code": "442",
       "name": "442 - Santa Eugenia - Zazuar",
       "latitude": 40.38305936,
-      "longitude": -3.60463
+      "longitude": -3.60463,
+      "elevation_meters": 664.7
     },
     {
       "id": "2101",
       "public_code": "443",
       "name": "443 - Fuentespina, 33",
       "latitude": 40.37941487,
-      "longitude": -3.6072475500000003
+      "longitude": -3.6072475500000003,
+      "elevation_meters": 651.4
     },
     {
       "id": "2339",
       "public_code": "444",
       "name": "444 - Valderrebollo, 18",
       "latitude": 40.3743481,
-      "longitude": -3.6276352
+      "longitude": -3.6276352,
+      "elevation_meters": 623.3
     },
     {
       "id": "2171",
       "public_code": "445",
       "name": "445 - C. Deportivo Mpal. Juan de Dios Román",
       "latitude": 40.36334587,
-      "longitude": -3.6050356400000005
+      "longitude": -3.6050356400000005,
+      "elevation_meters": 636.8
     },
     {
       "id": "2251",
       "public_code": "446",
       "name": "446 - C. Deportivo Mpal. Miguel Guillén Prim",
       "latitude": 40.373826,
-      "longitude": -3.6236297000000004
+      "longitude": -3.6236297000000004,
+      "elevation_meters": 619.0
     },
     {
       "id": "2276",
       "public_code": "447",
       "name": "447 - Adolfo Bioy Casares - Las Suertes",
       "latitude": 40.3668504,
-      "longitude": -3.5981935
+      "longitude": -3.5981935,
+      "elevation_meters": 648.4
     },
     {
       "id": "2340",
       "public_code": "448",
       "name": "448 - Metro Las Suertes",
       "latitude": 40.363376,
-      "longitude": -3.5993520000000006
+      "longitude": -3.5993520000000006,
+      "elevation_meters": 641.9
     },
     {
       "id": "2182",
       "public_code": "449",
       "name": "449 - Metro Congosto",
       "latitude": 40.37286701,
-      "longitude": -3.6186910599999997
+      "longitude": -3.6186910599999997,
+      "elevation_meters": 624.0
     },
     {
       "id": "2183",
       "public_code": "450",
       "name": "450 - Camino de las Hormigueras, 161",
       "latitude": 40.3762555,
-      "longitude": -3.6370762
+      "longitude": -3.6370762,
+      "elevation_meters": 621.9
     },
     {
       "id": "2188",
       "public_code": "451",
       "name": "451 -  La Granja de San Ildefonso, 14",
       "latitude": 40.36813427,
-      "longitude": -3.62283116
+      "longitude": -3.62283116,
+      "elevation_meters": 616.1
     },
     {
       "id": "2189",
       "public_code": "452",
       "name": "452 - Las Suertes, 15",
       "latitude": 40.3713613,
-      "longitude": -3.6078539000000003
+      "longitude": -3.6078539000000003,
+      "elevation_meters": 636.2
     },
     {
       "id": "2190",
       "public_code": "453",
       "name": "453 - Metro La Gavia",
       "latitude": 40.37043968,
-      "longitude": -3.61253028
+      "longitude": -3.61253028,
+      "elevation_meters": 627.5
     },
     {
       "id": "2191",
       "public_code": "454",
       "name": "454 - Gran Vía del Sureste - Las Suertes",
       "latitude": 40.3631604,
-      "longitude": -3.5897045000000003
+      "longitude": -3.5897045000000003,
+      "elevation_meters": 647.0
     },
     {
       "id": "1975",
       "public_code": "455",
       "name": "455 - Luis de Hoyos Sainz,  198",
       "latitude": 40.400094,
-      "longitude": -3.6292746499999997
+      "longitude": -3.6292746499999997,
+      "elevation_meters": 676.0
     },
     {
       "id": "1976",
       "public_code": "456",
       "name": "456 - Encomienda de Palacios, 8",
       "latitude": 40.4005,
-      "longitude": -3.6464000000000003
+      "longitude": -3.6464000000000003,
+      "elevation_meters": 667.3
     },
     {
       "id": "2000",
       "public_code": "457",
       "name": "457 - Hacienda de Pavones, 148",
       "latitude": 40.4026,
-      "longitude": -3.6419
+      "longitude": -3.6419,
+      "elevation_meters": 682.0
     },
     {
       "id": "2045",
       "public_code": "458",
       "name": "458 - Metro Vinateros",
       "latitude": 40.40991083,
-      "longitude": -3.6525660400000004
+      "longitude": -3.6525660400000004,
+      "elevation_meters": 647.1
     },
     {
       "id": "2046",
       "public_code": "459",
       "name": "459 - Moratalaz",
       "latitude": 40.40750626,
-      "longitude": -3.66000272
+      "longitude": -3.66000272,
+      "elevation_meters": 623.4
     },
     {
       "id": "1974",
       "public_code": "460",
       "name": "460 - Fuente Carrantona - Doctor García Tapia",
       "latitude": 40.4070216,
-      "longitude": -3.63192261
+      "longitude": -3.63192261,
+      "elevation_meters": 690.7
     },
     {
       "id": "2047",
       "public_code": "461",
       "name": "461 - Plaza Corregidor Ldo. Antonio de Mena",
       "latitude": 40.4099,
-      "longitude": -3.6408
+      "longitude": -3.6408,
+      "elevation_meters": 677.0
     },
     {
       "id": "2023",
       "public_code": "462",
       "name": "462 - Gallegos - Lavadero Viejo",
       "latitude": 40.40240379,
-      "longitude": -3.6102747000000006
+      "longitude": -3.6102747000000006,
+      "elevation_meters": 671.4
     },
     {
       "id": "2081",
       "public_code": "463",
       "name": "463 - Casalarreina, 18",
       "latitude": 40.40939089860396,
-      "longitude": -3.612318798052458
+      "longitude": -3.612318798052458,
+      "elevation_meters": 692.1
     },
     {
       "id": "2082",
       "public_code": "464",
       "name": "464 - Univ. Rey Juan Carlos - Campus Madrid",
       "latitude": 40.40634029,
-      "longitude": -3.61283416
+      "longitude": -3.61283416,
+      "elevation_meters": 691.0
     },
     {
       "id": "2324",
       "public_code": "465",
       "name": "465 - Cordel de Pavones - Bulevar José Prat",
       "latitude": 40.397375,
-      "longitude": -3.619645
+      "longitude": -3.619645,
+      "elevation_meters": 680.0
     },
     {
       "id": "2266",
       "public_code": "466",
       "name": "466 - Villablanca - Vereda del Pinar",
       "latitude": 40.40894698,
-      "longitude": -3.6078326500000006
+      "longitude": -3.6078326500000006,
+      "elevation_meters": 684.2
     },
     {
       "id": "2261",
       "public_code": "467",
       "name": "467 - Univ. Rey Juan Carlos - Facultad  CJS",
       "latitude": 40.4062361,
-      "longitude": -3.6084888
+      "longitude": -3.6084888,
+      "elevation_meters": 683.8
     },
     {
       "id": "2323",
       "public_code": "468",
       "name": "468 - Caños de San Pedro - San Cipriano",
       "latitude": 40.403472,
-      "longitude": -3.6019220000000005
+      "longitude": -3.6019220000000005,
+      "elevation_meters": 675.2
     },
     {
       "id": "2262",
       "public_code": "469",
       "name": "469 - C. Deportivo Mpal Faustina Valladolid",
       "latitude": 40.40343,
-      "longitude": -3.6229899999999997
+      "longitude": -3.6229899999999997,
+      "elevation_meters": 691.9
     },
     {
       "id": "2263",
       "public_code": "470",
       "name": "470 - Avenida Real - Galeote",
       "latitude": 40.4021519,
-      "longitude": -3.6063672000000007
+      "longitude": -3.6063672000000007,
+      "elevation_meters": 681.5
     },
     {
       "id": "2264",
       "public_code": "471",
       "name": "471 - Molino Viejo - Minerva",
       "latitude": 40.396301,
-      "longitude": -3.60666
+      "longitude": -3.60666,
+      "elevation_meters": 670.9
     },
     {
       "id": "2341",
       "public_code": "472",
       "name": "472 - Metro Valdebernardo",
       "latitude": 40.3987974,
-      "longitude": -3.6211484999999994
+      "longitude": -3.6211484999999994,
+      "elevation_meters": 683.5
     },
     {
       "id": "2342",
       "public_code": "473",
       "name": "473 - Villablanca - Parque Forestal Vicálvaro",
       "latitude": 40.40500033,
-      "longitude": -3.59888007
+      "longitude": -3.59888007,
+      "elevation_meters": 672.6
     },
     {
       "id": "2343",
       "public_code": "474",
       "name": "474 - Estación de tren de Vicálvaro",
       "latitude": 40.402255,
-      "longitude": -3.596875
+      "longitude": -3.596875,
+      "elevation_meters": 652.0
     },
     {
       "id": "2268",
       "public_code": "475",
       "name": "475 - Aurora Boreal - Minerva",
       "latitude": 40.399236,
-      "longitude": -3.603668
+      "longitude": -3.603668,
+      "elevation_meters": 657.0
     },
     {
       "id": "1957",
       "public_code": "476",
       "name": "476 - Metro Avenida de la Paz",
       "latitude": 40.453493,
-      "longitude": -3.662016
+      "longitude": -3.662016,
+      "elevation_meters": 690.3
     },
     {
       "id": "1958",
       "public_code": "477",
       "name": "477 - Metro Ciudad Lineal",
       "latitude": 40.438278,
-      "longitude": -3.6389040000000006
+      "longitude": -3.6389040000000006,
+      "elevation_meters": 697.0
     },
     {
       "id": "1959",
       "public_code": "478",
       "name": "478 - José del Hierro - Misterios",
       "latitude": 40.44152084,
-      "longitude": -3.6410572000000005
+      "longitude": -3.6410572000000005,
+      "elevation_meters": 695.2
     },
     {
       "id": "1960",
       "public_code": "479",
       "name": "479 - Metro Arturo Soria",
       "latitude": 40.45478362295884,
-      "longitude": -3.655837131282797
+      "longitude": -3.655837131282797,
+      "elevation_meters": 705.6
     },
     {
       "id": "1961",
       "public_code": "480",
       "name": "480 - Vicente Muzas - Arturo Soria",
       "latitude": 40.45903315,
-      "longitude": -3.6604425500000004
+      "longitude": -3.6604425500000004,
+      "elevation_meters": 702.2
     },
     {
       "id": "1962",
       "public_code": "481",
       "name": "481 - Diego Ayllón - Arturo Soria",
       "latitude": 40.45117857,
-      "longitude": -3.6521906299999998
+      "longitude": -3.6521906299999998,
+      "elevation_meters": 708.0
     },
     {
       "id": "1965",
       "public_code": "482",
       "name": "482 - Metro Pueblo Nuevo",
       "latitude": 40.4356873,
-      "longitude": -3.6423386
+      "longitude": -3.6423386,
+      "elevation_meters": 691.3
     },
     {
       "id": "1966",
       "public_code": "483",
       "name": "483 - Marcelino Álvarez - Daroca",
       "latitude": 40.4297428,
-      "longitude": -3.6534324
+      "longitude": -3.6534324,
+      "elevation_meters": 678.0
     },
     {
       "id": "1967",
       "public_code": "484",
       "name": "484 - Metro García Noblejas",
       "latitude": 40.42893071,
-      "longitude": -3.6323890000000003
+      "longitude": -3.6323890000000003,
+      "elevation_meters": 685.0
     },
     {
       "id": "1993",
       "public_code": "485",
       "name": "485 - Francisco Villaespesa - Ledesma",
       "latitude": 40.4293263,
-      "longitude": -3.6464629
+      "longitude": -3.6464629,
+      "elevation_meters": 666.5
     },
     {
       "id": "2021",
       "public_code": "486",
       "name": "486 - Serrano Galvache - Arturo Soria",
       "latitude": 40.471382,
-      "longitude": -3.6679379
+      "longitude": -3.6679379,
+      "elevation_meters": 719.2
     },
     {
       "id": "2025",
       "public_code": "487",
       "name": "487 - Manuel Uribe - Arturo Soria",
       "latitude": 40.46434131,
-      "longitude": -3.66503419
+      "longitude": -3.66503419,
+      "elevation_meters": 703.0
     },
     {
       "id": "2036",
       "public_code": "488",
       "name": "488 - Ricardo Ortiz, 33",
       "latitude": 40.42657032,
-      "longitude": -3.6579643900000005
+      "longitude": -3.6579643900000005,
+      "elevation_meters": 653.7
     },
     {
       "id": "2034",
       "public_code": "489",
       "name": "489 - Serrano Galvache - Yerma",
       "latitude": 40.47675257,
-      "longitude": -3.67144504
+      "longitude": -3.67144504,
+      "elevation_meters": 731.6
     },
     {
       "id": "2035",
       "public_code": "490",
       "name": "490 - Hnos.García Noblejas-FcoLargo Caballero",
       "latitude": 40.42427523,
-      "longitude": -3.62888094
+      "longitude": -3.62888094,
+      "elevation_meters": 694.0
     },
     {
       "id": "2065",
       "public_code": "491",
       "name": "491 - Esteban Collantes - José Arcones Gil",
       "latitude": 40.432883,
-      "longitude": -3.6376629999999994
+      "longitude": -3.6376629999999994,
+      "elevation_meters": 690.8
     },
     {
       "id": "2006",
       "public_code": "492",
       "name": "492 - Metro La Almudena",
       "latitude": 40.42466356,
-      "longitude": -3.6394989099999995
+      "longitude": -3.6394989099999995,
+      "elevation_meters": 686.4
     },
     {
       "id": "2072",
       "public_code": "493",
       "name": "493 - Arturo Soria - San Luis",
       "latitude": 40.47636724,
-      "longitude": -3.6684167
+      "longitude": -3.6684167,
+      "elevation_meters": 730.9
     },
     {
       "id": "2137",
       "public_code": "494",
       "name": "494 - Metro Pinar de Chamartín",
       "latitude": 40.480694,
-      "longitude": -3.666529
+      "longitude": -3.666529,
+      "elevation_meters": 707.3
     },
     {
       "id": "2160",
       "public_code": "495",
       "name": "495 - Caleruega",
       "latitude": 40.478611,
-      "longitude": -3.6704759999999994
+      "longitude": -3.6704759999999994,
+      "elevation_meters": 727.0
     },
     {
       "id": "1980",
       "public_code": "496",
       "name": "496 - Cronos",
       "latitude": 40.4384695,
-      "longitude": -3.6194333
+      "longitude": -3.6194333,
+      "elevation_meters": 654.1
     },
     {
       "id": "1985",
       "public_code": "497",
       "name": "497 - Metro Suances",
       "latitude": 40.4407,
-      "longitude": -3.6274
+      "longitude": -3.6274,
+      "elevation_meters": 678.2
     },
     {
       "id": "1982",
       "public_code": "498",
       "name": "498 - Metro Torre Arias",
       "latitude": 40.44313349999999,
-      "longitude": -3.6178316999999995
+      "longitude": -3.6178316999999995,
+      "elevation_meters": 651.1
     },
     {
       "id": "1983",
       "public_code": "499",
       "name": "499 - Biblioteca Pública Municipal Canillejas",
       "latitude": 40.4466561,
-      "longitude": -3.6121996
+      "longitude": -3.6121996,
+      "elevation_meters": 641.0
     },
     {
       "id": "1984",
       "public_code": "500",
       "name": "500 - Aracne, 17",
       "latitude": 40.445,
-      "longitude": -3.5895
+      "longitude": -3.5895,
+      "elevation_meters": 618.4
     },
     {
       "id": "1981",
       "public_code": "501",
       "name": "501 - Metro Alsacia",
       "latitude": 40.4191,
-      "longitude": -3.6241999999999996
+      "longitude": -3.6241999999999996,
+      "elevation_meters": 703.0
     },
     {
       "id": "2022",
       "public_code": "502",
       "name": "502 - Puertollano - Veinticinco de Septiembre",
       "latitude": 40.4425157,
-      "longitude": -3.6237372
+      "longitude": -3.6237372,
+      "elevation_meters": 671.3
     },
     {
       "id": "2039",
       "public_code": "503",
       "name": "503 - Zaldívar - Valdecanillas",
       "latitude": 40.43209033,
-      "longitude": -3.62650373
+      "longitude": -3.62650373,
+      "elevation_meters": 667.1
     },
     {
       "id": "2038",
       "public_code": "504",
       "name": "504 - Biblioteca Pública Municipal San Blas",
       "latitude": 40.42309928573645,
-      "longitude": -3.623466935545257
+      "longitude": -3.623466935545257,
+      "elevation_meters": 699.1
     },
     {
       "id": "2077",
       "public_code": "505",
       "name": "505 - Castillo de Uclés, 37",
       "latitude": 40.4315255,
-      "longitude": -3.62306578
+      "longitude": -3.62306578,
+      "elevation_meters": 666.0
     },
     {
       "id": "2076",
       "public_code": "506",
       "name": "506 - Albarracín - Julián Camarillo",
       "latitude": 40.43397327,
-      "longitude": -3.6325164100000005
+      "longitude": -3.6325164100000005,
+      "elevation_meters": 680.4
     },
     {
       "id": "2054",
       "public_code": "507",
       "name": "507 - Seis - Sexta",
       "latitude": 40.44845033,
-      "longitude": -3.5965029500000005
+      "longitude": -3.5965029500000005,
+      "elevation_meters": 619.8
     },
     {
       "id": "2273",
       "public_code": "508",
       "name": "508 - Metro Canillejas",
       "latitude": 40.449095,
-      "longitude": -3.609553
+      "longitude": -3.609553,
+      "elevation_meters": 637.0
     },
     {
       "id": "2236",
       "public_code": "509",
       "name": "509 - Amposta - Arcos de Jalón",
       "latitude": 40.42218951,
-      "longitude": -3.61865045
+      "longitude": -3.61865045,
+      "elevation_meters": 692.0
     },
     {
       "id": "2090",
       "public_code": "510",
       "name": "510 - Metro Avenida de Guadalajara",
       "latitude": 40.42218968,
-      "longitude": -3.6134619899999993
+      "longitude": -3.6134619899999993,
+      "elevation_meters": 686.6
     },
     {
       "id": "2091",
       "public_code": "511",
       "name": "511 - Aquitania 31",
       "latitude": 40.41912347,
-      "longitude": -3.61726728
+      "longitude": -3.61726728,
+      "elevation_meters": 692.0
     },
     {
       "id": "2092",
       "public_code": "512",
       "name": "512 - Semilla - Aparejadores",
       "latitude": 40.42667885,
-      "longitude": -3.61537023
+      "longitude": -3.61537023,
+      "elevation_meters": 677.6
     },
     {
       "id": "2093",
       "public_code": "513",
       "name": "513 - Centro Deportivo Mpal. Pepu Hernández",
       "latitude": 40.4271211,
-      "longitude": -3.6064541399999994
+      "longitude": -3.6064541399999994,
+      "elevation_meters": 687.0
     },
     {
       "id": "2094",
       "public_code": "514",
       "name": "514 - María Sevilla Diago",
       "latitude": 40.43283006,
-      "longitude": -3.6109507700000005
+      "longitude": -3.6109507700000005,
+      "elevation_meters": 663.8
     },
     {
       "id": "2095",
       "public_code": "515",
       "name": "515 - Avenida de Hellin, 13",
       "latitude": 40.43091667,
-      "longitude": -3.61579967
+      "longitude": -3.61579967,
+      "elevation_meters": 678.0
     },
     {
       "id": "2138",
       "public_code": "516",
       "name": "516 - Juan Ignacio Luca Tena - Quinta Molinos",
       "latitude": 40.44796778,
-      "longitude": -3.6311025499999996
+      "longitude": -3.6311025499999996,
+      "elevation_meters": 690.8
     },
     {
       "id": "2143",
       "public_code": "517",
       "name": "517 - San Mariano - Circe",
       "latitude": 40.44175279,
-      "longitude": -3.61190481
+      "longitude": -3.61190481,
+      "elevation_meters": 654.9
     },
     {
       "id": "2144",
       "public_code": "518",
       "name": "518 - Tampico - Plaza Barbados",
       "latitude": 40.444569,
-      "longitude": -3.6353449999999996
+      "longitude": -3.6353449999999996,
+      "elevation_meters": 689.1
     },
     {
       "id": "2157",
       "public_code": "519",
       "name": "519 - Troya, 11",
       "latitude": 40.43699597,
-      "longitude": -3.61191521
+      "longitude": -3.61191521,
+      "elevation_meters": 664.0
     },
     {
       "id": "2235",
       "public_code": "520",
       "name": "520 - Niza - Plaza de Grecia",
       "latitude": 40.4342806,
-      "longitude": -3.6081157800000003
+      "longitude": -3.6081157800000003,
+      "elevation_meters": 662.1
     },
     {
       "id": "2272",
       "public_code": "521",
       "name": "521 - Metro Las Rosas",
       "latitude": 40.423893,
-      "longitude": -3.6048180999999997
+      "longitude": -3.6048180999999997,
+      "elevation_meters": 687.1
     },
     {
       "id": "2271",
       "public_code": "522",
       "name": "522 - Metro Estadio Metropolitano",
       "latitude": 40.43333298,
-      "longitude": -3.60097542
+      "longitude": -3.60097542,
+      "elevation_meters": 670.0
     },
     {
       "id": "1968",
       "public_code": "523",
       "name": "523 - Carretera de Canillas",
       "latitude": 40.4628701,
-      "longitude": -3.65089253
+      "longitude": -3.65089253,
+      "elevation_meters": 721.6
     },
     {
       "id": "1973",
       "public_code": "524",
       "name": "524 - Glorieta Luis Rosales",
       "latitude": 40.4673,
-      "longitude": -3.6542999999999997
+      "longitude": -3.6542999999999997,
+      "elevation_meters": 716.8
     },
     {
       "id": "2037",
       "public_code": "525",
       "name": "525 - Metro Manoteras",
       "latitude": 40.47675499,
-      "longitude": -3.6626902900000005
+      "longitude": -3.6626902900000005,
+      "elevation_meters": 721.0
     },
     {
       "id": "2067",
       "public_code": "526",
       "name": "526 - Plaza del Liceo",
       "latitude": 40.45754368,
-      "longitude": -3.64441924
+      "longitude": -3.64441924,
+      "elevation_meters": 694.4
     },
     {
       "id": "2066",
       "public_code": "527",
       "name": "527 - Velacho Alto - Trinquete",
       "latitude": 40.47250314,
-      "longitude": -3.6592688399999997
+      "longitude": -3.6592688399999997,
+      "elevation_meters": 727.0
     },
     {
       "id": "2316",
       "public_code": "528",
       "name": "528 - Albelda - Torrelaguna",
       "latitude": 40.4494225,
-      "longitude": -3.6573666
+      "longitude": -3.6573666,
+      "elevation_meters": 685.8
     },
     {
       "id": "2105",
       "public_code": "529",
       "name": "529 - Lopez de Hoyos , 478",
       "latitude": 40.47175,
-      "longitude": -3.649843
+      "longitude": -3.649843,
+      "elevation_meters": 710.3
     },
     {
       "id": "2106",
       "public_code": "530",
       "name": "530 - Metro Mar de Cristal",
       "latitude": 40.4685745,
-      "longitude": -3.6378834900000006
+      "longitude": -3.6378834900000006,
+      "elevation_meters": 682.1
     },
     {
       "id": "2107",
       "public_code": "531",
       "name": "531 - Metro Parque de Santa María",
       "latitude": 40.4768782,
-      "longitude": -3.6450740999999995
+      "longitude": -3.6450740999999995,
+      "elevation_meters": 718.0
     },
     {
       "id": "2108",
       "public_code": "532",
       "name": "532 - Metro San Lorenzo",
       "latitude": 40.47490194,
-      "longitude": -3.6395164
+      "longitude": -3.6395164,
+      "elevation_meters": 692.9
     },
     {
       "id": "2109",
       "public_code": "533",
       "name": "533 - San Luis, 23",
       "latitude": 40.47148748,
-      "longitude": -3.6551145499999995
+      "longitude": -3.6551145499999995,
+      "elevation_meters": 719.9
     },
     {
       "id": "2116",
       "public_code": "534",
       "name": "534 - Mesena, 102",
       "latitude": 40.46772408,
-      "longitude": -3.6634063399999994
+      "longitude": -3.6634063399999994,
+      "elevation_meters": 711.1
     },
     {
       "id": "2121",
       "public_code": "535",
       "name": "535 - Metro Canillas",
       "latitude": 40.463575,
-      "longitude": -3.634999
+      "longitude": -3.634999,
+      "elevation_meters": 689.1
     },
     {
       "id": "2129",
       "public_code": "536",
       "name": "536 - Boj",
       "latitude": 40.4560204,
-      "longitude": -3.6180818
+      "longitude": -3.6180818,
+      "elevation_meters": 649.7
     },
     {
       "id": "2130",
       "public_code": "537",
       "name": "537 - Plaza López de la Plata",
       "latitude": 40.45841466,
-      "longitude": -3.6257943900000003
+      "longitude": -3.6257943900000003,
+      "elevation_meters": 670.2
     },
     {
       "id": "2131",
       "public_code": "538",
       "name": "538 - Haendel, 8",
       "latitude": 40.46275082,
-      "longitude": -3.6253213100000004
+      "longitude": -3.6253213100000004,
+      "elevation_meters": 660.4
     },
     {
       "id": "2154",
       "public_code": "539",
       "name": "539 - Mota del Cuervo",
       "latitude": 40.4648762,
-      "longitude": -3.6313571499999995
+      "longitude": -3.6313571499999995,
+      "elevation_meters": 676.4
     },
     {
       "id": "2165",
       "public_code": "540",
       "name": "540 - Estación de tren Fuente de la Mora",
       "latitude": 40.4845596,
-      "longitude": -3.6636484
+      "longitude": -3.6636484,
+      "elevation_meters": 699.1
     },
     {
       "id": "2347",
       "public_code": "541",
       "name": "541 - Metro Pinar del Rey",
       "latitude": 40.4682706,
-      "longitude": -3.6468591
+      "longitude": -3.6468591,
+      "elevation_meters": 703.1
     },
     {
       "id": "2294",
       "public_code": "542",
       "name": "542 - Intercambiador de Valdebebas",
       "latitude": 40.483962,
-      "longitude": -3.6157089999999994
+      "longitude": -3.6157089999999994,
+      "elevation_meters": 652.5
     },
     {
       "id": "2303",
       "public_code": "543",
       "name": "543 - Tomas Redondo",
       "latitude": 40.47197684652575,
-      "longitude": -3.629421142026306
+      "longitude": -3.629421142026306,
+      "elevation_meters": 671.7
     },
     {
       "id": "2291",
       "public_code": "544",
       "name": "544 - Gregorio Sánchez Herráez 14",
       "latitude": 40.477248,
-      "longitude": -3.6365700000000003
+      "longitude": -3.6365700000000003,
+      "elevation_meters": 690.0
     },
     {
       "id": "2281",
       "public_code": "545",
       "name": "545 - Zapatoca, 8",
       "latitude": 40.47285235,
-      "longitude": -3.63335803
+      "longitude": -3.63335803,
+      "elevation_meters": 681.0
     },
     {
       "id": "2348",
       "public_code": "546",
       "name": "546 - Andorra - Canillas",
       "latitude": 40.4628976,
-      "longitude": -3.6467519000000004
+      "longitude": -3.6467519000000004,
+      "elevation_meters": 714.1
     },
     {
       "id": "2301",
       "public_code": "547",
       "name": "547 - Rafaela Aparicio - Maruja Mallo",
       "latitude": 40.4792396,
-      "longitude": -3.6312178999999998
+      "longitude": -3.6312178999999998,
+      "elevation_meters": 691.0
     },
     {
       "id": "2233",
       "public_code": "548",
       "name": "548 - Eduardo Mazón - Guadalajara",
       "latitude": 40.4521484,
-      "longitude": -3.6154156999999993
+      "longitude": -3.6154156999999993,
+      "elevation_meters": 646.9
     },
     {
       "id": "2330",
       "public_code": "549",
       "name": "549 - Francisco Pi y Maragall",
       "latitude": 40.4866354,
-      "longitude": -3.6503543999999994
+      "longitude": -3.6503543999999994,
+      "elevation_meters": 686.1
     },
     {
       "id": "2349",
       "public_code": "550",
       "name": "550 - Príncipe Carlos, 54",
       "latitude": 40.4941108,
-      "longitude": -3.6566739999999998
+      "longitude": -3.6566739999999998,
+      "elevation_meters": 694.0
     },
     {
       "id": "2292",
       "public_code": "551",
       "name": "551 - Oña",
       "latitude": 40.4891872,
-      "longitude": -3.6658565
+      "longitude": -3.6658565,
+      "elevation_meters": 711.0
     },
     {
       "id": "2293",
       "public_code": "552",
       "name": "552 - Ana de Austria - Ignacio Aldecoa",
       "latitude": 40.4994394,
-      "longitude": -3.6531502
+      "longitude": -3.6531502,
+      "elevation_meters": 682.6
     },
     {
       "id": "2350",
       "public_code": "553",
       "name": "553 - María Portugal - Niceto Alcalá Zamora",
       "latitude": 40.499909,
-      "longitude": -3.658921
+      "longitude": -3.658921,
+      "elevation_meters": 683.7
     },
     {
       "id": "1963",
       "public_code": "554",
       "name": "554 - Metro El Capricho",
       "latitude": 40.453,
-      "longitude": -3.5940999999999996
+      "longitude": -3.5940999999999996,
+      "elevation_meters": 616.4
     },
     {
       "id": "1992",
       "public_code": "555",
       "name": "555 - Parque del Capricho",
       "latitude": 40.45476837,
-      "longitude": -3.5981217100000005
+      "longitude": -3.5981217100000005,
+      "elevation_meters": 621.7
     },
     {
       "id": "1991",
       "public_code": "556",
       "name": "556 - Cantabria, 6",
       "latitude": 40.45462514,
-      "longitude": -3.5877220100000002
+      "longitude": -3.5877220100000002,
+      "elevation_meters": 611.6
     },
     {
       "id": "2103",
       "public_code": "557",
       "name": "557 - Metro Alameda de Osuna",
       "latitude": 40.45746674,
-      "longitude": -3.5881514300000004
+      "longitude": -3.5881514300000004,
+      "elevation_meters": 613.0
     },
     {
       "id": "2237",
       "public_code": "558",
       "name": "558 - Biblioteca Pública Mpal. Gloria Fuertes",
       "latitude": 40.461137,
-      "longitude": -3.5937120000000005
+      "longitude": -3.5937120000000005,
+      "elevation_meters": 641.6
     },
     {
       "id": "2309",
       "public_code": "559",
       "name": "559 - Calle Babilonia, 19",
       "latitude": 40.4675299,
-      "longitude": -3.5882346999999997
+      "longitude": -3.5882346999999997,
+      "elevation_meters": 641.7
     },
     {
       "id": "2240",
       "public_code": "560",
       "name": "560 - Playa de Zarauz - Playa de la Caleta",
       "latitude": 40.4731404,
-      "longitude": -3.5906847
+      "longitude": -3.5906847,
+      "elevation_meters": 632.0
     },
     {
       "id": "2238",
       "public_code": "561",
       "name": "561 - Plaza Nuestra Señora de Loreto",
       "latitude": 40.472048,
-      "longitude": -3.5857510000000006
+      "longitude": -3.5857510000000006,
+      "elevation_meters": 630.0
     },
     {
       "id": "2239",
       "public_code": "562",
       "name": "562 - Tomillar - Tintín y Milú",
       "latitude": 40.46267435,
-      "longitude": -3.5840557299999998
+      "longitude": -3.5840557299999998,
+      "elevation_meters": 625.0
     },
     {
       "id": "2283",
       "public_code": "563",
       "name": "563 - Soto Hidalgo",
       "latitude": 40.4606465,
-      "longitude": -3.5820745
+      "longitude": -3.5820745,
+      "elevation_meters": 614.4
     },
     {
       "id": "2322",
       "public_code": "564",
       "name": "564 - IFEMA B",
       "latitude": 40.463861,
-      "longitude": -3.6138669999999995
+      "longitude": -3.6138669999999995,
+      "elevation_meters": 672.0
     },
     {
       "id": "2260",
       "public_code": "565",
       "name": "565 - Metro Barajas",
       "latitude": 40.47563573,
-      "longitude": -3.5838869
+      "longitude": -3.5838869,
+      "elevation_meters": 623.1
     },
     {
       "id": "2259",
       "public_code": "566",
       "name": "566 - Avenida de Logroño",
       "latitude": 40.4703472,
-      "longitude": -3.5815033
+      "longitude": -3.5815033,
+      "elevation_meters": 629.0
     },
     {
       "id": "2282",
       "public_code": "567",
       "name": "567 - Plaza Mayor de Barajas",
       "latitude": 40.4733252,
-      "longitude": -3.5776537
+      "longitude": -3.5776537,
+      "elevation_meters": 623.0
     },
     {
       "id": "2241",
       "public_code": "568",
       "name": "568 - IFEMA A",
       "latitude": 40.4632802,
-      "longitude": -3.6178336
+      "longitude": -3.6178336,
+      "elevation_meters": 672.0
     },
     {
       "id": "2013",
       "public_code": "569",
       "name": "569 - C. Deportivo Mpal. Vicente del Bosque",
       "latitude": 40.4795,
-      "longitude": -3.6964999999999995
+      "longitude": -3.6964999999999995,
+      "elevation_meters": 702.8
     },
     {
       "id": "1994",
       "public_code": "570",
       "name": "570 - Uni. Autónoma Madrid - Facul. Medicina",
       "latitude": 40.4815,
-      "longitude": -3.6938
+      "longitude": -3.6938,
+      "elevation_meters": 722.4
     },
     {
       "id": "2014",
       "public_code": "571",
       "name": "571 - Melchor Fernández Almagro - Plaza Tuy",
       "latitude": 40.4756475,
-      "longitude": -3.710326199999999
+      "longitude": -3.710326199999999,
+      "elevation_meters": 686.5
     },
     {
       "id": "2049",
       "public_code": "572",
       "name": "572 - Junta Mpal. Dtto. Fuencarral - El Pardo",
       "latitude": 40.47810429,
-      "longitude": -3.70997335
+      "longitude": -3.70997335,
+      "elevation_meters": 676.7
     },
     {
       "id": "2050",
       "public_code": "573",
       "name": "573 - Melchor Fernández Almagro - Villa Marín",
       "latitude": 40.47772776,
-      "longitude": -3.69962571
+      "longitude": -3.69962571,
+      "elevation_meters": 700.9
     },
     {
       "id": "2052",
       "public_code": "574",
       "name": "574 - Chantada",
       "latitude": 40.472695,
-      "longitude": -3.7106779999999997
+      "longitude": -3.7106779999999997,
+      "elevation_meters": 683.1
     },
     {
       "id": "2051",
       "public_code": "575",
       "name": "575 - Metro Barrio del Pilar",
       "latitude": 40.47817,
-      "longitude": -3.703526
+      "longitude": -3.703526,
+      "elevation_meters": 688.7
     },
     {
       "id": "2086",
       "public_code": "576",
       "name": "576 - El Ferrol, 18",
       "latitude": 40.47431313,
-      "longitude": -3.70510525
+      "longitude": -3.70510525,
+      "elevation_meters": 707.0
     },
     {
       "id": "2087",
       "public_code": "577",
       "name": "577 - Monforte de Lemos - Plaza de Mondariz",
       "latitude": 40.47899993,
-      "longitude": -3.70566914
+      "longitude": -3.70566914,
+      "elevation_meters": 682.0
     },
     {
       "id": "2250",
       "public_code": "578",
       "name": "578 - Sierra de Atapuerca - Viloria de Rioja",
       "latitude": 40.50292982,
-      "longitude": -3.6704248799999997
+      "longitude": -3.6704248799999997,
+      "elevation_meters": 697.9
     },
     {
       "id": "2256",
       "public_code": "579",
       "name": "579 - Maria Tubau - Isabel Colbrand",
       "latitude": 40.51399230680476,
-      "longitude": -3.671703587033564
+      "longitude": -3.671703587033564,
+      "elevation_meters": 716.0
     },
     {
       "id": "2214",
       "public_code": "580",
       "name": "580 - Metro Herrera Oria",
       "latitude": 40.483289,
-      "longitude": -3.706089
+      "longitude": -3.706089,
+      "elevation_meters": 694.6
     },
     {
       "id": "2311",
       "public_code": "581",
       "name": "581 - Metro Peñagrande",
       "latitude": 40.4764797,
-      "longitude": -3.7163093000000003
+      "longitude": -3.7163093000000003,
+      "elevation_meters": 666.3
     },
     {
       "id": "2111",
       "public_code": "582",
       "name": "582 - Isla Graciosa - Isla de Java",
       "latitude": 40.49262243,
-      "longitude": -3.6862657
+      "longitude": -3.6862657,
+      "elevation_meters": 731.9
     },
     {
       "id": "2112",
       "public_code": "583",
       "name": "583 - Ángel Múgica - Marcos de Orueta",
       "latitude": 40.48468297,
-      "longitude": -3.68529048
+      "longitude": -3.68529048,
+      "elevation_meters": 731.8
     },
     {
       "id": "2113",
       "public_code": "584",
       "name": "584 - Metro Montecarmelo",
       "latitude": 40.50501029,
-      "longitude": -3.6960334500000003
+      "longitude": -3.6960334500000003,
+      "elevation_meters": 709.3
     },
     {
       "id": "2114",
       "public_code": "585",
       "name": "585 - Metro Fuencarral",
       "latitude": 40.4954662,
-      "longitude": -3.69374813
+      "longitude": -3.69374813,
+      "elevation_meters": 707.0
     },
     {
       "id": "2115",
       "public_code": "586",
       "name": "586 - Caldas Estrach - San Cugat del Vallés",
       "latitude": 40.4963916,
-      "longitude": -3.6974724999999995
+      "longitude": -3.6974724999999995,
+      "elevation_meters": 702.1
     },
     {
       "id": "2118",
       "public_code": "587",
       "name": "587 - Metro Paco de Lucía",
       "latitude": 40.49892399,
-      "longitude": -3.7086574400000005
+      "longitude": -3.7086574400000005,
+      "elevation_meters": 672.6
     },
     {
       "id": "2119",
       "public_code": "588",
       "name": "588 - Campo Calatrava - Rda Ingenioso Hidalgo",
       "latitude": 40.50052161,
-      "longitude": -3.69112254
+      "longitude": -3.69112254,
+      "elevation_meters": 707.0
     },
     {
       "id": "2120",
       "public_code": "589",
       "name": "589 - Monast. Silos - Monast. Montesclaros",
       "latitude": 40.50340494,
-      "longitude": -3.70290315
+      "longitude": -3.70290315,
+      "elevation_meters": 694.6
     },
     {
       "id": "2142",
       "public_code": "590",
       "name": "590 - Metro Arroyofresno",
       "latitude": 40.49093014,
-      "longitude": -3.72757227
+      "longitude": -3.72757227,
+      "elevation_meters": 644.0
     },
     {
       "id": "2150",
       "public_code": "591",
       "name": "591 - Metro Mirasierra",
       "latitude": 40.49108225,
-      "longitude": -3.7162292099999994
+      "longitude": -3.7162292099999994,
+      "elevation_meters": 686.3
     },
     {
       "id": "2151",
       "public_code": "592",
       "name": "592 - Estación de tren de Pitis",
       "latitude": 40.4956969,
-      "longitude": -3.7249527
+      "longitude": -3.7249527,
+      "elevation_meters": 659.4
     },
     {
       "id": "2161",
       "public_code": "593",
       "name": "593 - Metro Avenida de la Ilustración",
       "latitude": 40.48027409,
-      "longitude": -3.7186906700000004
+      "longitude": -3.7186906700000004,
+      "elevation_meters": 677.8
     },
     {
       "id": "2162",
       "public_code": "594",
       "name": "594 - Pedro Rico, 49",
       "latitude": 40.48194,
-      "longitude": -3.7039180000000003
+      "longitude": -3.7039180000000003,
+      "elevation_meters": 686.0
     },
     {
       "id": "2163",
       "public_code": "595",
       "name": "595 - Betanzos - Fermín Caballero",
       "latitude": 40.48178815,
-      "longitude": -3.7132206
+      "longitude": -3.7132206,
+      "elevation_meters": 687.3
     },
     {
       "id": "2164",
       "public_code": "596",
       "name": "596 - Metro Lacoma",
       "latitude": 40.4855158,
-      "longitude": -3.7228461000000004
+      "longitude": -3.7228461000000004,
+      "elevation_meters": 673.0
     },
     {
       "id": "2170",
       "public_code": "597",
       "name": "597 - Foresta, 8",
       "latitude": 40.49853277,
-      "longitude": -3.66777681
+      "longitude": -3.66777681,
+      "elevation_meters": 699.0
     },
     {
       "id": "2312",
       "public_code": "598",
       "name": "598 - Hospital Ramón y Cajal",
       "latitude": 40.4858012,
-      "longitude": -3.6923396
+      "longitude": -3.6923396,
+      "elevation_meters": 705.8
     },
     {
       "id": "2172",
       "public_code": "599",
       "name": "599 - Instalación Deportiva La Cabrera",
       "latitude": 40.47223267,
-      "longitude": -3.7192044300000004
+      "longitude": -3.7192044300000004,
+      "elevation_meters": 654.0
     },
     {
       "id": "2258",
       "public_code": "600",
       "name": "600 - Centro Deportivo Municipal La Masó",
       "latitude": 40.4825507,
-      "longitude": -3.7149566
+      "longitude": -3.7149566,
+      "elevation_meters": 692.2
     },
     {
       "id": "2351",
       "public_code": "601",
       "name": "601 - Estación de tren de Fuencarral",
       "latitude": 40.5015588,
-      "longitude": -3.6824686999999994
+      "longitude": -3.6824686999999994,
+      "elevation_meters": 717.0
     },
     {
       "id": "2257",
       "public_code": "602",
       "name": "602 - Monasterio Sobrado - Monasterio Silos",
       "latitude": 40.5093225,
-      "longitude": -3.6928369999999995
+      "longitude": -3.6928369999999995,
+      "elevation_meters": 719.1
     },
     {
       "id": "2352",
       "public_code": "603",
       "name": "603 - Castiello de Jaca, 14",
       "latitude": 40.5091982,
-      "longitude": -3.6782027
+      "longitude": -3.6782027,
+      "elevation_meters": 712.0
     },
     {
       "id": "2185",
       "public_code": "604",
       "name": "604 - Metro Las Tablas",
       "latitude": 40.50910428,
-      "longitude": -3.6695521499999995
+      "longitude": -3.6695521499999995,
+      "elevation_meters": 695.2
     },
     {
       "id": "2270",
       "public_code": "605",
       "name": "605 - Nuria - Peña Sirio",
       "latitude": 40.491644,
-      "longitude": -3.7048829999999997
+      "longitude": -3.7048829999999997,
+      "elevation_meters": 699.0
     },
     {
       "id": "2289",
       "public_code": "606",
       "name": "606 - Fermín Caballero - Sangenjo",
       "latitude": 40.487363,
-      "longitude": -3.6984849999999994
+      "longitude": -3.6984849999999994,
+      "elevation_meters": 706.8
     },
     {
       "id": "2359",
       "public_code": "607",
       "name": "607 - Metro Ligero - Palas de Rey",
       "latitude": 40.5051915,
-      "longitude": -3.6641571
+      "longitude": -3.6641571,
+      "elevation_meters": 685.5
     },
     {
       "id": "2298",
       "public_code": "608",
       "name": "608 - Estella - Camino de Santiago",
       "latitude": 40.4968198,
-      "longitude": -3.6743568
+      "longitude": -3.6743568,
+      "elevation_meters": 698.1
     },
     {
       "id": "2286",
       "public_code": "609",
       "name": "609 - Metro Ronda de la Comunicación",
       "latitude": 40.5157202,
-      "longitude": -3.6626887
+      "longitude": -3.6626887,
+      "elevation_meters": 701.0
     },
     {
       "id": "2360",
       "public_code": "610",
       "name": "610 - Bardegueral",
       "latitude": 40.4501721,
-      "longitude": -3.7719096999999997
+      "longitude": -3.7719096999999997,
+      "elevation_meters": 625.5
     },
     {
       "id": "2366",
       "public_code": "611",
       "name": "611 - María de las Mercedes de Borbón A",
       "latitude": 40.490908297996654,
-      "longitude": -3.6121068531215528
+      "longitude": -3.6121068531215528,
+      "elevation_meters": 648.3
     },
     {
       "id": "2388",
       "public_code": "612",
       "name": "612 - Calle Rosalia de Castro 1",
       "latitude": 40.480258,
-      "longitude": -3.734639
+      "longitude": -3.734639,
+      "elevation_meters": 642.0
     },
     {
       "id": "2389",
       "public_code": "613",
       "name": "613 - Facultad de informática",
       "latitude": 40.453109,
-      "longitude": -3.7348129999999995
+      "longitude": -3.7348129999999995,
+      "elevation_meters": 637.0
     },
     {
       "id": "2396",
       "public_code": "614",
       "name": "614 - Biblioteca central de la UNED",
       "latitude": 40.436106,
-      "longitude": -3.7347669999999997
+      "longitude": -3.7347669999999997,
+      "elevation_meters": 591.0
     },
     {
       "id": "2390",
       "public_code": "615",
       "name": "615 - Avenida Juan de Andrés 21",
       "latitude": 40.468732,
-      "longitude": -3.7227890000000006
+      "longitude": -3.7227890000000006,
+      "elevation_meters": 670.2
     },
     {
       "id": "2391",
       "public_code": "616",
       "name": "616 - Alcalde Martín de Alzaga",
       "latitude": 40.462899,
-      "longitude": -3.7171950000000002
+      "longitude": -3.7171950000000002,
+      "elevation_meters": 704.8
     },
     {
       "id": "2383",
       "public_code": "617",
       "name": "617 - Calle Eduardo Barreiros",
       "latitude": 40.358866,
-      "longitude": -3.7023800000000002
+      "longitude": -3.7023800000000002,
+      "elevation_meters": 599.9
     },
     {
       "id": "2397",
       "public_code": "618",
       "name": "618 - Calle Paterna 55",
       "latitude": 40.340613,
-      "longitude": -3.68482
+      "longitude": -3.68482,
+      "elevation_meters": 586.1
     },
     {
       "id": "2394",
       "public_code": "619",
       "name": "619 - Cooperativa Electrica 13",
       "latitude": 40.374387,
-      "longitude": -3.6596330000000004
+      "longitude": -3.6596330000000004,
+      "elevation_meters": 619.0
     },
     {
       "id": "2380",
       "public_code": "620",
       "name": "620 - Calle Cazorla 79",
       "latitude": 40.376297,
-      "longitude": -3.6658859999999995
+      "longitude": -3.6658859999999995,
+      "elevation_meters": 619.9
     },
     {
       "id": "2381",
       "public_code": "621",
       "name": "621 - Calle Montiel 27",
       "latitude": 40.381382,
-      "longitude": -3.672609
+      "longitude": -3.672609,
+      "elevation_meters": 617.1
     },
     {
       "id": "2382",
       "public_code": "622",
       "name": "622 - Calle Sierra de Albarracin 2",
       "latitude": 40.386022,
-      "longitude": -3.671961
+      "longitude": -3.671961,
+      "elevation_meters": 606.1
     },
     {
       "id": "2395",
       "public_code": "623",
       "name": "623  -  Ronda del Sur, esq Santa Rafaela",
       "latitude": 40.37773,
-      "longitude": -3.6731049999999996
+      "longitude": -3.6731049999999996,
+      "elevation_meters": 615.8
     },
     {
       "id": "2386",
       "public_code": "624",
       "name": "624  - Avenida Blas de Lezo 33",
       "latitude": 40.407067,
-      "longitude": -3.553002
+      "longitude": -3.553002,
+      "elevation_meters": 651.9
     },
     {
       "id": "2387",
       "public_code": "625",
       "name": "625 - Avenida de Miguel Delibes 49",
       "latitude": 40.405505,
-      "longitude": -3.560344
+      "longitude": -3.560344,
+      "elevation_meters": 648.0
     },
     {
       "id": "2384",
       "public_code": "626",
       "name": "626 - Avenida Victoria Kent 9",
       "latitude": 40.401326,
-      "longitude": -3.564012
+      "longitude": -3.564012,
+      "elevation_meters": 634.2
     },
     {
       "id": "2385",
       "public_code": "627",
       "name": "627 - Alcalde Andrés Madrid Dávila 92",
       "latitude": 40.398303,
-      "longitude": -3.548534
+      "longitude": -3.548534,
+      "elevation_meters": 642.8
     },
     {
       "id": "2392",
       "public_code": "628",
       "name": "628  - Calle Arcaute 13",
       "latitude": 40.44358,
-      "longitude": -3.576652
+      "longitude": -3.576652,
+      "elevation_meters": 614.0
     },
     {
       "id": "2379",
       "public_code": "629",
       "name": "629 - Avda de Fermina Sevillano 23",
       "latitude": 40.44477,
-      "longitude": -3.568829
+      "longitude": -3.568829,
+      "elevation_meters": 596.7
     },
     {
       "id": "2378",
       "public_code": "630",
       "name": "630 - Calle de Febrero 4",
       "latitude": 40.446868,
-      "longitude": -3.573031
+      "longitude": -3.573031,
+      "elevation_meters": 603.1
     },
     {
       "id": "2400",
       "public_code": "631",
       "name": "631 -  CAMPUS SUR 2",
       "latitude": 40.38340792442376,
-      "longitude": -3.624811620840096
+      "longitude": -3.624811620840096,
+      "elevation_meters": 631.0
     },
     {
       "id": "2399",
       "public_code": "632",
       "name": "632 - Avda. Campus Sur, 11",
       "latitude": 40.38668090972348,
-      "longitude": -3.630429825484225
+      "longitude": -3.630429825484225,
+      "elevation_meters": 640.3
     },
     {
       "id": "2406",
       "public_code": "633",
       "name": "633 - HUB Plaza de España 360 (Planta -1)",
       "latitude": 40.423694217441145,
-      "longitude": -3.711716926342124
+      "longitude": -3.711716926342124,
+      "elevation_meters": 636.4
     },
     {
       "id": "2410",
       "public_code": "634",
       "name": "634 - Centro Operaciones EMT Entrevías",
       "latitude": 40.3730450282904,
-      "longitude": -3.6769763004713902
+      "longitude": -3.6769763004713902,
+      "elevation_meters": 582.7
     },
     {
       "id": "2413",
       "public_code": "635",
       "name": "635 -  SAN JUAN DE LA CRUZ",
       "latitude": 40.4302831260666,
-      "longitude": -3.8134965594893404
+      "longitude": -3.8134965594893404,
+      "elevation_meters": 705.6
     },
     {
       "id": "2414",
       "public_code": "636",
       "name": "636 -  POZUELO ESTACIÓN",
       "latitude": 40.4469360421979,
-      "longitude": -3.79956285088614
+      "longitude": -3.79956285088614,
+      "elevation_meters": 650.0
     },
     {
       "id": "2415",
       "public_code": "637",
       "name": "637 - SATURNO",
       "latitude": 40.4413193007625,
-      "longitude": -3.7948068055071404
+      "longitude": -3.7948068055071404,
+      "elevation_meters": 669.3
     },
     {
       "id": "2416",
       "public_code": "638",
       "name": "638 -  POLIDEPORTIVO CARLOS RUIZ",
       "latitude": 40.4505086158489,
-      "longitude": -3.7942734261963404
+      "longitude": -3.7942734261963404,
+      "elevation_meters": 634.8
     },
     {
       "id": "2417",
       "public_code": "639",
       "name": "639 - MADROÑO DEL PAULAR",
       "latitude": 40.454842720036,
-      "longitude": -3.80652206493524
+      "longitude": -3.80652206493524,
+      "elevation_meters": 671.8
     },
     {
       "id": "2437",
       "public_code": "640",
       "name": "640 -  REYES CATÓLICOS",
       "latitude": 40.4498085211967,
-      "longitude": -3.79952790753898
+      "longitude": -3.79952790753898,
+      "elevation_meters": 637.9
     },
     {
       "id": "2418",
       "public_code": "641",
       "name": "641 -  POLIDEPORTIVO EL TORREÓN",
       "latitude": 40.445077,
-      "longitude": -3.811594
+      "longitude": -3.811594,
+      "elevation_meters": 654.1
     },
     {
       "id": "2419",
       "public_code": "642",
       "name": "642 -  POLIDEPORTIVO EL PRADILLO",
       "latitude": 40.4399652684429,
-      "longitude": -3.8153422941876594
+      "longitude": -3.8153422941876594,
+      "elevation_meters": 667.7
     },
     {
       "id": "2420",
       "public_code": "643",
       "name": "643 -  PLAZA MERCEDES LLORENTE",
       "latitude": 40.4348533545932,
-      "longitude": -3.81353890524788
+      "longitude": -3.81353890524788,
+      "elevation_meters": 691.8
     },
     {
       "id": "2421",
       "public_code": "644",
       "name": "644 - BIBLIOTECA ESIC",
       "latitude": 40.436090153493936,
-      "longitude": -3.79951803329287
+      "longitude": -3.79951803329287,
+      "elevation_meters": 689.0
     },
     {
       "id": "2422",
       "public_code": "645",
       "name": "645 -  C.C. VOLTURNO",
       "latitude": 40.4077218036475,
-      "longitude": -3.7969146633939337
+      "longitude": -3.7969146633939337,
+      "elevation_meters": 692.3
     },
     {
       "id": "2423",
       "public_code": "646",
       "name": "646 -  C.C. ZIELO",
       "latitude": 40.44230729262026,
-      "longitude": -3.784507942646793
+      "longitude": -3.784507942646793,
+      "elevation_meters": 660.0
     },
     {
       "id": "2424",
       "public_code": "647",
       "name": "647 -POLIDEPORTIVO VALLE DE LAS CAÑAS",
       "latitude": 40.4223272973641,
-      "longitude": -3.8163961268440296
+      "longitude": -3.8163961268440296,
+      "elevation_meters": 710.0
     },
     {
       "id": "2425",
       "public_code": "648",
       "name": "648 - CIUDAD DEL CINE",
       "latitude": 40.3972045239273,
-      "longitude": -3.7843078808725603
+      "longitude": -3.7843078808725603,
+      "elevation_meters": 664.3
     },
     {
       "id": "2426",
       "public_code": "649",
       "name": "649 - JOSÉ ISBERT",
       "latitude": 40.3947641621364,
-      "longitude": -3.79650764953701
+      "longitude": -3.79650764953701,
+      "elevation_meters": 677.3
     },
     {
       "id": "2438",
       "public_code": "650",
       "name": "650 -  UNIVERSIDAD COMPLUTENSE",
       "latitude": 40.4319278658704,
-      "longitude": -3.79491704809424
+      "longitude": -3.79491704809424,
+      "elevation_meters": 684.8
     },
     {
       "id": "2439",
       "public_code": "651",
       "name": "651 -  HOSPITAL QUIRÓN",
       "latitude": 40.4033109512451,
-      "longitude": -3.78512954772127
+      "longitude": -3.78512954772127,
+      "elevation_meters": 664.0
     },
     {
       "id": "2427",
       "public_code": "652",
       "name": "652 -  PLAZA DE LA CONSTITUCIÓN",
       "latitude": 40.4490013333576,
-      "longitude": -3.8068513006047398
+      "longitude": -3.8068513006047398,
+      "elevation_meters": 645.4
     },
     {
       "id": "2428",
       "public_code": "653",
       "name": "653 -  MINGO Y VELASCO",
       "latitude": 40.44369253336826,
-      "longitude": -3.801505099573767
+      "longitude": -3.801505099573767,
+      "elevation_meters": 660.9
     },
     {
       "id": "2429",
       "public_code": "654",
       "name": "654 - BERNA",
       "latitude": 40.4446219354433,
-      "longitude": -3.79078427304981
+      "longitude": -3.79078427304981,
+      "elevation_meters": 657.9
     },
     {
       "id": "2430",
       "public_code": "655",
       "name": "655 -  LUIS GARCÍA CERECEDA",
       "latitude": 40.40582852512823,
-      "longitude": -3.7984676332007243
+      "longitude": -3.7984676332007243,
+      "elevation_meters": 690.2
     },
     {
       "id": "2440",
       "public_code": "656",
       "name": "656 -  POZUELO OESTE",
       "latitude": 40.422117515164,
-      "longitude": -3.80509859414654
+      "longitude": -3.80509859414654,
+      "elevation_meters": 696.6
     },
     {
       "id": "2431",
       "public_code": "657",
       "name": "657 -  PEÑALARA",
       "latitude": 40.4583947529732,
-      "longitude": -3.80152124218262
+      "longitude": -3.80152124218262,
+      "elevation_meters": 667.5
     },
     {
       "id": "2432",
       "public_code": "658",
       "name": "658 - ISAAC ALBÉNIZ",
       "latitude": 40.455288354773,
-      "longitude": -3.811672030196
+      "longitude": -3.811672030196,
+      "elevation_meters": 672.0
     },
     {
       "id": "2433",
       "public_code": "659",
       "name": "659 -  HÚMERA",
       "latitude": 40.4290061267663,
-      "longitude": -3.78665081697337
+      "longitude": -3.78665081697337,
+      "elevation_meters": 654.8
     },
     {
       "id": "2441",
       "public_code": "660",
       "name": "660 -  LA FINCA",
       "latitude": 40.4076866008339,
-      "longitude": -3.81063129328755
+      "longitude": -3.81063129328755,
+      "elevation_meters": 712.8
     },
     {
       "id": "2434",
       "public_code": "661",
       "name": "661 -  COMUNIDAD DE MADRID",
       "latitude": 40.4384076130412,
-      "longitude": -3.7935481784055303
+      "longitude": -3.7935481784055303,
+      "elevation_meters": 679.0
     },
     {
       "id": "2442",
       "public_code": "662",
       "name": "662 -  CASA DE CAMPO",
       "latitude": 40.4112653813703,
-      "longitude": -3.78382876941872
+      "longitude": -3.78382876941872,
+      "elevation_meters": 675.4
     },
     {
       "id": "2435",
       "public_code": "663",
       "name": "663 - EMISORA",
       "latitude": 40.4394776284491,
-      "longitude": -3.80188771871155
+      "longitude": -3.80188771871155,
+      "elevation_meters": 686.9
     },
     {
       "id": "2436",
       "public_code": "664",
       "name": "664 - VÍA DOS CASTILLAS",
       "latitude": 40.432424608014294,
-      "longitude": -3.8022228282225417
+      "longitude": -3.8022228282225417,
+      "elevation_meters": 698.0
     },
     {
       "id": "2447",
       "public_code": "665",
       "name": "665 - Osa Mayor – Concepción Llorente",
       "latitude": 40.455111,
-      "longitude": -3.793599
+      "longitude": -3.793599,
+      "elevation_meters": 640.7
     },
     {
       "id": "2448",
       "public_code": "667",
       "name": "667 - Hospital Universitario  Madrid Aravaca",
       "latitude": 40.465854,
-      "longitude": -3.7832510000000004
+      "longitude": -3.7832510000000004,
+      "elevation_meters": 660.0
     },
     {
       "id": "2446",
       "public_code": "668",
       "name": "668 - Luz Casanova",
       "latitude": 40.460069,
-      "longitude": -3.791901
+      "longitude": -3.791901,
+      "elevation_meters": 656.8
     },
     {
       "id": "2445",
       "public_code": "669",
       "name": "669 - Osa Mayor - Regulo",
       "latitude": 40.459477,
-      "longitude": -3.779448
+      "longitude": -3.779448,
+      "elevation_meters": 652.0
     },
     {
       "id": "2453",
       "public_code": "670",
       "name": "670 - Glorieta Pepe Domingo Castaño",
       "latitude": 40.467685,
-      "longitude": -3.7948979999999994
+      "longitude": -3.7948979999999994,
+      "elevation_meters": 658.2
     },
     {
       "id": "2452",
       "public_code": "671",
       "name": "671 - Centro Deportivo  Alfredo Goyeneche",
       "latitude": 40.451829,
-      "longitude": -3.7823980000000006
+      "longitude": -3.7823980000000006,
+      "elevation_meters": 623.0
     },
     {
       "id": "2461",
       "public_code": "672",
       "name": "672 - Estación de tren El Barrial-Pozuelo",
       "latitude": 40.464908,
-      "longitude": -3.8077640000000006
+      "longitude": -3.8077640000000006,
+      "elevation_meters": 679.3
     },
     {
       "id": "2465",
       "public_code": "673",
       "name": "673 - Estación de tren Villaverde Bajo",
       "latitude": 40.35283,
-      "longitude": -3.6848500000000004
+      "longitude": -3.6848500000000004,
+      "elevation_meters": 582.0
     },
     {
       "id": "2462",
       "public_code": "674",
       "name": "674 -Instalación deportiva Victoria Hernández",
       "latitude": 40.360951,
-      "longitude": -3.6863729999999997
+      "longitude": -3.6863729999999997,
+      "elevation_meters": 573.0
     },
     {
       "id": "2463",
       "public_code": "675",
       "name": "675 - SANTA ESCOLÁSTICA",
       "latitude": 40.361799,
-      "longitude": -3.6979310000000005
+      "longitude": -3.6979310000000005,
+      "elevation_meters": 604.0
     },
     {
       "id": "2412",
       "public_code": "676",
       "name": "676 - Arroyo del Cañaveral 60",
       "latitude": 40.399057,
-      "longitude": -3.558615
+      "longitude": -3.558615,
+      "elevation_meters": 647.0
     },
     {
       "id": "2449",
       "public_code": "677",
       "name": "677 - Provisional Gran Vía de Vicálvaro",
       "latitude": 40.397393,
-      "longitude": -3.555573
+      "longitude": -3.555573,
+      "elevation_meters": 644.4
     },
     {
       "id": "2466",
       "public_code": "678",
       "name": "678 - Centro Deportivo Municipal El Barco",
       "latitude": 40.462631,
-      "longitude": -3.5878289999999997
+      "longitude": -3.5878289999999997,
+      "elevation_meters": 636.0
     },
     {
       "id": "2464",
       "public_code": "679",
       "name": "679 - Metro Hortaleza",
       "latitude": 40.474821,
-      "longitude": -3.6525659999999998
+      "longitude": -3.6525659999999998,
+      "elevation_meters": 720.0
     },
     {
       "id": "2467",
       "public_code": "680",
       "name": "680 - Princesa de Éboli",
       "latitude": 40.490507,
-      "longitude": -3.654918
+      "longitude": -3.654918,
+      "elevation_meters": 686.0
     },
     {
       "id": "2450",
       "public_code": "681",
       "name": "681 - Luis Martínez Feduchi",
       "latitude": 40.500008,
-      "longitude": -3.6422160000000003
+      "longitude": -3.6422160000000003,
+      "elevation_meters": 665.2
     },
     {
       "id": "2460",
       "public_code": "682",
       "name": "682 - Centro operaciones EMT SANCHINARRO",
       "latitude": 40.48423,
-      "longitude": -3.6495799999999994
+      "longitude": -3.6495799999999994,
+      "elevation_meters": 698.8
     },
     {
       "id": "2451",
       "public_code": "683",
       "name": "683 - Los Arces",
       "latitude": 40.453402,
-      "longitude": -3.6226360000000004
+      "longitude": -3.6226360000000004,
+      "elevation_meters": 670.2
     },
     {
       "id": "2474",
       "public_code": "8111",
       "name": "Estación Virtual Centro Municipal Mistral",
       "latitude": 40.472924,
-      "longitude": -3.5972720000000002
+      "longitude": -3.5972720000000002,
+      "elevation_meters": 634.5
     }
-  ]
+  ],
+  "elevation_grid_version": "ba5fc9033f5b93173e077885a8cc203b0638f65f582e6b8f545e59489596da69"
 }

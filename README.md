@@ -29,6 +29,8 @@ aplicación. Consulta sus licencias y condiciones por separado.
 - Pantallas Mi Perfil, Viajes, Rankings, Comunidad y Ajustes.
 - Insignias, rankings de Comunidad y comparaciones Cara a cara.
 - Historico Open Data agregado por ruta y catalogo local de estaciones.
+- Cotas de terreno precalculadas por estacion y malla local para resolver
+  estaciones nuevas sin conexion; los desniveles aun no se muestran en la UI.
 
 ## Arquitectura
 
@@ -44,6 +46,11 @@ Las dependencias principales son `flutter_riverpod`, `go_router`, `http`,
 `supabase_flutter`. Los viajes personales se guardan en una SQLite writable
 separada de `assets/data/legacy_route_models.sqlite`, que sigue siendo la base
 de solo lectura del historico Open Data.
+
+La malla de elevaciones `assets/data/station_terrain_10m.i16.gz` es una obra
+derivada del modelo [MDT05 del IGN/CNIG](https://centrodedescargas.cnig.es/CentroDescargas/modelo-digital-terreno-mdt05-primera-cobertura),
+CC BY 4.0, atribucion IGN/CNIG. El metodo de generacion y sus limites se
+documentan en [tools/station_elevation/README.md](tools/station_elevation/README.md).
 
 Al abrir una version que todavia tenga `community.localTrips.v1` en secure
 storage, la app migra las etapas a SQLite dentro de una transaccion, verifica

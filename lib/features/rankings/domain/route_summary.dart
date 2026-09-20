@@ -6,6 +6,10 @@ class RouteSummary {
     required this.destinationStationName,
     required this.personalBestDurationSeconds,
     required this.personalBestDistanceMeters,
+    this.originLatitude,
+    this.originLongitude,
+    this.destinationLatitude,
+    this.destinationLongitude,
     required this.personalBestSpeedKmh,
     required this.personalTripCount,
     this.personalBestStartedAt,
@@ -20,6 +24,10 @@ class RouteSummary {
   final String destinationStationName;
   final int personalBestDurationSeconds;
   final double? personalBestDistanceMeters;
+  final double? originLatitude;
+  final double? originLongitude;
+  final double? destinationLatitude;
+  final double? destinationLongitude;
   final double? personalBestSpeedKmh;
   final int personalTripCount;
   final DateTime? personalBestStartedAt;
@@ -35,6 +43,10 @@ class RouteSummary {
       destinationStationName: destinationStationName,
       personalBestDurationSeconds: personalBestDurationSeconds,
       personalBestDistanceMeters: personalBestDistanceMeters,
+      originLatitude: originLatitude,
+      originLongitude: originLongitude,
+      destinationLatitude: destinationLatitude,
+      destinationLongitude: destinationLongitude,
       personalBestSpeedKmh: personalBestSpeedKmh,
       personalTripCount: personalTripCount,
       personalBestStartedAt: personalBestStartedAt,

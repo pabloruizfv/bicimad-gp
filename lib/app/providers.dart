@@ -39,6 +39,7 @@ import '../features/social/domain/profile_statistics.dart';
 import '../features/social/domain/social_profile.dart';
 import '../features/social/domain/social_repository.dart';
 import '../features/stations/data/station_catalog_repository.dart';
+import '../features/stations/data/terrain_elevation_repository.dart';
 import '../features/trips/data/legacy_route_model_repository.dart';
 import '../features/trips/data/local_community_repository.dart';
 import '../features/trips/data/personal_trips_database.dart';
@@ -48,6 +49,7 @@ import '../features/trips/domain/community_user.dart';
 import '../features/trips/domain/legacy_route_model.dart';
 import '../features/trips/domain/station_code.dart';
 import '../features/trips/domain/trip.dart';
+import '../features/trips/domain/trip_elevation.dart';
 import '../features/trips/domain/trip_history_sync.dart';
 import '../features/trips/domain/trip_metrics.dart';
 
@@ -174,8 +176,19 @@ final stationCatalogRepositoryProvider = Provider<StationCatalogRepository>((
   return LocalStationCatalogRepository(
     store: ref.watch(secureKeyValueStoreProvider),
     transport: ref.watch(httpTransportProvider),
+    terrainRepository: ref.watch(terrainElevationRepositoryProvider),
   );
 });
+
+final terrainElevationRepositoryProvider = Provider<TerrainElevationRepository>(
+  (ref) => AssetTerrainElevationRepository(),
+);
+
+final tripElevationCalculatorProvider = FutureProvider<TripElevationCalculator>(
+  (ref) async => TripElevationCalculator(
+    await ref.watch(terrainElevationRepositoryProvider).load(),
+  ),
+);
 
 final legacyRouteModelRepositoryProvider = Provider<LegacyRouteModelRepository>(
   (ref) {

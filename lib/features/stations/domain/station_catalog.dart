@@ -2,17 +2,21 @@ import '../../trips/domain/station_code.dart';
 import 'station.dart';
 
 class StationCatalog {
-  StationCatalog({required List<Station> stations, required this.updatedAt})
-    : _byId = {for (final station in stations) station.id: station},
-      _byPublicCode = {
-        for (final station in stations) station.publicCode: station,
-      },
-      _byNormalizedName = {
-        for (final station in stations)
-          normalizeStationName(station.name): station,
-      };
+  StationCatalog({
+    required List<Station> stations,
+    required this.updatedAt,
+    this.elevationGridVersion,
+  }) : _byId = {for (final station in stations) station.id: station},
+       _byPublicCode = {
+         for (final station in stations) station.publicCode: station,
+       },
+       _byNormalizedName = {
+         for (final station in stations)
+           normalizeStationName(station.name): station,
+       };
 
   final DateTime updatedAt;
+  final String? elevationGridVersion;
   final Map<String, Station> _byId;
   final Map<String, Station> _byPublicCode;
   final Map<String, Station> _byNormalizedName;
@@ -56,6 +60,8 @@ class StationCatalog {
   Map<String, Object?> toJson() {
     return {
       'updated_at': updatedAt.toIso8601String(),
+      if (elevationGridVersion != null)
+        'elevation_grid_version': elevationGridVersion,
       'stations': [for (final station in stations) station.toJson()],
     };
   }
@@ -83,7 +89,13 @@ class StationCatalog {
     if (stations.isEmpty) {
       return null;
     }
-    return StationCatalog(stations: stations, updatedAt: updatedAt);
+    return StationCatalog(
+      stations: stations,
+      updatedAt: updatedAt,
+      elevationGridVersion: json['elevation_grid_version'] is String
+          ? json['elevation_grid_version'] as String
+          : null,
+    );
   }
 
   Station? _resolveByPublicCode(String code, String stationName) {

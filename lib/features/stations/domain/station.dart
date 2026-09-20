@@ -5,6 +5,7 @@ class Station {
     required this.name,
     required this.latitude,
     required this.longitude,
+    this.elevationMeters,
   });
 
   final String id;
@@ -12,6 +13,16 @@ class Station {
   final String name;
   final double latitude;
   final double longitude;
+  final double? elevationMeters;
+
+  Station withElevation(double? elevation) => Station(
+    id: id,
+    publicCode: publicCode,
+    name: name,
+    latitude: latitude,
+    longitude: longitude,
+    elevationMeters: elevation,
+  );
 
   Map<String, Object?> toJson() {
     return {
@@ -20,6 +31,7 @@ class Station {
       'name': name,
       'latitude': latitude,
       'longitude': longitude,
+      if (elevationMeters != null) 'elevation_meters': elevationMeters,
     };
   }
 
@@ -29,6 +41,7 @@ class Station {
     final name = (json['name'] as String?)?.trim();
     final latitude = json['latitude'];
     final longitude = json['longitude'];
+    final elevation = json['elevation_meters'];
     if (id == null ||
         id.isEmpty ||
         publicCode == null ||
@@ -45,6 +58,7 @@ class Station {
       name: name,
       latitude: latitude.toDouble(),
       longitude: longitude.toDouble(),
+      elevationMeters: elevation is num ? elevation.toDouble() : null,
     );
   }
 }

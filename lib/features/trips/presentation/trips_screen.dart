@@ -7,6 +7,7 @@ import '../../../app/theme.dart';
 import '../../../core/utils/decimal_amount.dart';
 import '../../../core/utils/date_formatters.dart';
 import '../../../core/utils/duration_formatters.dart';
+import '../../../core/utils/geo_utils.dart';
 import '../../../core/utils/metric_formatters.dart';
 import '../../../shared/widgets/async_state_view.dart';
 import '../../../shared/widgets/menu_app_bar.dart';
@@ -15,6 +16,7 @@ import '../../../shared/widgets/profile_avatar.dart';
 import '../../../shared/widgets/trip_sync_progress_banner.dart';
 import '../../profile/data/avatar_repository.dart';
 import '../domain/trip.dart';
+import '../domain/trip_elevation.dart';
 
 const tripRankGoldAccent = Color(0xFFE6B800);
 const tripRankSilverAccent = Color(0xFFADB5BD);
@@ -43,6 +45,9 @@ class TripsScreen extends ConsumerWidget {
     final avatarAsync = ref.watch(selectedAvatarProvider);
     final avatarAsset =
         avatarAsync.valueOrNull ?? LocalAvatarRepository.defaultAvatarAsset;
+    final elevationCalculator = ref
+        .watch(tripElevationCalculatorProvider)
+        .valueOrNull;
 
     return Scaffold(
       appBar: MenuAppBar(
@@ -65,7 +70,11 @@ class TripsScreen extends ConsumerWidget {
                   onRefresh: () => ref
                       .read(authControllerProvider.notifier)
                       .synchronizeTrips(),
-                  child: TripsListView(trips: trips, avatarAsset: avatarAsset),
+                  child: TripsListView(
+                    trips: trips,
+                    avatarAsset: avatarAsset,
+                    elevationCalculator: elevationCalculator,
+                  ),
                 ),
               ),
             ],
@@ -80,11 +89,13 @@ class TripsListView extends StatelessWidget {
   const TripsListView({
     required this.trips,
     required this.avatarAsset,
+    this.elevationCalculator,
     super.key,
   });
 
   final List<Trip> trips;
   final String avatarAsset;
+  final TripElevationCalculator? elevationCalculator;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +131,8 @@ class TripsListView extends StatelessWidget {
           trip: trip,
           isPersonalRecord: bestByRoute[routeKey] == trip.durationSeconds,
           avatarAsset: avatarAsset,
+          elevationCalculator: elevationCalculator,
+          showInlineRouteMetrics: true,
           onTap: () => context.push(
             '/route-history/'
             '${Uri.encodeComponent(trip.originStationId)}/'
@@ -163,6 +176,8 @@ class TripCard extends StatelessWidget {
     this.showPrice = true,
     this.historicalPercentile,
     this.identityHeader,
+    this.elevationCalculator,
+    this.showInlineRouteMetrics = false,
     this.onTap,
     super.key,
   });
@@ -178,6 +193,8 @@ class TripCard extends StatelessWidget {
   final bool showPrice;
   final double? historicalPercentile;
   final Widget? identityHeader;
+  final TripElevationCalculator? elevationCalculator;
+  final bool showInlineRouteMetrics;
   final VoidCallback? onTap;
 
   @override
@@ -255,6 +272,8 @@ class TripCard extends StatelessWidget {
       showPrice: showPrice,
       historicalPercentile: historicalPercentile,
       identityHeader: identityHeader,
+      elevationCalculator: elevationCalculator,
+      showInlineRouteMetrics: showInlineRouteMetrics,
       textTheme: textTheme,
     );
   }
@@ -270,6 +289,8 @@ class _TripCardText extends StatelessWidget {
     required this.showPrice,
     required this.historicalPercentile,
     required this.identityHeader,
+    required this.elevationCalculator,
+    required this.showInlineRouteMetrics,
     required this.textTheme,
   });
 
@@ -281,10 +302,18 @@ class _TripCardText extends StatelessWidget {
   final bool showPrice;
   final double? historicalPercentile;
   final Widget? identityHeader;
+  final TripElevationCalculator? elevationCalculator;
+  final bool showInlineRouteMetrics;
   final TextTheme textTheme;
 
   @override
   Widget build(BuildContext context) {
+    final segmentDistances = showInlineRouteMetrics
+        ? _cardSegmentDistances(trip)
+        : const <double?>[];
+    final segmentElevations = showInlineRouteMetrics
+        ? elevationCalculator?.forTrip(trip).segmentNetMeters
+        : null;
     final titleStyle = textTheme.titleSmall?.copyWith(
       fontWeight: FontWeight.w800,
       height: 1.12,
@@ -331,7 +360,13 @@ class _TripCardText extends StatelessWidget {
           const SizedBox(height: 8),
           _TripRouteStop(name: trip.originStationName, style: titleStyle),
           for (var index = 0; index < trip.pitStops.length; index++) ...[
-            const _TripRouteArrow(),
+            _TripRouteArrow(
+              showMetrics: showInlineRouteMetrics,
+              distanceMeters: showInlineRouteMetrics
+                  ? segmentDistances[index]
+                  : null,
+              elevationMeters: segmentElevations?[index],
+            ),
             _TripRouteStop(
               name: trip.pitStops[index].stationName,
               style: titleStyle,
@@ -340,7 +375,13 @@ class _TripCardText extends StatelessWidget {
               ),
             ),
           ],
-          const _TripRouteArrow(),
+          _TripRouteArrow(
+            showMetrics: showInlineRouteMetrics,
+            distanceMeters: showInlineRouteMetrics
+                ? segmentDistances.last
+                : null,
+            elevationMeters: segmentElevations?.last,
+          ),
           _TripRouteStop(name: trip.destinationStationName, style: titleStyle),
         ] else if (trip.hasPitStops) ...[
           const SizedBox(height: 8),
@@ -366,7 +407,7 @@ class _TripCardText extends StatelessWidget {
                     : 'P${historicalPercentile!.clamp(0, 100).round()}',
                 dense: true,
               )
-            else
+            else if (!showInlineRouteMetrics)
               MetricPill(
                 icon: Icons.route_outlined,
                 label: formatDistanceMeters(trip.directDistanceMeters),
@@ -530,19 +571,68 @@ class _TripRouteStop extends StatelessWidget {
 }
 
 class _TripRouteArrow extends StatelessWidget {
-  const _TripRouteArrow();
+  const _TripRouteArrow({
+    this.showMetrics = false,
+    this.distanceMeters,
+    this.elevationMeters,
+  });
+
+  final bool showMetrics;
+  final double? distanceMeters;
+  final double? elevationMeters;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Icon(
-        Icons.keyboard_arrow_down,
-        size: 18,
-        color: Theme.of(context).colorScheme.primary,
+      child: Row(
+        children: [
+          Icon(
+            Icons.keyboard_arrow_down,
+            size: 18,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          if (showMetrics) ...[
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                formatDistanceWithElevation(distanceMeters, elevationMeters),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
+}
+
+List<double?> _cardSegmentDistances(Trip trip) {
+  if (!trip.hasPitStops) return [trip.directDistanceMeters];
+  final points = <(double?, double?)>[
+    (trip.originLatitude, trip.originLongitude),
+    for (final stop in trip.pitStops) (stop.latitude, stop.longitude),
+    (trip.destinationLatitude, trip.destinationLongitude),
+  ];
+  return [
+    for (var index = 0; index < points.length - 1; index++)
+      points[index].$1 == null ||
+              points[index].$2 == null ||
+              points[index + 1].$1 == null ||
+              points[index + 1].$2 == null
+          ? null
+          : haversineDistanceMeters(
+              fromLatitude: points[index].$1!,
+              fromLongitude: points[index].$2!,
+              toLatitude: points[index + 1].$1!,
+              toLongitude: points[index + 1].$2!,
+            ),
+  ];
 }
 
 class _PitStopDurationPill extends StatelessWidget {

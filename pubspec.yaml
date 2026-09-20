@@ -90,6 +90,8 @@ flutter:
     - assets/data/legacy_route_models.sqlite
     - assets/data/legacy_route_models.manifest.json
     - assets/data/station_catalog_snapshot.json
+    - assets/data/station_terrain_10m.json
+    - assets/data/station_terrain_10m.i16.gz
 
   # To add assets to your application, add an assets section, like this:
   #   - images/a_dot_burr.jpeg

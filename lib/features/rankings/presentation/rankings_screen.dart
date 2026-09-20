@@ -35,6 +35,9 @@ class _RankingsScreenState extends ConsumerState<RankingsScreen> {
       routeHistoricalPercentilesProvider,
     );
     final percentiles = historicalPercentilesAsync.valueOrNull;
+    final elevationCalculator = ref
+        .watch(tripElevationCalculatorProvider)
+        .valueOrNull;
     final avatarAsset =
         ref.watch(selectedAvatarProvider).valueOrNull ??
         LocalAvatarRepository.defaultAvatarAsset;
@@ -129,6 +132,15 @@ class _RankingsScreenState extends ConsumerState<RankingsScreen> {
                               child: _RouteSummaryText(
                                 summary: summary,
                                 avatarAsset: avatarAsset,
+                                netElevationMeters: elevationCalculator
+                                    ?.netMetersBetween(
+                                      originLatitude: summary.originLatitude,
+                                      originLongitude: summary.originLongitude,
+                                      destinationLatitude:
+                                          summary.destinationLatitude,
+                                      destinationLongitude:
+                                          summary.destinationLongitude,
+                                    ),
                               ),
                             ),
                           ],
@@ -195,10 +207,15 @@ class _RankingsSortSelector extends StatelessWidget {
 }
 
 class _RouteSummaryText extends StatelessWidget {
-  const _RouteSummaryText({required this.summary, required this.avatarAsset});
+  const _RouteSummaryText({
+    required this.summary,
+    required this.avatarAsset,
+    required this.netElevationMeters,
+  });
 
   final RouteSummary summary;
   final String avatarAsset;
+  final double? netElevationMeters;
 
   @override
   Widget build(BuildContext context) {
@@ -226,11 +243,18 @@ class _RouteSummaryText extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 6),
-              Text(
-                formatDistanceMeters(summary.personalBestDistanceMeters),
-                style: textTheme.labelMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w800,
+              Expanded(
+                child: Text(
+                  formatDistanceWithElevation(
+                    summary.personalBestDistanceMeters,
+                    netElevationMeters,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.labelMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
             ],

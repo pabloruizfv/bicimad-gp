@@ -7,6 +7,7 @@ import '../../../core/network/http_transport.dart';
 import '../../../core/storage/secure_key_value_store.dart';
 import '../domain/station.dart';
 import '../domain/station_catalog.dart';
+import 'terrain_elevation_repository.dart';
 
 abstract interface class StationCatalogRepository {
   Future<StationCatalog> getCatalog();
@@ -23,6 +24,7 @@ class LocalStationCatalogRepository implements StationCatalogRepository {
   LocalStationCatalogRepository({
     required this.store,
     required this.transport,
+    this.terrainRepository,
     this.assetPath = 'assets/data/station_catalog_snapshot.json',
     this.gbfsStationInformationUri = const String.fromEnvironment(
       'BICIMAD_GBFS_STATION_INFORMATION_URL',
@@ -37,6 +39,7 @@ class LocalStationCatalogRepository implements StationCatalogRepository {
 
   final SecureKeyValueStore store;
   final HttpTransport transport;
+  final TerrainElevationRepository? terrainRepository;
   final String assetPath;
   final String gbfsStationInformationUri;
   final DateTime Function() _now;
@@ -54,12 +57,16 @@ class LocalStationCatalogRepository implements StationCatalogRepository {
 
     final stored = await _readStoredCatalog();
     if (stored != null) {
-      _cachedCatalog = stored;
-      _refreshIfStale(stored);
-      return stored;
+      final enriched = await _withTerrainElevations(stored);
+      _cachedCatalog = enriched;
+      if (!identical(enriched, stored)) await _persistCatalog(enriched);
+      _refreshIfStale(enriched);
+      return enriched;
     }
 
-    final assetCatalog = await _readAssetCatalog();
+    final assetCatalog = await _withTerrainElevations(
+      await _readAssetCatalog(),
+    );
     _cachedCatalog = assetCatalog;
     await _persistCatalog(assetCatalog);
     _refreshIfStale(assetCatalog);
@@ -171,7 +178,9 @@ class LocalStationCatalogRepository implements StationCatalogRepository {
       if (stations.isEmpty) {
         return;
       }
-      final catalog = StationCatalog(stations: stations, updatedAt: _now());
+      final catalog = await _withTerrainElevations(
+        StationCatalog(stations: stations, updatedAt: _now()),
+      );
       _cachedCatalog = catalog;
       await _persistCatalog(catalog);
     } catch (_) {
@@ -184,6 +193,33 @@ class LocalStationCatalogRepository implements StationCatalogRepository {
       key: _catalogStorageKey,
       value: jsonEncode(catalog.toJson()),
     );
+  }
+
+  Future<StationCatalog> _withTerrainElevations(StationCatalog catalog) async {
+    final terrain = terrainRepository;
+    if (terrain == null) return catalog;
+    try {
+      final version = await terrain.version();
+      if (catalog.elevationGridVersion == version) return catalog;
+      final grid = await terrain.load();
+      final stations = [
+        for (final station in catalog.stations)
+          () {
+            final elevation = grid.elevationAt(
+              latitude: station.latitude,
+              longitude: station.longitude,
+            );
+            return station.withElevation(elevation);
+          }(),
+      ];
+      return StationCatalog(
+        stations: stations,
+        updatedAt: catalog.updatedAt,
+        elevationGridVersion: version,
+      );
+    } catch (_) {
+      return catalog;
+    }
   }
 
   List<Station> _stationsFromGbfs(Map<String, Object?> payload) {

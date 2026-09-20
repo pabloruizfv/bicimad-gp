@@ -12,4 +12,11 @@ void main() {
   test('mantiene el estado no disponible', () {
     expect(formatDistanceMeters(null), 'No disponible');
   });
+
+  test('formatea el desnivel neto con signo y omite el desconocido', () {
+    expect(formatDistanceWithElevation(841, 24.6), '840 m · +25 m');
+    expect(formatDistanceWithElevation(841, -24.6), '840 m · -25 m');
+    expect(formatDistanceWithElevation(841, 0), '840 m · 0 m');
+    expect(formatDistanceWithElevation(841, null), '840 m');
+  });
 }

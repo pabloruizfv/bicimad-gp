@@ -9,6 +9,7 @@ import 'package:bicimad_social/features/trips/domain/legacy_route_model.dart';
 import 'package:bicimad_social/features/trips/domain/journey_builder.dart';
 import 'package:bicimad_social/features/trips/domain/station_code.dart';
 import 'package:bicimad_social/features/trips/domain/trip.dart';
+import 'package:bicimad_social/features/trips/domain/trip_elevation.dart';
 import 'package:bicimad_social/features/trips/presentation/route_history_screen.dart';
 import 'package:bicimad_social/features/trips/presentation/trips_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sqlite3/sqlite3.dart';
+
+import '../../helpers/fixture_elevation.dart';
 
 void main() {
   test('extrae codigo publico de estacion en Dart', () {
@@ -944,6 +947,48 @@ void main() {
     expect(tripRankBackgroundColor(4), Colors.transparent);
   });
 
+  testWidgets('ruta generica muestra desnivel junto a distancia', (
+    tester,
+  ) async {
+    await _pumpRouteHistory(
+      tester,
+      model: _model(displayedCount: 5),
+      trips: [
+        _trip('selected', distanceMeters: 840, withElevationCoords: true),
+      ],
+      elevationCalculator: fixtureElevationCalculator(),
+    );
+    expect(find.text('840 m · +300 m'), findsOneWidget);
+  });
+
+  testWidgets('viaje con pit stop muestra desnivel de cada etapa', (
+    tester,
+  ) async {
+    await _pumpRouteHistory(
+      tester,
+      model: null,
+      showOverview: true,
+      trips: [
+        _trip(
+          'selected',
+          distanceMeters: 840,
+          withElevationCoords: true,
+          pitStops: const [
+            PitStop(
+              stationId: '3',
+              stationName: 'Parada',
+              durationSeconds: 30,
+              latitude: 40,
+              longitude: -3,
+            ),
+          ],
+        ),
+      ],
+      elevationCalculator: fixtureElevationCalculator(),
+    );
+    expect(find.textContaining('· +150 m ·'), findsNWidgets(2));
+  });
+
   testWidgets('modo rankings muestra resumen OD sin datos ni pit stops', (
     tester,
   ) async {
@@ -1270,6 +1315,7 @@ Future<void> _pumpRouteHistory(
     entries: [],
   ),
   SocialProfile? currentProfile,
+  TripElevationCalculator? elevationCalculator,
 }) async {
   const routeKey = RouteKey(originStationId: '34', destinationStationId: '164');
   await tester.pumpWidget(
@@ -1282,6 +1328,10 @@ Future<void> _pumpRouteHistory(
         ),
         myTripsProvider.overrideWith((ref) async => allTrips ?? trips),
         myTripStagesProvider.overrideWith((ref) async => stages ?? trips),
+        if (elevationCalculator != null)
+          tripElevationCalculatorProvider.overrideWith(
+            (ref) async => elevationCalculator,
+          ),
         if (currentProfile != null)
           currentSocialProfileProvider.overrideWith((ref) => currentProfile),
       ],
@@ -1354,6 +1404,7 @@ Trip _trip(
   List<JourneyStageDetails> stageDetails = const [],
   String? bikeId,
   String? tripCost,
+  bool withElevationCoords = false,
 }) {
   return Trip(
     id: id,
@@ -1367,6 +1418,10 @@ Trip _trip(
     durationSeconds: durationSeconds,
     isShared: true,
     directDistanceMeters: distanceMeters,
+    originLatitude: withElevationCoords ? 40.5 : null,
+    originLongitude: withElevationCoords ? -3.5 : null,
+    destinationLatitude: withElevationCoords ? 39.5 : null,
+    destinationLongitude: withElevationCoords ? -2.5 : null,
     bikeId: bikeId,
     tripCost: tripCost,
     pitStops: pitStops,

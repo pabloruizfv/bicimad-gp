@@ -10,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../helpers/fixture_elevation.dart';
+
 void main() {
   testWidgets('permite ordenar rankings por posicion, velocidad o viajes', (
     tester,
@@ -157,6 +159,41 @@ void main() {
       expect(label.maxLines, 1);
       expect(label.overflow, TextOverflow.ellipsis);
     }
+  });
+
+  testWidgets('muestra distancia y desnivel en la flecha de Rankings', (
+    tester,
+  ) async {
+    final summary = RouteSummary(
+      originStationId: '1',
+      originStationName: 'Origen',
+      destinationStationId: '2',
+      destinationStationName: 'Destino',
+      personalBestDurationSeconds: 300,
+      personalBestDistanceMeters: 840,
+      originLatitude: 40.5,
+      originLongitude: -3.5,
+      destinationLatitude: 39.5,
+      destinationLongitude: -2.5,
+      personalBestSpeedKmh: 10,
+      personalTripCount: 1,
+      currentUserPosition: null,
+      totalUsers: 1,
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          routePersonalSummariesProvider.overrideWith((ref) async => [summary]),
+          routeHistoricalPercentilesProvider.overrideWith((ref) async => {}),
+          tripElevationCalculatorProvider.overrideWith(
+            (ref) async => fixtureElevationCalculator(),
+          ),
+        ],
+        child: const MaterialApp(home: RankingsScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('840 m · +300 m'), findsOneWidget);
   });
 
   testWidgets('muestra contenido personal sin esperar los percentiles', (

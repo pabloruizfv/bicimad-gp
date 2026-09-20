@@ -10,8 +10,91 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/fake_social_repository.dart';
 import '../../helpers/fakes.dart';
+import '../../helpers/fixture_elevation.dart';
 
 void main() {
+  testWidgets('Viajes muestra distancia y desnivel junto a la flecha', (
+    tester,
+  ) async {
+    final trip = Trip(
+      id: 'elevation-trip',
+      externalId: 'elevation-trip',
+      userId: 'user-1',
+      originStationId: '1',
+      originStationName: 'Origen',
+      destinationStationId: '2',
+      destinationStationName: 'Destino',
+      startedAt: DateTime(2026, 8, 7, 10),
+      durationSeconds: 600,
+      isShared: true,
+      directDistanceMeters: 840,
+      originLatitude: 40.5,
+      originLongitude: -3.5,
+      destinationLatitude: 39.5,
+      destinationLongitude: -2.5,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: TripsListView(
+            trips: [trip],
+            avatarAsset: 'assets/avatar/1.png',
+            elevationCalculator: fixtureElevationCalculator(),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.text('840 m · +300 m'), findsOneWidget);
+    expect(find.byIcon(Icons.route_outlined), findsNothing);
+  });
+
+  testWidgets('Viajes reparte distancia y desnivel entre etapas', (
+    tester,
+  ) async {
+    final trip = Trip(
+      id: 'staged-elevation-trip',
+      externalId: 'staged-elevation-trip',
+      userId: 'user-1',
+      originStationId: '1',
+      originStationName: 'Origen',
+      destinationStationId: '2',
+      destinationStationName: 'Destino',
+      startedAt: DateTime(2026, 8, 7, 10),
+      durationSeconds: 600,
+      isShared: true,
+      directDistanceMeters: 840,
+      originLatitude: 40.5,
+      originLongitude: -3.5,
+      destinationLatitude: 39.5,
+      destinationLongitude: -2.5,
+      pitStops: const [
+        PitStop(
+          stationId: '3',
+          stationName: 'Parada',
+          durationSeconds: 30,
+          latitude: 40,
+          longitude: -3,
+        ),
+      ],
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: TripsListView(
+            trips: [trip],
+            avatarAsset: 'assets/avatar/1.png',
+            elevationCalculator: fixtureElevationCalculator(),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.textContaining('· +150 m'), findsNWidgets(2));
+    expect(find.text('840 m · +300 m'), findsNothing);
+    expect(find.byIcon(Icons.route_outlined), findsNothing);
+  });
+
   testWidgets('la lista construye de forma perezosa un historico grande', (
     tester,
   ) async {
