@@ -508,37 +508,44 @@ class _AvatarPickerSheet extends StatelessWidget {
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: Wrap(
-                spacing: 14,
-                runSpacing: 14,
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  for (final asset in LocalAvatarRepository.avatarAssets)
-                    Semantics(
-                      label: 'Avatar ${asset.split('/').last}',
-                      selected: selectedAsset == asset,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(40),
-                        onTap: () {
-                          onSelected(asset);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: ProfileAvatar(
-                            assetPath: asset,
-                            radius: 30,
-                            isSelected: selectedAsset == asset,
-                            emphasizeSelection: true,
+            FutureBuilder<List<String>>(
+              future: LocalAvatarRepository.loadAvatarAssets(),
+              builder: (context, snapshot) {
+                final assets = snapshot.data ?? const <String>[];
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return SizedBox(
+                  width: double.infinity,
+                  child: Wrap(
+                    spacing: 14,
+                    runSpacing: 14,
+                    alignment: WrapAlignment.center,
+                    runAlignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      for (final asset in assets)
+                        Semantics(
+                          label: 'Avatar ${asset.split('/').last}',
+                          selected: selectedAsset == asset,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(40),
+                            onTap: () => onSelected(asset),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: ProfileAvatar(
+                                assetPath: asset,
+                                radius: 30,
+                                isSelected: selectedAsset == asset,
+                                emphasizeSelection: true,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                ],
-              ),
+                    ],
+                  ),
+                );
+              },
             ),
           ],
         ),

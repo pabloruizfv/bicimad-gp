@@ -83,25 +83,36 @@ class _SocialOnboardingScreenState
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 12),
-              Wrap(
-                spacing: 14,
-                runSpacing: 14,
-                children: [
-                  for (final asset in LocalAvatarRepository.avatarAssets)
-                    InkWell(
-                      borderRadius: BorderRadius.circular(40),
-                      onTap: () => setState(() => _avatar = asset),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: ProfileAvatar(
-                          assetPath: asset,
-                          radius: 30,
-                          isSelected: asset == _avatar,
-                          emphasizeSelection: true,
+              FutureBuilder<List<String>>(
+                future: LocalAvatarRepository.loadAvatarAssets(),
+                builder: (context, snapshot) {
+                  final assets = snapshot.data ?? const <String>[];
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return Wrap(
+                    spacing: 14,
+                    runSpacing: 14,
+                    alignment: WrapAlignment.center,
+                    runAlignment: WrapAlignment.center,
+                    children: [
+                      for (final asset in assets)
+                        InkWell(
+                          borderRadius: BorderRadius.circular(40),
+                          onTap: () => setState(() => _avatar = asset),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: ProfileAvatar(
+                              assetPath: asset,
+                              radius: 30,
+                              isSelected: asset == _avatar,
+                              emphasizeSelection: true,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                ],
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 18),
               SwitchListTile(

@@ -90,6 +90,7 @@ void main() {
         child: const MaterialApp(home: SocialOnboardingScreen()),
       ),
     );
+    await tester.pumpAndSettle();
 
     expect(find.text('@usuario'), findsOneWidget);
     expect(find.byType(TextFormField), findsNWidgets(2));
