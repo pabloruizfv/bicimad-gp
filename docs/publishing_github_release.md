@@ -26,9 +26,11 @@ version: 1.0.2+2
 - Incrementa tambien el numero posterior a `+` en cada APK publicada.
 - No reutilices el mismo numero de version para otra APK.
 - La APK publicada como v1.0.1 tenia `versionCode=1`, igual que la anterior;
-  Android no la considera una actualizacion. La version 1.0.2 debe tener
+  Android no la considera una actualizacion. Esta release lo corrige usando
   `versionCode=2`.
-  Para cada release posterior, incrementa el numero tras `+` sin excepciones.
+- Esta release usa `versionName=1.0.2` y `versionCode=2`. El tag de GitHub debe
+  ser `v1.0.2`, porque la app compara ese tag con la version instalada.
+- Para cada release posterior, incrementa el numero tras `+` sin excepciones.
 
 ## 3. Ajustar la compatibilidad, si procede
 
@@ -79,7 +81,7 @@ En GitHub:
 1. Haz commit y push de los cambios, incluido el nuevo `pubspec.yaml`.
 2. Abre el repositorio `pabloruizfv/bicimad-gp`.
 3. Entra en **Releases** y pulsa **Draft a new release**.
-4. Crea un tag nuevo, por ejemplo `v1.1.0`.
+4. Crea un tag igual al `versionName`; para esta release, `v1.0.2`.
 5. Selecciona la rama `main`.
 6. Escribe las notas de la version.
 7. Adjunta `app-release.apk`.
