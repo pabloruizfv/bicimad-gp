@@ -51,12 +51,7 @@ class _BicimadSocialAppState extends ConsumerState<BicimadSocialApp>
     final router = ref.watch(routerProvider);
     final showUpdateOverlay =
         _optionalUpdatePromptShown &&
-        !updateState.isRequired &&
-        (updateState.status == AppUpdateStatus.available ||
-            updateState.status == AppUpdateStatus.downloading ||
-            updateState.status == AppUpdateStatus.awaitingPermission ||
-            updateState.status == AppUpdateStatus.installing ||
-            updateState.status == AppUpdateStatus.ready);
+        updateState.status == AppUpdateStatus.available;
 
     return MaterialApp.router(
       title: appDisplayName,
@@ -86,10 +81,8 @@ class _BicimadSocialAppState extends ConsumerState<BicimadSocialApp>
   }
 
   void _showOptionalUpdateIfAvailable(AppUpdateState state) {
-    if ((state.status != AppUpdateStatus.available &&
-            state.status != AppUpdateStatus.downloading) ||
-        (state.status == AppUpdateStatus.available &&
-            state.info?.latestVersion == _deferredUpdateVersion) ||
+    if (state.status != AppUpdateStatus.available ||
+        state.info?.latestVersion == _deferredUpdateVersion ||
         _optionalUpdatePromptShown ||
         _optionalUpdatePromptScheduled) {
       return;
@@ -112,100 +105,52 @@ class OptionalUpdateDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(appUpdateControllerProvider);
     final info = state.info;
-    final downloading = state.status == AppUpdateStatus.downloading;
-    final installing = state.status == AppUpdateStatus.installing;
-    final awaitingPermission =
-        state.status == AppUpdateStatus.awaitingPermission;
-    final ready = state.status == AppUpdateStatus.ready;
-    final progress = state.progress;
-    return PopScope(
-      canPop: !downloading && !installing,
-      child: AlertDialog(
-        title: Text(
-          downloading
-              ? 'Descargando actualización...'
-              : installing
-              ? 'Abriendo el instalador...'
-              : awaitingPermission
-              ? 'Permite instalar la actualización'
-              : ready
-              ? 'Actualización descargada'
-              : 'Nueva versión disponible',
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              info == null
-                  ? 'Puedes actualizar BiciMAD GP.'
-                  : 'La versión ${info.latestVersion} está disponible.',
-            ),
-            if (downloading) ...[
-              const SizedBox(height: 16),
-              LinearProgressIndicator(value: progress),
-              const SizedBox(height: 8),
-              if (progress != null) Text('${(progress * 100).round()}%'),
-            ],
-            if (awaitingPermission)
-              const Padding(
-                padding: EdgeInsets.only(top: 12),
-                child: Text(
-                  'Activa el permiso para esta app en Android y vuelve aquí.',
-                ),
-              ),
-            if (ready)
-              const Padding(
-                padding: EdgeInsets.only(top: 12),
-                child: Text(
-                  'Pulsa Instalar y confirma la actualización en Android.',
-                ),
-              ),
-            if (state.errorMessage != null) ...[
-              const SizedBox(height: 12),
-              Text(
-                state.errorMessage!.contains('INVALID_APK')
-                    ? 'El APK descargado no corresponde a una versión nueva de esta app.'
-                    : 'No se ha podido completar la actualización. Inténtalo de nuevo.',
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            ],
-          ],
-        ),
-        actions: [
-          if (!downloading && !installing)
-            TextButton(
-              onPressed: onDismiss ?? () => Navigator.of(context).pop(),
-              child: const Text('Ahora no'),
-            ),
-          FilledButton.icon(
-            onPressed: downloading || installing
-                ? null
-                : () {
-                    final controller = ref.read(
-                      appUpdateControllerProvider.notifier,
-                    );
-                    if (ready || awaitingPermission) {
-                      controller.installDownloaded();
-                    } else {
-                      controller.downloadAndInstall();
-                    }
-                  },
-            icon: const Icon(Icons.download),
-            label: Text(
-              downloading
-                  ? 'Descargando...'
-                  : installing
-                  ? 'Abriendo...'
-                  : awaitingPermission
-                  ? 'Abrir permisos'
-                  : ready
-                  ? 'Instalar'
-                  : 'Actualizar',
-            ),
+    return AlertDialog(
+      title: const Text('Nueva versión disponible'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            info == null
+                ? 'Puedes actualizar BiciMAD GP.'
+                : 'Tienes la versión ${info.currentVersion}. La versión '
+                      '${info.latestVersion} ya está disponible en GitHub.',
           ),
+          if (state.isUnsupported)
+            const Padding(
+              padding: EdgeInsets.only(top: 12),
+              child: Text(
+                'Esta versión ya no está entre las versiones compatibles. '
+                'Si no actualizas, algunas funciones pueden no comportarse '
+                'como se espera.',
+              ),
+            ),
         ],
       ),
+      actions: [
+        TextButton(
+          onPressed: onDismiss ?? () => Navigator.of(context).pop(),
+          child: const Text('Ahora no'),
+        ),
+        FilledButton.icon(
+          onPressed: () async {
+            final opened = await ref
+                .read(appUpdateControllerProvider.notifier)
+                .openReleasePage();
+            if (!context.mounted) return;
+            if (opened) {
+              (onDismiss ?? () => Navigator.of(context).pop())();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('No se ha podido abrir GitHub.')),
+              );
+            }
+          },
+          icon: const Icon(Icons.open_in_new),
+          label: const Text('Ir a GitHub'),
+        ),
+      ],
     );
   }
 }

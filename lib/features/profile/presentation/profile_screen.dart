@@ -190,15 +190,16 @@ class ProfileScreen extends ConsumerWidget {
               state: updateState,
               onCheck: () =>
                   ref.read(appUpdateControllerProvider.notifier).check(),
-              onUpdate: () {
-                final controller = ref.read(
-                  appUpdateControllerProvider.notifier,
-                );
-                if (updateState.status == AppUpdateStatus.ready ||
-                    updateState.status == AppUpdateStatus.awaitingPermission) {
-                  controller.installDownloaded();
-                } else {
-                  controller.downloadAndInstall();
+              onOpenReleases: () async {
+                final opened = await ref
+                    .read(appUpdateControllerProvider.notifier)
+                    .openReleasePage();
+                if (context.mounted && !opened) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No se ha podido abrir GitHub.'),
+                    ),
+                  );
                 }
               },
             ),
@@ -392,21 +393,16 @@ class _AppUpdateSettingsCard extends StatelessWidget {
   const _AppUpdateSettingsCard({
     required this.state,
     required this.onCheck,
-    required this.onUpdate,
+    required this.onOpenReleases,
   });
 
   final AppUpdateState state;
   final VoidCallback onCheck;
-  final VoidCallback onUpdate;
+  final VoidCallback onOpenReleases;
 
   @override
   Widget build(BuildContext context) {
     final info = state.info;
-    final downloading = state.status == AppUpdateStatus.downloading;
-    final installing = state.status == AppUpdateStatus.installing;
-    final awaitingPermission =
-        state.status == AppUpdateStatus.awaitingPermission;
-    final ready = state.status == AppUpdateStatus.ready;
     final available = state.status == AppUpdateStatus.available;
     final checking = state.status == AppUpdateStatus.checking;
     final title = switch (state.status) {
@@ -414,11 +410,6 @@ class _AppUpdateSettingsCard extends StatelessWidget {
       AppUpdateStatus.current => 'BiciMAD GP está actualizado',
       AppUpdateStatus.available =>
         'Nueva versión ${info?.latestVersion ?? ''} detectada',
-      AppUpdateStatus.required => 'Actualización necesaria',
-      AppUpdateStatus.downloading => 'Descargando actualización...',
-      AppUpdateStatus.awaitingPermission => 'Permiso de instalación pendiente',
-      AppUpdateStatus.installing => 'Abriendo el instalador...',
-      AppUpdateStatus.ready => 'Descarga preparada',
       AppUpdateStatus.error => 'No se ha podido comprobar la actualización',
     };
     final subtitle = switch (state.status) {
@@ -427,16 +418,9 @@ class _AppUpdateSettingsCard extends StatelessWidget {
       AppUpdateStatus.current =>
         'Versión instalada: ${info?.currentVersion ?? 'actual'}.',
       AppUpdateStatus.available =>
-        'Versión instalada: ${info?.currentVersion ?? ''}. Disponible: ${info?.latestVersion ?? ''}.',
-      AppUpdateStatus.required =>
-        'Esta versión ya no es compatible con los servicios actuales.',
-      AppUpdateStatus.downloading =>
-        '${((state.progress ?? 0) * 100).round()}% descargado.',
-      AppUpdateStatus.awaitingPermission =>
-        'Activa el permiso para esta app en Android y vuelve aquí.',
-      AppUpdateStatus.installing => 'Confirma la instalación en Android.',
-      AppUpdateStatus.ready =>
-        'Pulsa Instalar y confirma la actualización en Android.',
+        state.isUnsupported
+            ? 'Versión instalada: ${info?.currentVersion ?? ''}. Actualiza para evitar que algunas funciones fallen.'
+            : 'Versión instalada: ${info?.currentVersion ?? ''}. Disponible: ${info?.latestVersion ?? ''}.',
       AppUpdateStatus.error => 'Revisa la conexión e inténtalo de nuevo.',
     };
 
@@ -458,8 +442,7 @@ class _AppUpdateSettingsCard extends StatelessWidget {
                 Icon(
                   state.status == AppUpdateStatus.error
                       ? Icons.error_outline
-                      : state.status == AppUpdateStatus.available ||
-                            state.status == AppUpdateStatus.required
+                      : state.status == AppUpdateStatus.available
                       ? Icons.system_update_alt
                       : Icons.update_outlined,
                   color: state.status == AppUpdateStatus.error
@@ -479,46 +462,25 @@ class _AppUpdateSettingsCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
-            if (downloading) ...[
-              const SizedBox(height: 12),
-              LinearProgressIndicator(value: state.progress),
-            ],
             const SizedBox(height: 14),
             FilledButton.icon(
-              onPressed: checking || downloading || installing
+              onPressed: checking
                   ? null
-                  : available ||
-                        state.status == AppUpdateStatus.required ||
-                        ready ||
-                        awaitingPermission
-                  ? onUpdate
+                  : available
+                  ? onOpenReleases
                   : onCheck,
-              icon: downloading
-                  ? const SizedBox.square(
-                      dimension: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Icon(
-                      checking
-                          ? Icons.hourglass_top_outlined
-                          : available ||
-                                state.status == AppUpdateStatus.required
-                          ? Icons.download
-                          : Icons.refresh,
-                    ),
+              icon: Icon(
+                checking
+                    ? Icons.hourglass_top_outlined
+                    : available
+                    ? Icons.open_in_new
+                    : Icons.refresh,
+              ),
               label: Text(
-                checking || downloading || installing
-                    ? checking
-                          ? 'Comprobando...'
-                          : downloading
-                          ? 'Descargando...'
-                          : 'Abriendo...'
-                    : awaitingPermission
-                    ? 'Abrir permisos'
-                    : ready
-                    ? 'Instalar'
-                    : available || state.status == AppUpdateStatus.required
-                    ? 'Actualizar'
+                checking
+                    ? 'Comprobando...'
+                    : available
+                    ? 'Ver en GitHub'
                     : 'Comprobar ahora',
               ),
             ),

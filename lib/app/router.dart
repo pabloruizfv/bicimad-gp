@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/authentication/presentation/auth_gate.dart';
-import '../features/app_update/domain/app_update.dart';
-import '../features/app_update/presentation/force_update_screen.dart';
 import '../features/authentication/presentation/display_name_screen.dart';
 import '../features/authentication/presentation/experimental_config_screen.dart';
 import '../features/authentication/presentation/login_screen.dart';
@@ -35,10 +33,6 @@ final routerProvider = Provider<GoRouter>((ref) {
   final socialStatus = ref.watch(
     socialAuthControllerProvider.select((state) => state.status),
   );
-  final updateRequired = ref.watch(
-    appUpdateControllerProvider.select((state) => state.blocksApp),
-  );
-
   return GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: '/',
@@ -47,15 +41,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       authGateStatus: authGateStatus,
       needsDisplayName: needsDisplayName,
       socialStatus: socialStatus,
-      updateStatus: updateRequired
-          ? AppUpdateStatus.required
-          : AppUpdateStatus.current,
     ),
     routes: [
-      GoRoute(
-        path: '/update-required',
-        builder: (context, state) => const ForceUpdateScreen(),
-      ),
       GoRoute(path: '/', builder: (context, state) => const AuthGate()),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
@@ -173,12 +160,7 @@ String? resolveAppRedirect({
   required AuthGateStatus authGateStatus,
   required bool needsDisplayName,
   required SocialAuthStatus socialStatus,
-  AppUpdateStatus updateStatus = AppUpdateStatus.current,
 }) {
-  if (updateStatus == AppUpdateStatus.required) {
-    return location == '/update-required' ? null : '/update-required';
-  }
-  if (location == '/update-required') return '/';
   final isRoot = location == '/';
   final isLogin = location == '/login';
   final isDisplayName = location == '/display-name';

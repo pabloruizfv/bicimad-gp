@@ -26,7 +26,8 @@ version: 1.0.2+2
 - Incrementa tambien el numero posterior a `+` en cada APK publicada.
 - No reutilices el mismo numero de version para otra APK.
 - La APK publicada como v1.0.1 tenia `versionCode=1`, igual que la anterior;
-  el actualizador la rechaza. La version 1.0.2 debe tener `versionCode=2`.
+  Android no la considera una actualizacion. La version 1.0.2 debe tener
+  `versionCode=2`.
   Para cada release posterior, incrementa el numero tras `+` sin excepciones.
 
 ## 3. Ajustar la compatibilidad, si procede
@@ -41,8 +42,9 @@ con el backend, la base de datos o el formato de datos:
 ```
 
 No aumentes este valor solo porque exista una release nueva. Las versiones
-compatibles reciben un aviso opcional y el usuario puede posponer la descarga.
-Solo las versiones inferiores a este valor quedan bloqueadas.
+compatibles reciben un aviso opcional. Las versiones inferiores a este valor
+reciben ademas una advertencia de que algunas funciones pueden no comportarse
+como se espera, pero la app no bloquea su uso.
 
 ## 4. Generar la APK firmada
 
@@ -83,34 +85,34 @@ En GitHub:
 7. Adjunta `app-release.apk`.
 8. Publica la release.
 
-El actualizador integrado consulta la release mas reciente y busca el primer
-asset con extension `.apk`.
+La app consulta la release mas reciente y enlaza su pagina de GitHub para que
+el usuario descargue manualmente el asset con extension `.apk`.
 
 ## 6. Comprobar la instalacion
 
-Instala la APK en un dispositivo de prueba. Android puede pedir permiso para
-instalar aplicaciones desconocidas y siempre requiere confirmacion del usuario.
+Descarga e instala la APK desde GitHub Releases en un dispositivo de prueba.
+El navegador o gestor de archivos puede pedir permiso para instalar
+aplicaciones desconocidas y Android siempre requiere confirmacion del usuario.
 
 Comprueba:
 
 - que la APK se instala sobre la version anterior;
-- que `Actualizar` muestra el progreso sin cerrar la ventana de la app;
-- que, al completar la descarga, Android abre su instalador y solicita
-  confirmacion; si pide permiso para esta fuente, activalo y vuelve a la app;
-- que al cancelar la instalacion aparece `Instalar` para reintentar sin
-  descargar de nuevo;
+- que el aviso de nueva version permite posponer la actualizacion;
+- que `Ir a GitHub` abre la pagina de la release en el navegador;
+- que la descarga y la instalacion manuales funcionan desde esa pagina;
 - que el login y la sincronizacion siguen funcionando;
 - que la release es publica y el asset se puede descargar;
 - que `update_policy.json` se puede consultar desde `main`.
 
-## 7. Probar una actualizacion obligatoria
+## 7. Probar el aviso de version fuera de soporte
 
-La APK publicada debe contener ya el actualizador. Para probarlo:
+La APK publicada debe contener ya el comprobador de versiones. Para probarlo:
 
 1. Publica una version posterior con el actualizador.
 2. Cambia temporalmente `minimumSupportedVersion` a una version superior a la instalada.
 3. Haz commit y push de `update_policy.json`.
-4. Abre la app instalada y comprueba la pantalla de actualizacion.
+4. Abre la app instalada y comprueba que el aviso explica que algunas funciones
+   pueden no comportarse como se espera, sin impedir el uso de la app.
 5. Restaura el valor correcto y vuelve a hacer commit y push.
 
 No dejes el valor de prueba en `main`.

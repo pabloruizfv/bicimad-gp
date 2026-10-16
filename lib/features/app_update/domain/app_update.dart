@@ -1,53 +1,33 @@
-enum AppUpdateStatus {
-  checking,
-  current,
-  available,
-  required,
-  downloading,
-  awaitingPermission,
-  installing,
-  ready,
-  error,
-}
+enum AppUpdateStatus { checking, current, available, error }
 
 class AppUpdateInfo {
   const AppUpdateInfo({
     required this.currentVersion,
     required this.latestVersion,
     required this.minimumSupportedVersion,
-    required this.apkUrl,
-    this.sha256,
+    required this.releaseUrl,
   });
 
   final String currentVersion;
   final String latestVersion;
   final String minimumSupportedVersion;
-  final Uri apkUrl;
-  final String? sha256;
+  final Uri releaseUrl;
 }
 
 class AppUpdateState {
   const AppUpdateState({
     required this.status,
     this.info,
-    this.progress,
     this.errorMessage,
-    this.isRequired = false,
+    this.isUnsupported = false,
   });
 
   const AppUpdateState.checking() : this(status: AppUpdateStatus.checking);
 
   final AppUpdateStatus status;
   final AppUpdateInfo? info;
-  final double? progress;
   final String? errorMessage;
-  final bool isRequired;
-
-  bool get blocksApp => isRequired;
-  bool get isBusy =>
-      status == AppUpdateStatus.downloading ||
-      status == AppUpdateStatus.awaitingPermission ||
-      status == AppUpdateStatus.installing;
+  final bool isUnsupported;
 }
 
 int compareVersions(String left, String right) {
