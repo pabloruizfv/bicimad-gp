@@ -1,0 +1,47 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="metalOuter" x1="80" y1="80" x2="432" y2="432" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F1F3F5"/><stop offset="35%" stop-color="#C7CDD2"/><stop offset="70%" stop-color="#929CA5"/><stop offset="100%" stop-color="#5C6670"/>
+    </linearGradient>
+    <linearGradient id="metalInner" x1="140" y1="120" x2="372" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E7EAED"/><stop offset="50%" stop-color="#BDC4CA"/><stop offset="100%" stop-color="#88929B"/>
+    </linearGradient>
+    <linearGradient id="ribbonRed" x1="140" y1="390" x2="372" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E44848"/><stop offset="100%" stop-color="#A91E1E"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="512" height="512" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <g id="badge-root" filter="url(#shadow)">
+    <circle id="badge-outer-ring" cx="256" cy="220" r="170" fill="url(#metalOuter)"/>
+    <circle id="badge-mid-ring" cx="256" cy="220" r="148" fill="#7D8791"/>
+    <circle id="badge-inner-ring" cx="256" cy="220" r="136" fill="url(#metalInner)"/>
+    <circle id="badge-content-border" cx="256" cy="220" r="118" fill="none" stroke="#606A73" stroke-opacity="0.35" stroke-width="8"/>
+    <g id="badge-ribbon">
+      <path d="M170 370H342L320 450L256 422L192 450L170 370Z" fill="url(#ribbonRed)"/>
+      <path d="M188 370H324L309 428L256 405L203 428L188 370Z" fill="#7D1414" opacity="0.22"/>
+    </g>
+    <g id="badge-content">
+      <!-- Geometry adapted from assets/bases/climbing.svg. -->
+      <g transform="translate(153 86) scale(0.5)">
+        <g transform="translate(190 365) rotate(-35)" fill="none" stroke="#244E78" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M -132 0 H 270" stroke-width="13"/>
+          <g stroke-width="7" opacity="0.95">
+            <path d="M -110 -67 H -65"/><path d="M -124 -94 H -60"/><path d="M -104 -122 H -63"/>
+          </g>
+          <g transform="translate(0 -12)">
+            <g stroke-width="10"><circle cx="0" cy="-42" r="42"/><circle cx="170" cy="-42" r="42"/></g>
+            <g stroke-width="9">
+              <path d="M 65 -85 L 135 -100"/><path d="M 144 -83 L 79 -39"/><path d="M 65 -85 L 79 -39"/>
+              <path d="M 65 -85 L 0 -42 L 79 -39"/><path d="M 135 -100 L 144 -83 L 170 -42"/>
+            </g>
+            <path d="M 65 -85 L 60 -112" stroke-width="8"/><path d="M 41 -114 Q 59 -110 79 -114" stroke-width="10"/>
+            <path d="M 135 -100 L 131 -139 L 157 -140 L 159 -132" stroke-width="9"/>
+            <circle cx="79" cy="-39" r="5" fill="#244E78" stroke="none"/>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

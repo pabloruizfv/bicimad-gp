@@ -11,6 +11,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../helpers/fixture_elevation.dart';
+
 void main() {
   testWidgets('muestra metricas y abre estaciones desde la tarjeta', (
     tester,
@@ -220,6 +222,9 @@ void main() {
             (ref) async => 'assets/avatar/1.png',
           ),
           currentDisplayNameProvider.overrideWith((ref) => 'Pablo'),
+          tripElevationCalculatorProvider.overrideWith(
+            (ref) async => fixtureElevationCalculator(),
+          ),
           currentSocialProfileProvider.overrideWith(
             (ref) => const SocialProfile(
               userId: 'user-1',

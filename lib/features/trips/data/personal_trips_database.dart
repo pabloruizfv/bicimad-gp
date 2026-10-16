@@ -61,6 +61,7 @@ class PersonalTripsDatabase {
         destination_latitude REAL,
         destination_longitude REAL,
         direct_distance_meters REAL,
+        net_elevation_meters REAL,
         bike_id TEXT,
         trip_cost TEXT,
         pit_stops_json TEXT NOT NULL DEFAULT '[]',
@@ -69,6 +70,15 @@ class PersonalTripsDatabase {
         PRIMARY KEY (user_id, external_id)
       )
     ''');
+    final tripColumns = database
+        .select('PRAGMA table_info(personal_trips)')
+        .map((row) => row['name'] as String)
+        .toSet();
+    if (!tripColumns.contains('net_elevation_meters')) {
+      database.execute(
+        'ALTER TABLE personal_trips ADD COLUMN net_elevation_meters REAL',
+      );
+    }
     database.execute('''
       CREATE INDEX IF NOT EXISTS idx_personal_trips_user_started
       ON personal_trips(user_id, started_at_ms DESC)
@@ -286,9 +296,9 @@ class PersonalTripsDatabase {
           started_at_ms, duration_seconds, is_shared,
           origin_latitude, origin_longitude,
           destination_latitude, destination_longitude,
-          direct_distance_meters, bike_id, trip_cost,
+          direct_distance_meters, net_elevation_meters, bike_id, trip_cost,
           pit_stops_json, stage_ids_json, stage_details_json
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(user_id, external_id) DO UPDATE SET
           id = excluded.id,
           origin_station_id = excluded.origin_station_id,
@@ -303,6 +313,7 @@ class PersonalTripsDatabase {
           destination_latitude = COALESCE(excluded.destination_latitude, destination_latitude),
           destination_longitude = COALESCE(excluded.destination_longitude, destination_longitude),
           direct_distance_meters = COALESCE(excluded.direct_distance_meters, direct_distance_meters),
+          net_elevation_meters = COALESCE(excluded.net_elevation_meters, net_elevation_meters),
           bike_id = COALESCE(excluded.bike_id, bike_id),
           trip_cost = COALESCE(excluded.trip_cost, trip_cost),
           pit_stops_json = CASE
@@ -337,6 +348,7 @@ class PersonalTripsDatabase {
     trip.destinationLatitude,
     trip.destinationLongitude,
     trip.directDistanceMeters,
+    trip.netElevationMeters,
     normalizeBikeId(trip.bikeId),
     trip.tripCost,
     jsonEncode([for (final pitStop in trip.pitStops) pitStop.toJson()]),
@@ -363,6 +375,7 @@ class PersonalTripsDatabase {
       destinationLatitude: (row['destination_latitude'] as num?)?.toDouble(),
       destinationLongitude: (row['destination_longitude'] as num?)?.toDouble(),
       directDistanceMeters: (row['direct_distance_meters'] as num?)?.toDouble(),
+      netElevationMeters: (row['net_elevation_meters'] as num?)?.toDouble(),
       bikeId: normalizeBikeId(row['bike_id']),
       tripCost: row['trip_cost'] as String?,
       pitStops: _pitStopsFromJson(row['pit_stops_json'] as String),
@@ -420,6 +433,7 @@ class PersonalTripsDatabase {
       destinationLatitude: (json['destinationLatitude'] as num?)?.toDouble(),
       destinationLongitude: (json['destinationLongitude'] as num?)?.toDouble(),
       directDistanceMeters: (json['directDistanceMeters'] as num?)?.toDouble(),
+      netElevationMeters: (json['netElevationMeters'] as num?)?.toDouble(),
       bikeId: normalizeBikeId(json['bikeId']),
       tripCost: json['tripCost'] as String?,
       pitStops: _pitStopsFromObject(json['pitStops']),

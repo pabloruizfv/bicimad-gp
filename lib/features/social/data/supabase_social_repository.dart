@@ -249,7 +249,7 @@ class SupabaseSocialRepository implements SocialRepository {
             'destination_station_id, destination_station_name, started_at, '
             'duration_seconds, origin_latitude, origin_longitude, '
             'destination_latitude, destination_longitude, '
-            'direct_distance_meters, bike_id, trip_cost',
+            'direct_distance_meters, net_elevation_meters, bike_id, trip_cost',
           )
           .order('started_at')
           .range(offset, offset + pageSize - 1);
@@ -496,6 +496,7 @@ class SupabaseSocialRepository implements SocialRepository {
       destinationLatitude: _doubleValue(row['destination_latitude']),
       destinationLongitude: _doubleValue(row['destination_longitude']),
       directDistanceMeters: _doubleValue(row['direct_distance_meters']),
+      netElevationMeters: _doubleValue(row['net_elevation_meters']),
       bikeId: normalizeBikeId(row['bike_id']),
       tripCost: normalizeDecimalAmount(row['trip_cost']),
     );
@@ -515,6 +516,7 @@ class SupabaseSocialRepository implements SocialRepository {
     'destination_latitude': trip.destinationLatitude,
     'destination_longitude': trip.destinationLongitude,
     'direct_distance_meters': trip.directDistanceMeters,
+    'net_elevation_meters': trip.netElevationMeters,
     'bike_id': normalizeBikeId(trip.bikeId),
     'trip_cost': trip.tripCost,
   };

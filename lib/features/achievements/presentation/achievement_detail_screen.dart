@@ -448,6 +448,8 @@ String _emptyRelatedMessage(AchievementProgressRule rule) => switch (rule) {
   AchievementProgressRule.nightTrips =>
     'Aún no hay viajes iniciados de madrugada.',
   AchievementProgressRule.exploredRoutes => 'Aún no hay rutas exploradas.',
+  AchievementProgressRule.climbingTrips =>
+    'Aún no hay viajes con más de 50 m de subida neta.',
 };
 
 String _routeKey(Trip trip) =>

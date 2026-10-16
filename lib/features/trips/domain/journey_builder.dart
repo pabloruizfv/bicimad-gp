@@ -99,6 +99,15 @@ class JourneyBuilder {
     final journeyBikeId = completeBikeData && distinctBikeIds.length == 1
         ? distinctBikeIds.single
         : null;
+    final completeElevationData = stages.every(
+      (stage) => stage.netElevationMeters != null,
+    );
+    final journeyNetElevation = completeElevationData
+        ? stages.fold<double>(
+            0,
+            (total, stage) => total + stage.netElevationMeters!,
+          )
+        : null;
     final journeyCost = sumDecimalAmounts([
       for (final stage in stages) stage.tripCost,
     ]);
@@ -114,6 +123,11 @@ class JourneyBuilder {
       startedAt: first.startedAt,
       durationSeconds: durationSeconds,
       isShared: stages.every((stage) => stage.isShared),
+      originLatitude: first.originLatitude,
+      originLongitude: first.originLongitude,
+      destinationLatitude: last.destinationLatitude,
+      destinationLongitude: last.destinationLongitude,
+      netElevationMeters: journeyNetElevation,
       bikeId: journeyBikeId,
       tripCost: journeyCost,
       pitStops: pitStops,

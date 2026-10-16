@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/fake_social_repository.dart';
 import '../../helpers/fakes.dart';
+import '../../helpers/fixture_elevation.dart';
 
 void main() {
   test(
@@ -83,6 +84,34 @@ void main() {
 
     expect(uploaded, 1);
     expect(social.uploadedTripBatches, [batch]);
+  });
+
+  test('sube el desnivel neto calculado para cada etapa', () async {
+    final local = LocalCommunityRepository();
+    await local.createOrRecoverUser(externalUserId: 'mpass-user');
+    final social = FakeSocialRepository();
+    final service = SocialTripSyncService(
+      socialRepository: social,
+      localRepository: local,
+      loadElevationCalculator: () async => fixtureElevationCalculator(),
+    );
+    final climbingStage = _trip('climbing-stage', day: 3).copyWith(
+      originLatitude: 40.5,
+      originLongitude: -3.5,
+      destinationLatitude: 39.5,
+      destinationLongitude: -2.5,
+    );
+
+    final uploaded = await service.pushTripBatch(
+      normalizedMpassEmail: 'pablo@example.com',
+      trips: [climbingStage],
+    );
+
+    expect(uploaded, 1);
+    expect(
+      social.uploadedTripBatches.single.single.netElevationMeters,
+      closeTo(300, 0.001),
+    );
   });
 
   test('no sube ni restaura viajes de ubicaciones descartadas', () async {

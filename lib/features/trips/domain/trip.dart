@@ -17,6 +17,7 @@ class Trip {
     this.destinationLatitude,
     this.destinationLongitude,
     this.directDistanceMeters,
+    this.netElevationMeters,
     this.bikeId,
     this.tripCost,
     this.pitStops = const [],
@@ -42,6 +43,7 @@ class Trip {
   final double? destinationLatitude;
   final double? destinationLongitude;
   final double? directDistanceMeters;
+  final double? netElevationMeters;
   final String? bikeId;
   final String? tripCost;
   final List<PitStop> pitStops;
@@ -116,6 +118,7 @@ class Trip {
     double? destinationLatitude,
     double? destinationLongitude,
     double? directDistanceMeters,
+    double? netElevationMeters,
     String? bikeId,
     String? tripCost,
     List<PitStop>? pitStops,
@@ -142,6 +145,7 @@ class Trip {
       destinationLatitude: destinationLatitude ?? this.destinationLatitude,
       destinationLongitude: destinationLongitude ?? this.destinationLongitude,
       directDistanceMeters: directDistanceMeters ?? this.directDistanceMeters,
+      netElevationMeters: netElevationMeters ?? this.netElevationMeters,
       bikeId: bikeId ?? this.bikeId,
       tripCost: tripCost ?? this.tripCost,
       pitStops: pitStops ?? this.pitStops,

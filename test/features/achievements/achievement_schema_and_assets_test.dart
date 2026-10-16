@@ -14,7 +14,7 @@ void main() {
           'badge_base_bronze.svg',
     ];
 
-    expect(paths, hasLength(10));
+    expect(paths, hasLength(11));
     for (final path in paths) {
       final svg = File(path).readAsStringSync();
       expect(svg, contains('#E4B487'), reason: path);
@@ -453,6 +453,69 @@ void main() {
     ).readAsStringSync();
     final graphite = File(
       'assets/badges/bikes/badge_favorite_bike_2_graphite.svg',
+    ).readAsStringSync();
+
+    expect(locked, contains('#E3E6E8'));
+    expect(locked, contains('#8F979C'));
+    expect(locked, isNot(graphite));
+    expect(locked, isNot(contains('<text')));
+  });
+
+  test('migracion calcula Escalador sobre journeys canonicos', () {
+    final sql = File(
+      'supabase/migrations/20261016120000_climbing_achievements.sql',
+    ).readAsStringSync();
+
+    expect(sql, contains('add column if not exists net_elevation_meters'));
+    expect(sql, contains("'climbing_trips_50_m'"));
+    expect(sql, contains('current_net_elevation > 50.0'));
+    expect(sql, contains('current_elevation_complete'));
+    expect(sql, contains('between 0 and 119'));
+    expect(sql, contains('current_destination_id = stage.origin_station_id'));
+    expect(sql, contains('current_origin_id <> stage.destination_station_id'));
+    expect(sql, contains("('graphite', 1)"));
+    expect(sql, contains("('bronze', 10)"));
+    expect(sql, contains("('silver', 50)"));
+    expect(sql, contains("('gold', 100)"));
+    expect(sql, contains('for existing_profile in select'));
+    expect(sql, contains('refresh_profile_climbing_achievement'));
+    expect(
+      sql,
+      isNot(contains('grant update on table public.user_achievements')),
+    );
+  });
+
+  test('SVG de Escalador conservan la misma bicicleta en subida', () {
+    const paths = [
+      'assets/badges/climbing/badge_climbing_trip_1_graphite.svg',
+      'assets/badges/climbing/badge_climbing_trip_10_bronze.svg',
+      'assets/badges/climbing/badge_climbing_trip_50_silver.svg',
+      'assets/badges/climbing/badge_climbing_trip_100_gold.svg',
+    ];
+    final contents = [for (final path in paths) File(path).readAsStringSync()];
+    final badgeContents = [for (final svg in contents) _badgeContent(svg)];
+
+    for (final svg in contents) {
+      expect(svg, contains('viewBox="0 0 512 512"'));
+      expect(RegExp('id="badge-content"').allMatches(svg), hasLength(1));
+      expect(svg, contains('assets/bases/climbing.svg'));
+      expect(svg, contains('#244E78'));
+      expect(svg, isNot(contains('<image')));
+      expect(svg, isNot(contains('base64')));
+      expect(svg, isNot(contains('<text')));
+      expect(svg, isNot(contains('href="http')));
+    }
+    for (final content in badgeContents.skip(1)) {
+      expect(content, badgeContents.first);
+    }
+  });
+
+  test('emblema bloqueado de Escalador es neutral', () {
+    final locked = File(
+      'assets/badges/climbing/badge_climbing_trip_locked.svg',
+    ).readAsStringSync();
+    final graphite = File(
+      'assets/badges/climbing/badge_climbing_trip_1_graphite.svg',
     ).readAsStringSync();
 
     expect(locked, contains('#E3E6E8'));

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Bicicleta subiendo una pendiente pronunciada</title>
+  <desc id="desc">Icono negro minimalista de una bicicleta subiendo hacia la derecha una pendiente ascendente con tres líneas de movimiento detrás de la rueda trasera; sillín y unión superior del cuadro rebajados, con una tija de sillín claramente visible.</desc>
+
+  <!-- Tanto la pendiente como la bicicleta comparten la misma inclinación.
+       Los dos neumáticos están apenas por encima de la línea, y sus
+       trazos exteriores reposan en el borde superior de la pendiente. -->
+  <g transform="translate(190 365) rotate(-35)" fill="none" stroke="#171717" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Pendiente -->
+    <path d="M -132 0 H 270" stroke-width="13" />
+
+    <!-- Líneas de movimiento detrás de la rueda trasera: paralelas a la pendiente -->
+    <g stroke-width="7" opacity="0.95">
+      <path d="M -110 -67 H -65" />
+      <path d="M -124 -94 H -60" />
+      <path d="M -104 -122 H -63" />
+    </g>
+
+    <!-- Separación de 12 unidades para que el trazo de los neumáticos
+         repose sobre el borde superior del trazo de la pendiente. -->
+    <g transform="translate(0 -12)">
+    <!-- Ruedas -->
+    <g stroke-width="10">
+      <circle cx="0" cy="-42" r="42" />
+      <circle cx="170" cy="-42" r="42" />
+    </g>
+
+    <!-- Cuadro: dos triángulos reconocibles -->
+    <g stroke-width="9">
+      <!-- Tubo superior -->
+      <path d="M 65 -85 L 135 -100" />
+      <!-- Tubo diagonal -->
+      <path d="M 144 -83 L 79 -39" />
+      <!-- Tubo del sillín -->
+      <path d="M 65 -85 L 79 -39" />
+      <!-- Tirantes y vaina traseros -->
+      <path d="M 65 -85 L 0 -42 L 79 -39" />
+      <!-- Dirección y horquilla delanteras -->
+      <path d="M 135 -100 L 144 -83 L 170 -42" />
+    </g>
+
+    <!-- Sillín atrás (a la izquierda) -->
+    <path d="M 65 -85 L 60 -112" stroke-width="8" />
+    <path d="M 41 -114 Q 59 -110 79 -114" stroke-width="10" />
+
+    <!-- Manillar delante (a la derecha) -->
+    <path d="M 135 -100 L 131 -139 L 157 -140 L 159 -132" stroke-width="9" />
+
+    <!-- Biela discreta para reforzar la lectura como bicicleta -->
+    <circle cx="79" cy="-39" r="5" fill="#171717" stroke="none" />
+    </g>
+  </g>
+</svg>

@@ -86,6 +86,7 @@ flutter:
     - assets/badges/bikes/
     - assets/badges/night_trips/
     - assets/badges/explored_routes/
+    - assets/badges/climbing/
     - assets/badges/level_markers/
     - assets/data/legacy_route_models.sqlite
     - assets/data/legacy_route_models.manifest.json

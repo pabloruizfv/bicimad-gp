@@ -43,11 +43,13 @@ enum AchievementProgressRule {
   bikeUsage,
   nightTrips,
   exploredRoutes,
+  climbingTrips,
 }
 
 const fastTripSpeedThresholdKmh = 14.0;
 const fastTripSpeedComparisonEpsilon = 1e-9;
 const longTripDistanceThresholdMeters = 5000.0;
+const climbingTripElevationThresholdMeters = 50.0;
 
 class AchievementCategoryDefinition {
   const AchievementCategoryDefinition({
@@ -318,6 +320,40 @@ const exploredRoutesAchievement = AchievementCategoryDefinition(
   ],
 );
 
+const climbingTripsAchievement = AchievementCategoryDefinition(
+  id: 'climbing_trips_50_m',
+  name: 'Escalador',
+  description:
+      'Completa viajes con un desnivel neto positivo superior a 50 m.',
+  requirementUnitSingular: 'viaje con subida',
+  requirementUnit: 'viajes con subida',
+  lockedAssetPath: 'assets/badges/climbing/badge_climbing_trip_locked.svg',
+  rule: AchievementProgressRule.climbingTrips,
+  levels: [
+    AchievementLevelDefinition(
+      id: AchievementLevelId.graphite,
+      threshold: 1,
+      assetPath:
+          'assets/badges/climbing/badge_climbing_trip_1_graphite.svg',
+    ),
+    AchievementLevelDefinition(
+      id: AchievementLevelId.bronze,
+      threshold: 10,
+      assetPath: 'assets/badges/climbing/badge_climbing_trip_10_bronze.svg',
+    ),
+    AchievementLevelDefinition(
+      id: AchievementLevelId.silver,
+      threshold: 50,
+      assetPath: 'assets/badges/climbing/badge_climbing_trip_50_silver.svg',
+    ),
+    AchievementLevelDefinition(
+      id: AchievementLevelId.gold,
+      threshold: 100,
+      assetPath: 'assets/badges/climbing/badge_climbing_trip_100_gold.svg',
+    ),
+  ],
+);
+
 const achievementCatalog = [
   pitStopsAchievement,
   fastTripsAchievement,
@@ -326,6 +362,7 @@ const achievementCatalog = [
   favoriteBikeAchievement,
   nightTripsAchievement,
   exploredRoutesAchievement,
+  climbingTripsAchievement,
 ];
 
 class UserAchievement {

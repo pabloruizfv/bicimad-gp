@@ -88,7 +88,13 @@ void main() {
         final database = PersonalTripsDatabase.inMemory();
         addTearDown(database.close);
         await database.upsertTrips([
-          _trip(1, bikeId: '00001234', tripCost: '1.25', distance: 842),
+          _trip(
+            1,
+            bikeId: '00001234',
+            tripCost: '1.25',
+            distance: 842,
+            netElevation: 73.5,
+          ),
         ]);
         await database.upsertTrips([_trip(1)]);
         await database.upsertTrips([
@@ -101,6 +107,7 @@ void main() {
         expect(firstUser.single.bikeId, '1234');
         expect(firstUser.single.tripCost, '1.25');
         expect(firstUser.single.directDistanceMeters, 842);
+        expect(firstUser.single.netElevationMeters, 73.5);
         expect(secondUser, hasLength(1));
         expect(secondUser.single.bikeId, '5678');
       },
@@ -199,6 +206,7 @@ Trip _trip(
   String? bikeId,
   String? tripCost,
   double? distance,
+  double? netElevation,
 }) {
   return Trip(
     id: 'trip-$index',
@@ -212,6 +220,7 @@ Trip _trip(
     durationSeconds: 600 + index,
     isShared: true,
     directDistanceMeters: distance,
+    netElevationMeters: netElevation,
     bikeId: bikeId,
     tripCost: tripCost,
   );
@@ -233,6 +242,7 @@ Map<String, Object?> _legacyJson(Trip trip) => {
   'destinationLatitude': trip.destinationLatitude,
   'destinationLongitude': trip.destinationLongitude,
   'directDistanceMeters': trip.directDistanceMeters,
+  'netElevationMeters': trip.netElevationMeters,
   'bikeId': trip.bikeId,
   'tripCost': trip.tripCost,
   'pitStops': const [],

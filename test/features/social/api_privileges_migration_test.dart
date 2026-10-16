@@ -9,10 +9,19 @@ void main() {
   // The migration builds the revoke statements dynamically from the signature
   // array, so inspect that array instead of splitting on the generated SQL
   // template itself.
-  final revoked = RegExp(r"'(?<signature>public\.\w+\([^']*\))',?")
+  final dynamicallyRevoked = RegExp(r"'(?<signature>public\.\w+\([^']*\))',?")
       .allMatches(migration)
       .map((match) => match.namedGroup('signature')!)
-      .join('\n');
+      .toSet();
+  final explicitlyRevoked = <String>{
+    for (final file
+        in Directory('supabase/migrations').listSync().whereType<File>())
+      ...RegExp(
+        r'revoke all on function\s+(public\.\w+\([^)]*\))',
+        caseSensitive: false,
+      ).allMatches(file.readAsStringSync()).map((match) => match[1]!),
+  };
+  final revoked = {...dynamicallyRevoked, ...explicitlyRevoked}.join('\n');
   final granted = migration.split('grant execute on function')[1];
 
   test('covers every existing function, including renamed helpers', () {

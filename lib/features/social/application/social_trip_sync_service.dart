@@ -1,5 +1,6 @@
 import '../../trips/domain/community_repository.dart';
 import '../../trips/domain/trip.dart';
+import '../../trips/domain/trip_elevation.dart';
 import '../../trips/domain/trip_eligibility.dart';
 import '../domain/social_repository.dart';
 
@@ -7,10 +8,12 @@ class SocialTripSyncService {
   const SocialTripSyncService({
     required this.socialRepository,
     required this.localRepository,
+    this.loadElevationCalculator,
   });
 
   final SocialRepository socialRepository;
   final CommunityRepository localRepository;
+  final Future<TripElevationCalculator> Function()? loadElevationCalculator;
 
   Future<SocialTripSyncResult> synchronize({
     required String normalizedMpassEmail,
@@ -55,7 +58,9 @@ class SocialTripSyncService {
       return null;
     }
     final mergedStages = await localRepository.getMyStages();
-    await socialRepository.upsertOwnTrips(mergedStages);
+    await socialRepository.upsertOwnTrips(
+      await _withNetElevations(mergedStages),
+    );
     await socialRepository.refreshOwnAchievements();
     return mergedStages.length;
   }
@@ -71,7 +76,9 @@ class SocialTripSyncService {
         !await _validateIdentity(normalizedMpassEmail)) {
       return null;
     }
-    await socialRepository.upsertOwnTrips(countableTrips);
+    await socialRepository.upsertOwnTrips(
+      await _withNetElevations(countableTrips),
+    );
     return countableTrips.length;
   }
 
@@ -85,6 +92,18 @@ class SocialTripSyncService {
       throw const SocialIdentityMismatchException();
     }
     return true;
+  }
+
+  Future<List<Trip>> _withNetElevations(List<Trip> trips) async {
+    final loader = loadElevationCalculator;
+    if (loader == null) return trips;
+    final calculator = await loader();
+    return [
+      for (final trip in trips)
+        trip.copyWith(
+          netElevationMeters: calculator.forTrip(trip).netMeters,
+        ),
+    ];
   }
 }
 

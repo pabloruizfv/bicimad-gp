@@ -1,4 +1,5 @@
 import '../../trips/domain/trip.dart';
+import '../../trips/domain/trip_elevation.dart';
 import '../../trips/domain/station_code.dart';
 import 'achievement.dart';
 
@@ -9,11 +10,18 @@ class AchievementService {
     required List<Trip> journeys,
     List<Trip>? routeJourneys,
     Iterable<UserAchievement> persisted = const [],
+    TripElevationCalculator? elevationCalculator,
   }) {
     final routes = routeJourneys ?? journeys;
     return [
       for (final definition in achievementCatalog)
-        _evaluateCategory(definition, journeys, routes, persisted),
+        _evaluateCategory(
+          definition,
+          journeys,
+          routes,
+          persisted,
+          elevationCalculator,
+        ),
     ];
   }
 
@@ -50,6 +58,7 @@ class AchievementService {
     List<Trip> journeys,
     List<Trip> routeJourneys,
     Iterable<UserAchievement> persisted,
+    TripElevationCalculator? elevationCalculator,
   ) {
     return switch (definition.rule) {
       AchievementProgressRule.pitStops => _evaluatePitStops(
@@ -87,6 +96,20 @@ class AchievementService {
         definition,
         routeJourneys,
         persisted,
+      ),
+      AchievementProgressRule.climbingTrips => _evaluateJourneyContributions(
+        definition,
+        journeys,
+        persisted,
+        contribution: (journey) {
+          final netElevation =
+              elevationCalculator?.forTrip(journey).netMeters ??
+              journey.netElevationMeters;
+          return netElevation != null &&
+                  netElevation > climbingTripElevationThresholdMeters
+              ? 1
+              : 0;
+        },
       ),
     };
   }

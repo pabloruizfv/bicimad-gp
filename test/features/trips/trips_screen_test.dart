@@ -221,6 +221,9 @@ void main() {
           secureKeyValueStoreProvider.overrideWithValue(
             InMemorySecureKeyValueStore(),
           ),
+          tripElevationCalculatorProvider.overrideWith(
+            (ref) async => fixtureElevationCalculator(),
+          ),
         ],
         child: const BicimadSocialApp(),
       ),
@@ -272,6 +275,9 @@ void main() {
           socialRepositoryProvider.overrideWithValue(FakeSocialRepository()),
           secureKeyValueStoreProvider.overrideWithValue(
             InMemorySecureKeyValueStore(),
+          ),
+          tripElevationCalculatorProvider.overrideWith(
+            (ref) async => fixtureElevationCalculator(),
           ),
         ],
         child: const BicimadSocialApp(),

@@ -167,6 +167,8 @@ final socialTripSyncServiceProvider = Provider<SocialTripSyncService>((ref) {
   return SocialTripSyncService(
     socialRepository: ref.watch(socialRepositoryProvider),
     localRepository: ref.watch(communityRepositoryProvider),
+    loadElevationCalculator: () =>
+        ref.read(tripElevationCalculatorProvider.future),
   );
 });
 
@@ -281,6 +283,9 @@ final ownAchievementProgressProvider = FutureProvider<List<AchievementProgress>>
   (ref) async {
     final journeys = await ref.watch(myTripsProvider.future);
     final stages = await ref.watch(myTripStagesProvider.future);
+    final elevationCalculator = await ref.watch(
+      tripElevationCalculatorProvider.future,
+    );
     final repository = ref.watch(socialRepositoryProvider);
     var persisted = const <UserAchievement>[];
     final userId = repository.currentUserId;
@@ -297,6 +302,7 @@ final ownAchievementProgressProvider = FutureProvider<List<AchievementProgress>>
           journeys: journeys,
           routeJourneys: [...journeys, ...stages],
           persisted: persisted,
+          elevationCalculator: elevationCalculator,
         );
   },
 );

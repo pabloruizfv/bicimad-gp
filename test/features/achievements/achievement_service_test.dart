@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/fake_social_repository.dart';
+import '../../helpers/fixture_elevation.dart';
 
 void main() {
   const service = AchievementService();
@@ -121,6 +122,9 @@ void main() {
         socialRepositoryProvider.overrideWithValue(repository),
         myTripsProvider.overrideWith((ref) async => const []),
         myTripStagesProvider.overrideWith((ref) async => const []),
+        tripElevationCalculatorProvider.overrideWith(
+          (ref) async => fixtureElevationCalculator(),
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -364,6 +368,107 @@ void main() {
 
   for (final testCase in <(int, AchievementLevelId?)>[
     (0, null),
+    (1, AchievementLevelId.graphite),
+    (9, AchievementLevelId.graphite),
+    (10, AchievementLevelId.bronze),
+    (49, AchievementLevelId.bronze),
+    (50, AchievementLevelId.silver),
+    (99, AchievementLevelId.silver),
+    (100, AchievementLevelId.gold),
+  ]) {
+    test('${testCase.$1} viajes con subida resuelve ${testCase.$2}', () {
+      final journeys = [
+        for (var index = 0; index < testCase.$1; index++)
+          _journey(
+            'climbing-$index',
+            pitStops: 0,
+            day: 1,
+            minute: index,
+            netElevationMeters: 50.01,
+          ),
+      ];
+      final progress = _progressFor(
+        service.evaluate(journeys: journeys),
+        climbingTripsAchievement.id,
+      );
+
+      expect(progress.progress, testCase.$1);
+      expect(progress.currentLevel?.id, testCase.$2);
+      expect(progress.relatedJourneys, hasLength(testCase.$1));
+    });
+  }
+
+  test('Escalador exige un desnivel neto estrictamente superior a 50 m', () {
+    final journeys = [
+      _journey(
+        'below-climb',
+        pitStops: 0,
+        day: 1,
+        netElevationMeters: 49.99,
+      ),
+      _journey(
+        'equal-climb',
+        pitStops: 0,
+        day: 2,
+        netElevationMeters: 50,
+      ),
+      _journey(
+        'above-climb',
+        pitStops: 0,
+        day: 3,
+        netElevationMeters: 50.01,
+      ),
+      _journey('unknown-climb', pitStops: 0, day: 4),
+      _journey(
+        'descent',
+        pitStops: 0,
+        day: 5,
+        netElevationMeters: -120,
+      ),
+    ];
+
+    final progress = _progressFor(
+      service.evaluate(journeys: journeys),
+      climbingTripsAchievement.id,
+    );
+
+    expect(progress.progress, 1);
+    expect(progress.relatedJourneys.single.id, 'above-climb');
+    expect(progress.unlocks[AchievementLevelId.graphite], journeys[2].endedAt);
+  });
+
+  test('Escalador calcula una sola vez un journey canonico con etapas', () {
+    final stages = [
+      _stage('climb-ab', 'A', 'B', DateTime(2026, 1, 1, 10)).copyWith(
+        originLatitude: 40.5,
+        originLongitude: -3.5,
+        destinationLatitude: 40.5,
+        destinationLongitude: -2.5,
+      ),
+      _stage('climb-bc', 'B', 'C', DateTime(2026, 1, 1, 10, 11)).copyWith(
+        originLatitude: 40.5,
+        originLongitude: -2.5,
+        destinationLatitude: 39.5,
+        destinationLongitude: -2.5,
+      ),
+    ];
+    final journeys = const JourneyBuilder().buildJourneys(stages);
+
+    final progress = _progressFor(
+      service.evaluate(
+        journeys: journeys,
+        elevationCalculator: fixtureElevationCalculator(),
+      ),
+      climbingTripsAchievement.id,
+    );
+
+    expect(journeys, hasLength(1));
+    expect(progress.progress, 1);
+    expect(progress.relatedJourneys.single.stageCount, 2);
+  });
+
+  for (final testCase in <(int, AchievementLevelId?)>[
+    (0, null),
     (9, null),
     (10, AchievementLevelId.graphite),
     (49, AchievementLevelId.graphite),
@@ -552,6 +657,7 @@ Trip _journey(
   int minute = 0,
   double? speedKmh,
   double? distanceMeters,
+  double? netElevationMeters,
 }) {
   const durationSeconds = 600;
   return Trip(
@@ -567,6 +673,7 @@ Trip _journey(
     directDistanceMeters:
         distanceMeters ??
         (speedKmh == null ? null : speedKmh * durationSeconds / 3.6),
+    netElevationMeters: netElevationMeters,
     isShared: true,
     pitStops: [
       for (var index = 0; index < pitStops; index++)
