@@ -28,8 +28,11 @@ version: 1.0.3+3
 - La APK publicada como v1.0.1 tenia `versionCode=1`, igual que la anterior;
   Android no la considera una actualizacion. Esta release lo corrige usando
   `versionCode=2`.
-- Esta release usa `versionName=1.0.3` y `versionCode=3`. El tag de GitHub debe
-  ser `v1.0.3`, porque la app compara ese tag con la version instalada.
+- La release `v1.0.3` publicada originalmente usa `versionCode=3`. Si se vuelve
+  a generar la APK de esa misma version despues de retirar la release, conserva
+  `versionName=1.0.3` e incrementa `versionCode` a `4` para permitir actualizar
+  instalaciones existentes. El tag sigue siendo `v1.0.3`, porque la app compara
+  ese tag con la version instalada.
 - Para cada release posterior, incrementa el numero tras `+` sin excepciones.
 
 ## 3. Ajustar la compatibilidad, si procede

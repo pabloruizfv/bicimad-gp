@@ -541,7 +541,29 @@ void main() {
       expect(
         svg,
         contains(
+          'M 167 250 L 256 116 L 345 250 L 319 235 L 298 268 '
+          'L 256 242 L 225 270 L 193 236 Z" fill="#FFFFFF" '
+          'stroke="none"',
+        ),
+      );
+      expect(
+        svg,
+        contains(
           'M 24 466 L 256 116 L 488 466 Z" fill="#244E78" '
+          'stroke="none"',
+        ),
+      );
+      expect(
+        svg,
+        contains(
+          'M 345 250 L 319 235 L 298 268 L 256 242 L 225 270 '
+          'L 193 236 L 167 250" fill="none" stroke="#FFFFFF"',
+        ),
+      );
+      expect(
+        svg,
+        contains(
+          'M 24 466 L 256 116 L 488 466 Z" fill="none" '
           'stroke="#244E78"',
         ),
       );
@@ -550,6 +572,21 @@ void main() {
         svg,
         contains('translate(124.08 315) rotate(-56.461308)'),
       );
+      expect(
+        svg,
+        contains(
+          'translate(-3.2 -5.65) scale(0.94)" stroke-width="10"',
+        ),
+      );
+      expect(
+        svg,
+        contains(
+          'M 0 -36 L 49 -76 L 60 -40 Z M 60 -40 L 110 -74 '
+          'L 128 -36 M 49 -76 L 103 -88 L 110 -74',
+        ),
+      );
+      expect(svg, contains('<g stroke-width="11"><circle'));
+      expect(svg, isNot(contains('r="4.2"')));
       expect(svg, isNot(contains('<image')));
       expect(svg, isNot(contains('base64')));
       expect(svg, isNot(contains('<text')));
@@ -570,11 +607,25 @@ void main() {
 
     expect(locked, contains('#E3E6E8'));
     expect(locked, contains('#8F979C'));
-    expect(locked, contains('fill="#FFFFFF" stroke="#FFFFFF"'));
+    expect(locked, contains('fill="#FFFFFF" stroke="none"'));
+    expect(
+      locked,
+      contains(
+        'M 345 250 L 319 235 L 298 268 L 256 242 L 225 270 '
+        'L 193 236 L 167 250" fill="none" stroke="#FFFFFF"',
+      ),
+    );
     expect(
       locked,
       contains(
         'M 24 466 L 256 116 L 488 466 Z" fill="#8F979C" '
+        'stroke="none"',
+      ),
+    );
+    expect(
+      locked,
+      contains(
+        'M 24 466 L 256 116 L 488 466 Z" fill="none" '
         'stroke="#8F979C"',
       ),
     );
@@ -583,6 +634,12 @@ void main() {
       locked,
       contains('translate(124.08 315) rotate(-56.461308)'),
     );
+    expect(
+      locked,
+      contains('translate(-3.2 -5.65) scale(0.94)" stroke-width="10"'),
+    );
+    expect(locked, contains('<g stroke-width="11"><circle'));
+    expect(locked, isNot(contains('r="4.2"')));
     expect(locked, contains('assets/bases/bike_mountain.svg'));
     expect(locked, isNot(graphite));
     expect(locked, isNot(contains('<text')));
