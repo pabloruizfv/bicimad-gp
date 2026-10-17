@@ -14,6 +14,11 @@ The shipped station snapshot also contains precomputed elevations; existing
 cached catalogs are enriched automatically. Trip elevation profiles represent
 net elevation change between station endpoints, not actual accumulated climb.
 
+Supabase also keeps a protected copy of the station elevations so historical
+trips and uploads from older clients can receive a net elevation without each
+user opening the latest app. The database trigger only fills missing values;
+an elevation supplied by the app remains authoritative.
+
 To regenerate after changing the area or source:
 
 ```powershell
@@ -21,6 +26,19 @@ python -m pip install requests numpy rasterio
 python tools/station_elevation/build_elevation_grid.py --build
 python -m unittest discover -s tools/station_elevation/tests
 ```
+
+After updating the station snapshot or terrain grid, generate a **new**
+Supabase migration (never overwrite one that has already been applied):
+
+```powershell
+python tools/station_elevation/build_server_elevation_migration.py `
+  --output supabase/migrations/<timestamp>_server_climbing_elevation_backfill.sql
+```
+
+Review the generated SQL and run `npx supabase db push --dry-run` before
+deploying it. The migration seeds the internal lookup, backfills only trips
+whose `net_elevation_meters` is null, and recalculates achievement progress for
+every profile.
 
 Use `--reuse-grid` to revalidate or restamp the bundled grid without another
 download.

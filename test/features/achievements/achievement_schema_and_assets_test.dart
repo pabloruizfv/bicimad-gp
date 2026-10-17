@@ -485,6 +485,43 @@ void main() {
     );
   });
 
+  test('backfill de Escalador cubre historico y clientes antiguos', () {
+    final sql = File(
+      'supabase/migrations/'
+      '20261017120000_server_climbing_elevation_backfill.sql',
+    ).readAsStringSync();
+
+    expect(
+      sql,
+      contains('create table if not exists public.bicimad_station_elevations'),
+    );
+    expect(
+      sql,
+      contains(
+        'alter table public.bicimad_station_elevations enable row level security',
+      ),
+    );
+    expect(
+      sql,
+      contains('create or replace function public.bicimad_station_elevation'),
+    );
+    expect(sql, contains('create trigger trips_fill_net_elevation'));
+    expect(sql, contains('when (new.net_elevation_meters is null)'));
+    expect(sql, contains('where trip.net_elevation_meters is null'));
+    expect(sql, contains('limit 500'));
+    expect(sql, contains('perform public.refresh_profile_achievements'));
+    expect(sql, contains('Escalador elevation backfill'));
+    expect(sql, contains('from public, anon, authenticated'));
+
+    final optimizedLookup = File(
+      'supabase/migrations/'
+      '20261017123000_optimize_station_elevation_lookup.sql',
+    ).readAsStringSync();
+    expect(optimizedLookup, contains('if found then'));
+    expect(optimizedLookup, contains('return resolved_elevation'));
+    expect(optimizedLookup, isNot(contains('union all')));
+  });
+
   test('SVG de Escalador conservan la misma bicicleta en subida', () {
     const paths = [
       'assets/badges/climbing/badge_climbing_trip_1_graphite.svg',
