@@ -9,13 +9,13 @@ import 'package:bicimad_social/features/app_update/data/github_update_repository
 import 'package:bicimad_social/features/app_update/domain/app_update.dart';
 
 final _releaseUrl = Uri.parse(
-  'https://github.com/pabloruizfv/bicimad-gp/releases/tag/v1.0.2',
+  'https://github.com/pabloruizfv/bicimad-gp/releases/tag/v1.0.3',
 );
 
 AppUpdateInfo _update({String minimumSupportedVersion = '1.0.0'}) =>
     AppUpdateInfo(
-      currentVersion: '1.0.1',
-      latestVersion: '1.0.2',
+      currentVersion: '1.0.2',
+      latestVersion: '1.0.3',
       minimumSupportedVersion: minimumSupportedVersion,
       releaseUrl: _releaseUrl,
     );
@@ -48,7 +48,7 @@ void main() {
   test(
     'an unsupported version remains usable and gets a stronger warning',
     () async {
-      final repository = _Repository(_update(minimumSupportedVersion: '1.0.2'));
+      final repository = _Repository(_update(minimumSupportedVersion: '1.0.3'));
       final controller = AppUpdateController(repository, autoCheck: false);
       addTearDown(controller.dispose);
 
@@ -92,7 +92,7 @@ void main() {
   testWidgets('dialog links to GitHub and explains unsupported versions', (
     tester,
   ) async {
-    final repository = _Repository(_update(minimumSupportedVersion: '1.0.2'));
+    final repository = _Repository(_update(minimumSupportedVersion: '1.0.3'));
     var launches = 0;
     final controller = AppUpdateController(
       repository,

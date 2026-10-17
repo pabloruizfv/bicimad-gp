@@ -145,11 +145,11 @@ void main() {
 class _UpdateRepository extends GithubUpdateRepository {
   @override
   Future<AppUpdateInfo> checkForUpdate() async => AppUpdateInfo(
-    currentVersion: '1.0.1',
-    latestVersion: '1.0.2',
+    currentVersion: '1.0.2',
+    latestVersion: '1.0.3',
     minimumSupportedVersion: '1.0.0',
     releaseUrl: Uri.parse(
-      'https://github.com/pabloruizfv/bicimad-gp/releases/tag/v1.0.2',
+      'https://github.com/pabloruizfv/bicimad-gp/releases/tag/v1.0.3',
     ),
   );
 }

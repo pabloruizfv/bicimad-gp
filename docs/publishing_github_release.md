@@ -19,7 +19,7 @@ No publiques `local_secrets.json`, `android/key.properties` ni el keystore.
 Edita `pubspec.yaml` y cambia `version` siguiendo versionado semantico:
 
 ```yaml
-version: 1.0.2+2
+version: 1.0.3+3
 ```
 
 - Incrementa la version tras cambios funcionales.
@@ -28,8 +28,8 @@ version: 1.0.2+2
 - La APK publicada como v1.0.1 tenia `versionCode=1`, igual que la anterior;
   Android no la considera una actualizacion. Esta release lo corrige usando
   `versionCode=2`.
-- Esta release usa `versionName=1.0.2` y `versionCode=2`. El tag de GitHub debe
-  ser `v1.0.2`, porque la app compara ese tag con la version instalada.
+- Esta release usa `versionName=1.0.3` y `versionCode=3`. El tag de GitHub debe
+  ser `v1.0.3`, porque la app compara ese tag con la version instalada.
 - Para cada release posterior, incrementa el numero tras `+` sin excepciones.
 
 ## 3. Ajustar la compatibilidad, si procede
@@ -81,7 +81,7 @@ En GitHub:
 1. Haz commit y push de los cambios, incluido el nuevo `pubspec.yaml`.
 2. Abre el repositorio `pabloruizfv/bicimad-gp`.
 3. Entra en **Releases** y pulsa **Draft a new release**.
-4. Crea un tag igual al `versionName`; para esta release, `v1.0.2`.
+4. Crea un tag igual al `versionName`; para esta release, `v1.0.3`.
 5. Selecciona la rama `main`.
 6. Escribe las notas de la version.
 7. Adjunta `app-release.apk`.
