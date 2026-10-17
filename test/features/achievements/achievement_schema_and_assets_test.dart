@@ -522,7 +522,7 @@ void main() {
     expect(optimizedLookup, isNot(contains('union all')));
   });
 
-  test('SVG de Escalador conservan la misma bicicleta en subida', () {
+  test('SVG de Escalador conservan la misma bicicleta de montana', () {
     const paths = [
       'assets/badges/climbing/badge_climbing_trip_1_graphite.svg',
       'assets/badges/climbing/badge_climbing_trip_10_bronze.svg',
@@ -535,8 +535,21 @@ void main() {
     for (final svg in contents) {
       expect(svg, contains('viewBox="0 0 512 512"'));
       expect(RegExp('id="badge-content"').allMatches(svg), hasLength(1));
-      expect(svg, contains('assets/bases/climbing.svg'));
+      expect(svg, contains('assets/bases/bike_mountain.svg'));
       expect(svg, contains('#244E78'));
+      expect(svg, contains('fill="#FFFFFF"'));
+      expect(
+        svg,
+        contains(
+          'M 24 466 L 256 116 L 488 466 Z" fill="#244E78" '
+          'stroke="#244E78"',
+        ),
+      );
+      expect(svg, contains('translate(158.72 97.42) scale(0.38)'));
+      expect(
+        svg,
+        contains('translate(124.08 315) rotate(-56.461308)'),
+      );
       expect(svg, isNot(contains('<image')));
       expect(svg, isNot(contains('base64')));
       expect(svg, isNot(contains('<text')));
@@ -557,6 +570,20 @@ void main() {
 
     expect(locked, contains('#E3E6E8'));
     expect(locked, contains('#8F979C'));
+    expect(locked, contains('fill="#FFFFFF" stroke="#FFFFFF"'));
+    expect(
+      locked,
+      contains(
+        'M 24 466 L 256 116 L 488 466 Z" fill="#8F979C" '
+        'stroke="#8F979C"',
+      ),
+    );
+    expect(locked, contains('translate(158.72 97.42) scale(0.38)'));
+    expect(
+      locked,
+      contains('translate(124.08 315) rotate(-56.461308)'),
+    );
+    expect(locked, contains('assets/bases/bike_mountain.svg'));
     expect(locked, isNot(graphite));
     expect(locked, isNot(contains('<text')));
   });

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Bicicleta subiendo una montaña muy empinada</title>
+  <desc id="desc">Icono minimalista negro de una bicicleta a media ladera de una montaña triangular simétrica cerrada por la base, con nieve en la cima y tres líneas de velocidad detrás.</desc>
+
+  <!-- Montaña triangular simétrica, con las dos laderas a 56.46 grados -->
+  <path d="M 24 466 L 256 116 L 488 466 Z"
+        fill="none" stroke="#171717" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Cima nevada: pieza cerrada con todo su contorno al mismo grosor que la montaña -->
+  <path d="M 220 170 L 256 116 L 292 170 L 278 162 L 269 183 L 255 167 L 242 185 L 232 163 Z"
+        fill="white" stroke="#171717" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- El eje horizontal del grupo coincide exactamente con la ladera izquierda. -->
+  <g transform="translate(138.00000 294.01724) rotate(-56.4613080)"
+     fill="none" stroke="#171717" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- Movimiento: tres trazos paralelos a la subida, sin tocar la bici -->
+    <g stroke-width="5.5">
+      <path d="M -76 -48 H -49" />
+      <path d="M -76 -66 H -45" />
+      <path d="M -69 -84 H -47" />
+    </g>
+
+    <!-- Neumáticos tangentes al borde de la ladera, sin cruzarla -->
+    <g transform="translate(0 -5.900000) scale(0.89)">
+      <!-- Ruedas, situadas sobre una única línea paralela a la pendiente -->
+      <g stroke-width="9">
+        <circle cx="0" cy="-36" r="31" />
+        <circle cx="128" cy="-36" r="31" />
+      </g>
+
+      <!-- Cuadro de bicicleta: sillín detrás y manillar delante -->
+      <g stroke-width="8">
+        <path d="M 49 -76 L 103 -88" />
+        <path d="M 110 -74 L 60 -40" />
+        <path d="M 49 -76 L 60 -40" />
+        <path d="M 49 -76 L 0 -36 L 60 -40" />
+        <path d="M 103 -88 L 110 -74 L 128 -36" />
+      </g>
+
+      <!-- Tija y sillín separados del cuadro -->
+      <path d="M 49 -76 L 45 -101" stroke-width="7" />
+      <path d="M 36 -102 Q 45 -100 54 -102" stroke-width="6.8" />
+
+      <!-- Manillar ligeramente elevado -->
+      <path d="M 103 -88 L 100 -119 L 120 -120 L 122 -114" stroke-width="8" />
+      <circle cx="60" cy="-40" r="4.2" fill="#171717" stroke="none" />
+    </g>
+  </g>
+</svg>
