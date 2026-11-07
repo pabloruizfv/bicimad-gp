@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import getpass
+import os
 import re
 import secrets
 import sys
@@ -15,18 +16,22 @@ from mpass_client import ProbeRequestError, run_login_trip_flow
 
 DEFAULT_DEVICE_MODEL = "Samsung SM-A127F"
 DEFAULT_ANDROID_VERSION = "13"
-GENERATED_DEVICE_ID_PATH = Path(
-    "tools/bicimad_probe/private/generated_device_id.txt"
-)
+GENERATED_DEVICE_ID_PATH = Path("tools/bicimad_probe/private/generated_device_id.txt")
 DEVICE_ID_PATTERN = re.compile(r"^[0-9a-f]{16}$")
+EMAIL_ENV_VAR = "BICIMAD_EMT_EMAIL"
+PASSWORD_ENV_VAR = "BICIMAD_EMT_PASSWORD"
 
 
 class InvalidLocalDeviceIdError(ValueError):
     pass
 
 
+class MissingAccountCredentialsError(ValueError):
+    pass
+
+
 def main(argv: list[str] | None = None) -> int:
-    args = _parse_args(sys.argv[1:] if argv is None else argv)
+    _parse_args(sys.argv[1:] if argv is None else argv)
     try:
         values = _prompt_values()
         result = run_login_trip_flow(**values)
@@ -37,6 +42,9 @@ def main(argv: list[str] | None = None) -> int:
         print("Falta la configuración técnica local.")
         print("Ejecuta:")
         print("python tools/bicimad_probe/configure_local_probe.py")
+        return 1
+    except MissingAccountCredentialsError:
+        print(f"Configura ambas variables {EMAIL_ENV_VAR} y {PASSWORD_ENV_VAR}.")
         return 1
     except ProbeRequestError as error:
         _print_safe_error(error)
@@ -49,9 +57,7 @@ def main(argv: list[str] | None = None) -> int:
 
     print("Login MPass: correcto")
     expiration = (
-        result.token_sec_expiration
-        if result.token_sec_expiration is not None
-        else "-"
+        result.token_sec_expiration if result.token_sec_expiration is not None else "-"
     )
     print(f"Caducidad declarada del token: {expiration} segundos")
     print("Datos de usuario: correctos")
@@ -76,8 +82,16 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 
 
 def _prompt_values() -> dict[str, str]:
-    email = input("Email: ").strip()
-    password = getpass.getpass("Contraseña: ")
+    email_env = os.environ.get(EMAIL_ENV_VAR)
+    password_env = os.environ.get(PASSWORD_ENV_VAR)
+    if email_env is not None or password_env is not None:
+        if not email_env or not password_env or not email_env.strip():
+            raise MissingAccountCredentialsError()
+        email = email_env.strip()
+        password = password_env
+    else:
+        email = input("Email: ").strip()
+        password = getpass.getpass("Contraseña: ")
     technical_config = load_technical_config()
     device_id = get_or_create_generated_device_id()
     device_model_visible = DEFAULT_DEVICE_MODEL

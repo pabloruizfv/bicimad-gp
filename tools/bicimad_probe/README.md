@@ -1,6 +1,6 @@
 # BiciMAD Probe
 
-Herramientas locales y separadas de Flutter para estudiar capturas propias y hacer pruebas de lectura de viajes.
+Herramientas locales y separadas de Flutter para estudiar capturas propias y hacer pruebas de lectura de la api de MPass.
 
 No modifican la app oficial, no desactivan certificate pinning y no intentan eludir controles de integridad. No guardes credenciales, tokens, HAR reales ni respuestas crudas en el repositorio.
 
@@ -14,13 +14,35 @@ python -m pip install -r .\tools\bicimad_probe\requirements.txt
 
 ## Configuracion Tecnica Inicial
 
-Antes del primer uso con login, guarda una sola vez `passKey` y `X-ClientId` en el almacen seguro de credenciales de Windows:
+Antes del primer uso con login, puedes guardar una sola vez `passKey` y `X-ClientId` en el almacen seguro de credenciales disponible en tu sistema:
 
 ```powershell
 python .\tools\bicimad_probe\configure_local_probe.py
 ```
 
-El programa pedira ambos valores con `getpass`, no los mostrara y no los guardara en archivos del repositorio.
+El programa pedira ambos valores con `getpass`, no los mostrara y no los guardara en archivos del repositorio. En Linux de escritorio, esto requiere un keyring compatible y desbloqueado.
+
+En un servidor Linux sin keyring, el flujo de login tambien acepta estas variables de entorno:
+
+```text
+BICIMAD_PASS_KEY
+BICIMAD_X_CLIENT_ID
+```
+
+Configura ambas mediante el gestor de secretos de tu entorno y ejecuta `fetch_trips_with_login.py`. Si ambas tienen valor, se usan en lugar del keyring; si ninguna tiene valor, se consulta el keyring local. Si solo una tiene valor, el programa falla sin intentar mezclar fuentes. No guardes los valores en Git ni los incluyas en comandos que queden en el historial de la shell; las variables de entorno pueden ser visibles para procesos con permisos suficientes.
+
+Para no introducir el email y la contraseña de la cuenta en cada ejecucion,
+puedes proporcionar ambas variables de entorno:
+
+```text
+BICIMAD_EMT_EMAIL
+BICIMAD_EMT_PASSWORD
+```
+
+Si ambas estan configuradas, se usan en lugar de los prompts; si solo una esta
+configurada, el programa falla sin pedir ni mezclar credenciales. Esto permite
+ejecuciones no interactivas cuando tambien esta disponible la configuracion
+tecnica.
 
 `passKey` y `X-ClientId` deben obtenerse de una captura propia y legitima. No deben compartirse, publicarse, registrarse ni incluirse en Git.
 
@@ -38,7 +60,7 @@ Ejecutar desde la raiz del repositorio:
 python .\tools\bicimad_probe\fetch_trips_with_login.py
 ```
 
-El programa pedira unicamente:
+Si las variables de cuenta no estan configuradas, el programa pedira:
 
 - Email.
 - Contrasena, oculta con `getpass`.
@@ -65,7 +87,7 @@ Si funciona, solo se escribe:
 tools/bicimad_probe/private/trips_normalized.json
 ```
 
-La respuesta cruda, el access token, el id de usuario, el NIF, el email, el device ID, `passKey`, `X-ClientId` y la contrasena no se imprimen. Solo `passKey` y `X-ClientId` se guardan en keyring, y solo el device ID generado se guarda en `private/`.
+La respuesta cruda, el access token, el id de usuario, el NIF, el email, el device ID, `passKey`, `X-ClientId` y la contrasena no se imprimen. El access token, el id de usuario y su caducidad se guardan en `tools/bicimad_probe/private/mpass_token_cache.json` con permisos restrictivos (0600 en sistemas compatibles) y se reutilizan mientras sigan vigentes, con un margen de seguridad de un minuto. La entrada se vincula mediante un hash al email, la configuracion tecnica y el dispositivo; nunca se guarda la contrasena. Si la cache no se puede leer o escribir, el flujo continua con un login normal. Para forzar un login nuevo, elimina el archivo de cache. `passKey` y `X-ClientId` se leen del keyring local o de variables de entorno, y el device ID generado se guarda en `private/`.
 
 ## Diagnostico Temporal de Bicicleta y Precio
 
@@ -130,6 +152,57 @@ Este modo pide localmente `accessToken`, `email`, `userId`, `nif`, `deviceId` y 
 ```powershell
 python .\tools\bicimad_probe\fetch_trips.py
 ```
+
+## Consulta de Estaciones
+
+`fetch_stations.py` consulta el catalogo y la disponibilidad de estaciones con
+este endpoint de solo lectura:
+
+```text
+GET https://apiemtpay.emtmadrid.es/v2/bicimad/stations/
+```
+
+Ejecuta el comando desde la raiz. Usa el mismo flujo de login MPass que
+`fetch_trips_with_login.py`: pide el email y la contraseña (oculta) o los lee de
+`BICIMAD_EMT_EMAIL` y `BICIMAD_EMT_PASSWORD`; reutiliza `passKey`, `X-ClientId`
+y el `deviceId` locales, y consulta las estaciones con el token MPass sin
+guardarlo ni mostrarlo:
+
+```powershell
+python .\tools\bicimad_probe\fetch_stations.py
+```
+
+El nombre de salida se puede cambiar; se guarda dentro de
+`tools/bicimad_probe/private/` y debe ser un nombre de archivo, no una ruta:
+
+```powershell
+python .\tools\bicimad_probe\fetch_stations.py `
+  --raw-filename stations_raw_20261107_120000.json
+```
+
+Por defecto se crea un archivo `stations_raw_YYYYMMDD_HHMMSS.json` nuevo en cada
+ejecucion. Si se indica un nombre personalizado para importarlo a Delta, debe
+mantener ese formato.
+
+Se guarda la respuesta original completa del endpoint en
+`tools/bicimad_probe/private/`. La normalizacion se realiza durante la
+importacion a Delta; no se crea un JSON normalizado intermedio.
+
+Importa un snapshot o todos los snapshots del directorio con:
+
+```powershell
+python .\tools\bicimad_probe\stations_raw_json_to_delta.py `
+  .\tools\bicimad_probe\private `
+  .\tools\bicimad_probe\private\stations_delta
+```
+
+El importador normaliza los campos de identificacion, ubicacion y
+disponibilidad/capacidad, omite datos auxiliares y agrega los metadatos de
+captura a la tabla Delta.
+
+La carpeta `private/` esta excluida de Git; no copies ni publiques la respuesta
+original. Igual que el flujo de viajes, acepta `BICIMAD_EMT_EMAIL` y
+`BICIMAD_EMT_PASSWORD` para ejecuciones no interactivas.
 
 ## Normalizacion
 

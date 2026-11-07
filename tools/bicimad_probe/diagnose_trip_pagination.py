@@ -11,9 +11,10 @@ from __future__ import annotations
 import argparse
 import getpass
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Callable, Optional
+from typing import Any
 
 from fetch_trips_with_login import (
     DEFAULT_ANDROID_VERSION,
@@ -28,7 +29,7 @@ from mpass_client import (
     build_login_device_model,
     fetch_trips,
     fetch_userdata_dn,
-    login,
+    login_or_reuse,
 )
 
 DEFAULT_MAX_PAGES = 100
@@ -40,7 +41,7 @@ PAGINATION_MECHANISM = (
     "cabecera HTTP page; primera peticion sin page, despues 1, 2, 3..."
 )
 
-FetchPage = Callable[[Optional[int]], JsonResponse]
+FetchPage = Callable[[int | None], JsonResponse]
 Sleeper = Callable[[float], None]
 
 
@@ -306,7 +307,7 @@ def main(argv: list[str] | None = None) -> int:
         if not email or not password:
             raise ValueError("Missing required local input")
 
-        login_result = login(
+        login_result = login_or_reuse(
             email=email,
             password=password,
             pass_key=technical_config.pass_key,
@@ -414,7 +415,9 @@ def _has_explicit_end(payload: dict[str, Any]) -> bool:
         if not isinstance(value, dict):
             return False
         for key, child in value.items():
-            normalized = "".join(character for character in key.lower() if character.isalnum())
+            normalized = "".join(
+                character for character in key.lower() if character.isalnum()
+            )
             if normalized in {"hasmore", "moreavailable"} and child is False:
                 return True
             if normalized in {"end", "islast", "lastpage"} and child is True:
